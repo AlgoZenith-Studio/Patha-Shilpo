@@ -28,3 +28,6 @@ Thumbs.db
 
 # Log files
 *.log
+
+# AI Coworker system directory
+AI_COWORKER/
