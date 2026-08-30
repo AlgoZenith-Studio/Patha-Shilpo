@@ -1,0 +1,51 @@
+name: pathashilpo_frontend
+description: "Patha-Shilpa - Offline-First, Voice-Guided Rural Artisan & Buyer Platform"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+  provider: ^6.1.2
+  uuid: ^4.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/data/
+    - assets/data/medians.json
+
+  fonts:
+    - family: Kalam
+      fonts:
+        - asset: assets/data/Kalam-Regular.otf
+        - asset: assets/data/Kalam-Bold.otf
+          weight: 700
+    - family: Lora
+      fonts:
+        - asset: assets/data/Lora-SemiBold.otf
+          weight: 600
+        - asset: assets/data/Lora-Bold.otf
+          weight: 700
+    - family: Rowan
+      fonts:
+        - asset: assets/data/Rowan-Medium.otf
+          weight: 500
+        - asset: assets/data/Rowan-MediumItalic.otf
+          weight: 500
+          style: italic
+        - asset: assets/data/Rowan-SemiboldItalic.otf
+          weight: 600
+          style: italic

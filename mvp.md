@@ -14,7 +14,7 @@
                     │  Firebase SDK + HTTPS
                     ▼
 ┌──────────────────────────────────────────────────────────────┐
-│  FIREBASE                                                     │
+│  FIREBASE                                                    │
 │  Auth (phone OTP + custom claims) · Firestore · Storage      │
 │  Security Rules = the RBAC enforcement point                 │
 └──────────────────────────────────────────────────────────────┘
