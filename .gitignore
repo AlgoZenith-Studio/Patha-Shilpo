@@ -1,0 +1,30 @@
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.lock
+
+# Node / TypeScript / Firebase
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+
+# Environment & API Keys
+.env
+.env.*
+*.local
+google-services.json
+GoogleService-Info.plist
+
+# IDE & OS
+.idea/
+.vscode/
+*.iml
+*.DS_Store
+Thumbs.db
+
+# Log files
+*.log
