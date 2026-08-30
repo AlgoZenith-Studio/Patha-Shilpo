@@ -12,9 +12,15 @@ dist/
 npm-debug.log
 yarn-error.log
 
+# Python
+__pycache__/
+*.pyc
+.venv/
+
 # Environment & API Keys
 .env
 .env.*
+!.env.example
 *.local
 google-services.json
 GoogleService-Info.plist
