@@ -140,7 +140,7 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                         const Text(
                           'Direct Sourcing from Rural Clusters',
                           style: TextStyle(
-                            fontFamily: 'Kalam',
+                            fontFamily: 'Pally',
                             fontWeight: FontWeight.w700,
                             fontSize: 18,
                             color: AppColors.canvasParchment,
@@ -169,7 +169,7 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
               const Text(
                 'Request for Quote (RFQ) Form',
                 style: TextStyle(
-                  fontFamily: 'Kalam',
+                  fontFamily: 'Pally',
                   fontWeight: FontWeight.w700,
                   fontSize: 20,
                   color: AppColors.deepUmber,
@@ -244,7 +244,7 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                   ),
                   Text(
                     '$_quantity pieces',
-                    style: const TextStyle(fontFamily: 'Kalam', fontWeight: FontWeight.w700, fontSize: 16, color: AppColors.deepUmber),
+                    style: const TextStyle(fontFamily: 'Pally', fontWeight: FontWeight.w700, fontSize: 16, color: AppColors.deepUmber),
                   ),
                 ],
               ),
@@ -271,7 +271,7 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                   ),
                   Text(
                     '₹${(_budgetRange.start / 1000).toStringAsFixed(0)}K - ₹${(_budgetRange.end / 1000).toStringAsFixed(0)}K',
-                    style: const TextStyle(fontFamily: 'Kalam', fontWeight: FontWeight.w700, fontSize: 16, color: AppColors.deepUmber),
+                    style: const TextStyle(fontFamily: 'Pally', fontWeight: FontWeight.w700, fontSize: 16, color: AppColors.deepUmber),
                   ),
                 ],
               ),
@@ -341,7 +341,7 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                   label: const Text(
                     'Broadcast RFQ to Artisans • कोटेशन मंगाएं',
                     style: TextStyle(
-                      fontFamily: 'Kalam',
+                      fontFamily: 'Pally',
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
                       color: AppColors.deepUmber,
@@ -367,7 +367,7 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                   Text(
                     'Active Quotations (${MockBuyerData.initialRfqs.length})',
                     style: const TextStyle(
-                      fontFamily: 'Kalam',
+                      fontFamily: 'Pally',
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
                       color: AppColors.deepUmber,
@@ -400,7 +400,7 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                         SizedBox(height: 10),
                         Text(
                           'No Active RFQs',
-                          style: TextStyle(fontFamily: 'Kalam', fontWeight: FontWeight.w700, fontSize: 18, color: AppColors.deepUmber),
+                          style: TextStyle(fontFamily: 'Pally', fontWeight: FontWeight.w700, fontSize: 18, color: AppColors.deepUmber),
                         ),
                         SizedBox(height: 4),
                         Text(
@@ -521,7 +521,7 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
         Text(
           value,
           style: const TextStyle(
-            fontFamily: 'Kalam',
+            fontFamily: 'Pally',
             fontWeight: FontWeight.w700,
             fontSize: 13.5,
             color: AppColors.deepUmber,

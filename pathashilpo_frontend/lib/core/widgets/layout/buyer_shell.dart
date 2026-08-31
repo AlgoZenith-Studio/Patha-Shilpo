@@ -62,7 +62,7 @@ class _BuyerShellState extends State<BuyerShell> {
                       child: Text(
                         'प',
                         style: TextStyle(
-                          fontFamily: 'Kalam',
+                          fontFamily: 'Pally',
                           fontWeight: FontWeight.w700,
                           fontSize: 22,
                           color: AppColors.deepUmber,
@@ -72,7 +72,7 @@ class _BuyerShellState extends State<BuyerShell> {
                   ),
                   const SizedBox(width: 10),
 
-                  // Brand Titles with Kalam Bold font
+                  // Brand Titles with Pally Bold font
                   const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +80,7 @@ class _BuyerShellState extends State<BuyerShell> {
                       Text(
                         'पाथ-शिल्प • Patha-Shilpo',
                         style: TextStyle(
-                          fontFamily: 'Kalam',
+                          fontFamily: 'Pally',
                           fontWeight: FontWeight.w700,
                           fontSize: 18,
                           color: AppColors.deepUmber,
@@ -163,7 +163,7 @@ class _BuyerShellState extends State<BuyerShell> {
               selectedItemColor: AppColors.terracottaClay,
               unselectedItemColor: AppColors.sandstone,
               selectedLabelStyle: const TextStyle(
-                fontFamily: 'Kalam',
+                fontFamily: 'Pally',
                 fontWeight: FontWeight.w700,
                 fontSize: 12.5,
               ),

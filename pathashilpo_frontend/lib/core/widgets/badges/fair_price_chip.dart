@@ -16,11 +16,11 @@ class FairPriceChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.canvasLight,
+        color: AppColors.chipBackground,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.ochreGold.withOpacity(0.5), width: 1),
+        border: Border.all(color: AppColors.ochreGold.withValues(alpha: 0.5), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -34,7 +34,7 @@ class FairPriceChip extends StatelessWidget {
           Text(
             '₹$price',
             style: const TextStyle(
-              fontFamily: 'Kalam',
+              fontFamily: 'Pally',
               fontWeight: FontWeight.w700,
               fontSize: 14,
               color: AppColors.deepUmber,

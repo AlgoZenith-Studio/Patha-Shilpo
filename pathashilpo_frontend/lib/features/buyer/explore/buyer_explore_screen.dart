@@ -114,7 +114,7 @@ class _BuyerExploreScreenState extends State<BuyerExploreScreen> {
                   const Text(
                     'Heritage Handcrafted Treasures',
                     style: TextStyle(
-                      fontFamily: 'Kalam',
+                      fontFamily: 'Pally',
                       fontWeight: FontWeight.w700,
                       fontSize: 24,
                       color: AppColors.canvasParchment,
@@ -204,7 +204,7 @@ class _BuyerExploreScreenState extends State<BuyerExploreScreen> {
                           label: Text(
                             cat,
                             style: TextStyle(
-                              fontFamily: isSelected ? 'Kalam' : 'Lora',
+                              fontFamily: isSelected ? 'Pally' : 'Lora',
                               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                               fontSize: 13,
                               color: isSelected ? AppColors.deepUmber : AppColors.textMuted,
@@ -318,7 +318,7 @@ class _BuyerExploreScreenState extends State<BuyerExploreScreen> {
                       const Text(
                         'No Handcrafted Items Found',
                         style: TextStyle(
-                          fontFamily: 'Kalam',
+                          fontFamily: 'Pally',
                           fontWeight: FontWeight.w700,
                           fontSize: 18,
                           color: AppColors.deepUmber,
@@ -352,7 +352,7 @@ class _BuyerExploreScreenState extends State<BuyerExploreScreen> {
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.65,
+                  childAspectRatio: 0.58,
                   crossAxisSpacing: 14,
                   mainAxisSpacing: 14,
                 ),

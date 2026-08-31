@@ -75,7 +75,7 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
                         Text(
                           enquiry.productTitle,
                           style: const TextStyle(
-                            fontFamily: 'Kalam',
+                            fontFamily: 'Pally',
                             fontWeight: FontWeight.w700,
                             fontSize: 16,
                             color: AppColors.deepUmber,
@@ -153,7 +153,7 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
                   icon: const Icon(Icons.call_rounded, color: AppColors.deepUmber),
                   label: const Text(
                     'Direct Phone Call with Artisan',
-                    style: TextStyle(fontFamily: 'Kalam', fontWeight: FontWeight.w700, fontSize: 15, color: AppColors.deepUmber),
+                    style: TextStyle(fontFamily: 'Pally', fontWeight: FontWeight.w700, fontSize: 15, color: AppColors.deepUmber),
                   ),
                 ),
               ),
@@ -201,7 +201,7 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
                         const Text(
                           'No Enquiries Found',
                           style: TextStyle(
-                            fontFamily: 'Kalam',
+                            fontFamily: 'Pally',
                             fontWeight: FontWeight.w700,
                             fontSize: 18,
                             color: AppColors.deepUmber,
@@ -236,7 +236,7 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
       label: Text(
         label,
         style: TextStyle(
-          fontFamily: isSelected ? 'Kalam' : 'Lora',
+          fontFamily: isSelected ? 'Pally' : 'Lora',
           fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
           fontSize: 12.5,
           color: isSelected ? AppColors.deepUmber : AppColors.textMuted,
@@ -299,7 +299,7 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
                       Text(
                         enquiry.productTitle,
                         style: const TextStyle(
-                          fontFamily: 'Kalam',
+                          fontFamily: 'Pally',
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
                           color: AppColors.deepUmber,
@@ -361,7 +361,7 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
                 Text(
                   'Tap for details & call →',
                   style: const TextStyle(
-                    fontFamily: 'Kalam',
+                    fontFamily: 'Pally',
                     fontWeight: FontWeight.w700,
                     fontSize: 12,
                     color: AppColors.terracottaClay,

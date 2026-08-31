@@ -73,7 +73,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                         Text(
                           'Direct Enquiry to ${widget.product.artisanName}',
                           style: const TextStyle(
-                            fontFamily: 'Kalam',
+                            fontFamily: 'Pally',
                             fontWeight: FontWeight.w700,
                             fontSize: 18,
                             color: AppColors.deepUmber,
@@ -95,7 +95,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                         const Text(
                           'Quantity Required:',
                           style: TextStyle(
-                            fontFamily: 'Kalam',
+                            fontFamily: 'Pally',
                             fontWeight: FontWeight.w700,
                             fontSize: 15,
                             color: AppColors.deepUmber,
@@ -118,7 +118,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                               Text(
                                 '$quantity',
                                 style: const TextStyle(
-                                  fontFamily: 'Kalam',
+                                  fontFamily: 'Pally',
                                   fontWeight: FontWeight.w700,
                                   fontSize: 16,
                                   color: AppColors.deepUmber,
@@ -158,7 +158,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                         label: const Text(
                           'Send Direct Enquiry • पूछताछ भेजें',
                           style: TextStyle(
-                            fontFamily: 'Kalam',
+                            fontFamily: 'Pally',
                             fontWeight: FontWeight.w700,
                             fontSize: 16,
                             color: AppColors.deepUmber,
@@ -332,7 +332,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                         child: Text(
                           _showHindi ? product.titleHi : product.title,
                           style: const TextStyle(
-                            fontFamily: 'Kalam',
+                            fontFamily: 'Pally',
                             fontWeight: FontWeight.w700,
                             fontSize: 22,
                             height: 1.25,
@@ -357,7 +357,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                         child: Text(
                           _showHindi ? 'English' : 'हिंदी',
                           style: const TextStyle(
-                            fontFamily: 'Kalam',
+                            fontFamily: 'Pally',
                             fontWeight: FontWeight.w700,
                             fontSize: 13,
                             color: AppColors.terracottaClay,
@@ -398,7 +398,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                   const Text(
                     'Craft Story & Provenance',
                     style: TextStyle(
-                      fontFamily: 'Kalam',
+                      fontFamily: 'Pally',
                       fontWeight: FontWeight.w700,
                       fontSize: 18,
                       color: AppColors.deepUmber,
@@ -441,7 +441,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                             const Text(
                               'Fair Wage Transparency Breakdown',
                               style: TextStyle(
-                                fontFamily: 'Kalam',
+                                fontFamily: 'Pally',
                                 fontWeight: FontWeight.w700,
                                 fontSize: 17,
                                 color: AppColors.deepUmber,
@@ -482,7 +482,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                             const Text(
                               'Direct Fair Trade Price:',
                               style: TextStyle(
-                                fontFamily: 'Kalam',
+                                fontFamily: 'Pally',
                                 fontWeight: FontWeight.w700,
                                 fontSize: 16,
                                 color: AppColors.deepUmber,
@@ -491,7 +491,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                             Text(
                               '₹${product.priceFinal}',
                               style: const TextStyle(
-                                fontFamily: 'Kalam',
+                                fontFamily: 'Pally',
                                 fontWeight: FontWeight.w700,
                                 fontSize: 22,
                                 color: AppColors.deepUmber,
@@ -525,7 +525,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                           label: const Text(
                             'Send Enquiry',
                             style: TextStyle(
-                              fontFamily: 'Kalam',
+                              fontFamily: 'Pally',
                               fontWeight: FontWeight.w700,
                               fontSize: 16,
                               color: AppColors.deepUmber,
@@ -553,7 +553,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                           label: const Text(
                             'Bulk RFQ',
                             style: TextStyle(
-                              fontFamily: 'Kalam',
+                              fontFamily: 'Pally',
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
                               color: AppColors.deepUmber,
@@ -575,7 +575,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                     const Text(
                       'More Crafts from this Cluster',
                       style: TextStyle(
-                        fontFamily: 'Kalam',
+                        fontFamily: 'Pally',
                         fontWeight: FontWeight.w700,
                         fontSize: 19,
                         color: AppColors.deepUmber,
@@ -595,7 +595,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.65,
+                  childAspectRatio: 0.58,
                   crossAxisSpacing: 14,
                   mainAxisSpacing: 14,
                 ),

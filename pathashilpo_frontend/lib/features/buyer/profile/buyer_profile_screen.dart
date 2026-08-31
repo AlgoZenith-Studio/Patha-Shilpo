@@ -59,7 +59,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                     child: Text(
                       _buyer.name.substring(0, 1),
                       style: const TextStyle(
-                        fontFamily: 'Kalam',
+                        fontFamily: 'Pally',
                         fontWeight: FontWeight.w700,
                         fontSize: 28,
                         color: AppColors.deepUmber,
@@ -74,7 +74,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                         Text(
                           _buyer.name,
                           style: const TextStyle(
-                            fontFamily: 'Kalam',
+                            fontFamily: 'Pally',
                             fontWeight: FontWeight.w700,
                             fontSize: 20,
                             color: AppColors.canvasParchment,
@@ -130,7 +130,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                   const Text(
                     'Buyer Sourcing Details',
                     style: TextStyle(
-                      fontFamily: 'Kalam',
+                      fontFamily: 'Pally',
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
                       color: AppColors.deepUmber,
@@ -151,22 +151,27 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                     'Craft Interests:',
                     style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.w600, fontSize: 13, color: AppColors.deepUmber),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
+                    spacing: 8,
+                    runSpacing: 8,
                     children: _buyer.interests
                         .map(
                           (interest) => Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                             decoration: BoxDecoration(
-                              color: AppColors.canvasParchment,
+                              color: AppColors.chipBackground,
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(color: AppColors.surfaceBorder),
                             ),
                             child: Text(
                               interest,
-                              style: const TextStyle(fontFamily: 'Lora', fontSize: 11.5, color: AppColors.deepUmber),
+                              style: const TextStyle(
+                                fontFamily: 'Lora',
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.deepUmber,
+                              ),
                             ),
                           ),
                         )
@@ -184,7 +189,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                 Text(
                   'Saved Masterpieces (${savedItems.length})',
                   style: const TextStyle(
-                    fontFamily: 'Kalam',
+                    fontFamily: 'Pally',
                     fontWeight: FontWeight.w700,
                     fontSize: 18,
                     color: AppColors.deepUmber,
@@ -251,7 +256,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                                 Text(
                                   item.title,
                                   style: const TextStyle(
-                                    fontFamily: 'Kalam',
+                                    fontFamily: 'Pally',
                                     fontWeight: FontWeight.w700,
                                     fontSize: 14,
                                     color: AppColors.deepUmber,
@@ -289,7 +294,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                   const Text(
                     'App Language & Regional Settings',
                     style: TextStyle(
-                      fontFamily: 'Kalam',
+                      fontFamily: 'Pally',
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
                       color: AppColors.deepUmber,
@@ -310,7 +315,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                   const Text(
                     'Switch Role • भूमिका बदलें',
                     style: TextStyle(
-                      fontFamily: 'Kalam',
+                      fontFamily: 'Pally',
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
                       color: AppColors.deepUmber,
@@ -340,7 +345,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                       label: const Text(
                         'Switch to Artisan Mode • "मैं बनाता हूँ"',
                         style: TextStyle(
-                          fontFamily: 'Kalam',
+                          fontFamily: 'Pally',
                           fontWeight: FontWeight.w700,
                           fontSize: 14.5,
                           color: AppColors.deepUmber,
@@ -382,7 +387,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
       label: Text(
         label,
         style: TextStyle(
-          fontFamily: isSelected ? 'Kalam' : 'Lora',
+          fontFamily: isSelected ? 'Pally' : 'Lora',
           fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
           fontSize: 12,
           color: isSelected ? AppColors.deepUmber : AppColors.textMuted,
@@ -390,7 +395,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
       ),
       selected: isSelected,
       selectedColor: AppColors.ochreGold,
-      backgroundColor: AppColors.canvasParchment,
+      backgroundColor: AppColors.chipBackground,
       side: BorderSide(color: isSelected ? AppColors.ochreGold : AppColors.surfaceBorder),
       onSelected: (val) {
         if (val) setState(() => _selectedLocale = code);

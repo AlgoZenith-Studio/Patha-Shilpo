@@ -19,7 +19,7 @@ class ArtisanMiniCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.canvasParchment.withOpacity(0.5),
+        color: AppColors.cardSurfaceAlt,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.surfaceBorder, width: 1),
       ),
@@ -47,7 +47,7 @@ class ArtisanMiniCard extends StatelessWidget {
                       child: Text(
                         artisan.name,
                         style: const TextStyle(
-                          fontFamily: 'Kalam',
+                          fontFamily: 'Pally',
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
                           color: AppColors.deepUmber,

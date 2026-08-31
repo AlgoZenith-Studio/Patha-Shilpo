@@ -95,7 +95,7 @@ class _BuyerArtisanStorefrontScreenState extends State<BuyerArtisanStorefrontScr
                                     child: Text(
                                       artisan.name,
                                       style: const TextStyle(
-                                        fontFamily: 'Kalam',
+                                        fontFamily: 'Pally',
                                         fontWeight: FontWeight.w700,
                                         fontSize: 22,
                                         color: AppColors.canvasParchment,
@@ -207,7 +207,7 @@ class _BuyerArtisanStorefrontScreenState extends State<BuyerArtisanStorefrontScr
                                 Text(
                                   'The Artisan\'s Heritage Story',
                                   style: TextStyle(
-                                    fontFamily: 'Kalam',
+                                    fontFamily: 'Pally',
                                     fontWeight: FontWeight.w700,
                                     fontSize: 17,
                                     color: AppColors.deepUmber,
@@ -224,7 +224,7 @@ class _BuyerArtisanStorefrontScreenState extends State<BuyerArtisanStorefrontScr
                               child: Text(
                                 _showHindiStory ? 'English' : 'हिंदी',
                                 style: const TextStyle(
-                                  fontFamily: 'Kalam',
+                                  fontFamily: 'Pally',
                                   fontWeight: FontWeight.w700,
                                   color: AppColors.terracottaClay,
                                 ),
@@ -286,7 +286,7 @@ class _BuyerArtisanStorefrontScreenState extends State<BuyerArtisanStorefrontScr
                                       Text(
                                         _isPlayingAudio ? 'Listening to Spoken Voice Note' : 'Listen to Artisan\'s Voice Note',
                                         style: const TextStyle(
-                                          fontFamily: 'Kalam',
+                                          fontFamily: 'Pally',
                                           fontWeight: FontWeight.w700,
                                           fontSize: 13,
                                           color: AppColors.deepUmber,
@@ -319,7 +319,7 @@ class _BuyerArtisanStorefrontScreenState extends State<BuyerArtisanStorefrontScr
                       Text(
                         'Master Collection (${artisanProducts.length})',
                         style: const TextStyle(
-                          fontFamily: 'Kalam',
+                          fontFamily: 'Pally',
                           fontWeight: FontWeight.w700,
                           fontSize: 20,
                           color: AppColors.deepUmber,
@@ -338,7 +338,7 @@ class _BuyerArtisanStorefrontScreenState extends State<BuyerArtisanStorefrontScr
                         label: const Text(
                           'Bulk RFQ',
                           style: TextStyle(
-                            fontFamily: 'Kalam',
+                            fontFamily: 'Pally',
                             fontWeight: FontWeight.w700,
                             color: AppColors.terracottaClay,
                           ),
@@ -357,7 +357,7 @@ class _BuyerArtisanStorefrontScreenState extends State<BuyerArtisanStorefrontScr
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.65,
+                childAspectRatio: 0.58,
                 crossAxisSpacing: 14,
                 mainAxisSpacing: 14,
               ),
@@ -393,7 +393,7 @@ class _BuyerArtisanStorefrontScreenState extends State<BuyerArtisanStorefrontScr
         Text(
           value,
           style: const TextStyle(
-            fontFamily: 'Kalam',
+            fontFamily: 'Pally',
             fontWeight: FontWeight.w700,
             fontSize: 15,
             color: AppColors.deepUmber,

@@ -19,34 +19,36 @@ class AppTheme {
       ),
       fontFamily: 'Lora',
       textTheme: const TextTheme(
-        // Introductory titles & brand headers use Kalam Bold
+        // Introductory titles & brand headers use Pally Bold
         displayLarge: TextStyle(
-          fontFamily: 'Kalam',
+          fontFamily: 'Pally',
           fontWeight: FontWeight.w700,
           fontSize: 32,
           color: AppColors.deepUmber,
-          letterSpacing: 0.2,
+          letterSpacing: -0.5,
         ),
         displayMedium: TextStyle(
-          fontFamily: 'Kalam',
+          fontFamily: 'Pally',
           fontWeight: FontWeight.w700,
           fontSize: 26,
           color: AppColors.deepUmber,
+          letterSpacing: -0.3,
         ),
         headlineLarge: TextStyle(
-          fontFamily: 'Kalam',
+          fontFamily: 'Pally',
           fontWeight: FontWeight.w700,
           fontSize: 22,
           color: AppColors.deepUmber,
+          letterSpacing: -0.2,
         ),
         headlineMedium: TextStyle(
-          fontFamily: 'Kalam',
+          fontFamily: 'Pally',
           fontWeight: FontWeight.w700,
           fontSize: 20,
           color: AppColors.deepUmber,
         ),
         titleLarge: TextStyle(
-          fontFamily: 'Kalam',
+          fontFamily: 'Pally',
           fontWeight: FontWeight.w700,
           fontSize: 18,
           color: AppColors.deepUmber,
@@ -72,7 +74,7 @@ class AppTheme {
           height: 1.4,
         ),
         labelLarge: TextStyle(
-          fontFamily: 'Kalam',
+          fontFamily: 'Pally',
           fontWeight: FontWeight.w700,
           fontSize: 14,
           color: AppColors.deepUmber,
@@ -85,13 +87,14 @@ class AppTheme {
         scrolledUnderElevation: 0,
         iconTheme: IconThemeData(color: AppColors.deepUmber),
         titleTextStyle: TextStyle(
-          fontFamily: 'Kalam',
+          fontFamily: 'Pally',
           fontWeight: FontWeight.w700,
           fontSize: 22,
           color: AppColors.deepUmber,
+          letterSpacing: -0.3,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.cardSurface,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -106,7 +109,7 @@ class AppTheme {
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           textStyle: const TextStyle(
-            fontFamily: 'Kalam',
+            fontFamily: 'Pally',
             fontWeight: FontWeight.w700,
             fontSize: 16,
           ),

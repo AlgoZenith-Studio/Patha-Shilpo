@@ -90,7 +90,7 @@ class CraftCard extends StatelessWidget {
                     child: Text(
                       '${product.hoursOfWork}h',
                       style: const TextStyle(
-                        fontFamily: 'Kalam',
+                        fontFamily: 'Pally',
                         fontWeight: FontWeight.w700,
                         fontSize: 11,
                         color: Colors.white,
@@ -133,13 +133,13 @@ class CraftCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
 
-                  // Product Title in Kalam
+                  // Product Title in Pally
                   Text(
                     product.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontFamily: 'Kalam',
+                      fontFamily: 'Pally',
                       fontWeight: FontWeight.w700,
                       fontSize: 15,
                       height: 1.2,
@@ -152,16 +152,19 @@ class CraftCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      FairPriceChip(
-                        price: product.priceFinal,
-                        hours: product.hoursOfWork,
-                        showHours: false,
+                      Flexible(
+                        child: FairPriceChip(
+                          price: product.priceFinal,
+                          hours: product.hoursOfWork,
+                          showHours: false,
+                        ),
                       ),
+                      const SizedBox(width: 4),
                       InkWell(
                         onTap: onEnquire ?? onTap,
                         borderRadius: BorderRadius.circular(8),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                           decoration: BoxDecoration(
                             gradient: AppColors.warmOchreGradient,
                             borderRadius: BorderRadius.circular(8),
@@ -171,16 +174,16 @@ class CraftCard extends StatelessWidget {
                             children: [
                               Icon(
                                 Icons.chat_bubble_outline_rounded,
-                                size: 12,
+                                size: 11,
                                 color: AppColors.deepUmber,
                               ),
-                              SizedBox(width: 4),
+                              SizedBox(width: 3),
                               Text(
                                 'Connect',
                                 style: TextStyle(
-                                  fontFamily: 'Kalam',
+                                  fontFamily: 'Pally',
                                   fontWeight: FontWeight.w700,
-                                  fontSize: 12,
+                                  fontSize: 11,
                                   color: AppColors.deepUmber,
                                 ),
                               ),

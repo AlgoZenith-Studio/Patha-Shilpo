@@ -11,17 +11,18 @@ class AppColors {
   AppColors._();
 
   // Core Palette from user specification
-  static const Color canvasLight = Color(0xFFFFFDF0); // Ultra-light smooth canvas
-  static const Color canvasParchment = Color(0xFFFFFBB6); // Primary light background from palette
+  static const Color canvasLight = Color(0xFFFDFBF7); // Clean, ultra-light warm canvas
+  static const Color canvasParchment = Color(0xFFF9F5EC); // Light warm background
   static const Color ochreGold = Color(0xFFD4A262); // Warm Ochre
   static const Color terracottaClay = Color(0xFFCC915C); // Warm Clay
   static const Color sandstone = Color(0xFFBB8F67); // Sandstone Khadi
   static const Color deepUmber = Color(0xFF513A24); // Roasted Earth / Primary Text
 
   // Surface & Neutral Tints
-  static const Color cardSurface = Color(0xFFFFFEEB);
-  static const Color cardSurfaceAlt = Color(0xFFFBF6DC);
-  static const Color surfaceBorder = Color(0xFFE8D7B5);
+  static const Color cardSurface = Color(0xFFFFFFFF); // Crisp clean white card surface
+  static const Color cardSurfaceAlt = Color(0xFFFAF6EE); // Subtle warm surface
+  static const Color chipBackground = Color(0xFFF6EEDC); // Distinct tag/chip background
+  static const Color surfaceBorder = Color(0xFFE8DECE); // Refined subtle border
   static const Color textMuted = Color(0xFF7D6043);
   static const Color textSecondary = Color(0xFF9E7E5E);
 
@@ -56,8 +57,8 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [
       Color(0xFFFFFFFF),
-      Color(0xFFFFFDE8),
-      Color(0xFFFFFBB6),
+      Color(0xFFFFFDF7),
+      Color(0xFFF7F0E1),
     ],
   );
 
