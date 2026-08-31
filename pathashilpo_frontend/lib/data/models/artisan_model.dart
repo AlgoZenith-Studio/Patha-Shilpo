@@ -9,6 +9,9 @@ class ArtisanModel {
   final String craft;
   final String cluster;
   final String? giTag;
+  final String? aadhaarNumber;
+  final String? panNumber;
+  final String? gstin;
   final String story;
   final String storyHi;
   final int yearsOfPractice;
@@ -29,6 +32,9 @@ class ArtisanModel {
     required this.craft,
     required this.cluster,
     this.giTag,
+    this.aadhaarNumber,
+    this.panNumber,
+    this.gstin,
     required this.story,
     required this.storyHi,
     required this.yearsOfPractice,
@@ -51,6 +57,9 @@ class ArtisanModel {
       'craft': craft,
       'cluster': cluster,
       'giTag': giTag,
+      'aadhaarNumber': aadhaarNumber,
+      'panNumber': panNumber,
+      'gstin': gstin,
       'story': story,
       'storyHi': storyHi,
       'yearsOfPractice': yearsOfPractice,
@@ -74,6 +83,9 @@ class ArtisanModel {
       craft: map['craft'] ?? '',
       cluster: map['cluster'] ?? '',
       giTag: map['giTag'],
+      aadhaarNumber: map['aadhaarNumber'],
+      panNumber: map['panNumber'],
+      gstin: map['gstin'],
       story: map['story'] ?? '',
       storyHi: map['storyHi'] ?? '',
       yearsOfPractice: map['yearsOfPractice']?.toInt() ?? 0,

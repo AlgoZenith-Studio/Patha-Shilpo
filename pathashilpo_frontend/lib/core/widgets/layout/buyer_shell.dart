@@ -75,31 +75,37 @@ class _BuyerShellState extends State<BuyerShell> {
                   const SizedBox(width: 10),
 
                   // Brand Titles with Pally Bold font
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        t.appName,
-                        style: const TextStyle(
-                          fontFamily: 'Pally',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18,
-                          color: AppColors.ink,
-                          height: 1.1,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          t.appName,
+                          style: const TextStyle(
+                            fontFamily: 'Pally',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                            color: AppColors.ink,
+                            height: 1.1,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      Text(
-                        t.buyerTagline,
-                        style: const TextStyle(
-                          fontFamily: 'Lora',
-                          fontSize: 10.5,
-                          color: AppColors.textMuted,
+                        Text(
+                          t.buyerTagline,
+                          style: const TextStyle(
+                            fontFamily: 'Lora',
+                            fontSize: 10.5,
+                            color: AppColors.textMuted,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 8),
 
                   // Cluster Tag badge
                   Container(

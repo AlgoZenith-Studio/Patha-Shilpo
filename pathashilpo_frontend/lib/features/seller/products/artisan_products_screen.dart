@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/i18n/generated/app_localizations.dart';
+import '../../../core/theme/colors.dart';
 import '../../../core/widgets/badges/sync_indicator.dart';
-import '../../../core/widgets/cards/craft_card.dart';
 
 /// The artisan's own product list — their inventory and its sync state.
 class ArtisanProductsScreen extends StatelessWidget {
@@ -61,21 +61,50 @@ class _ProductRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(
-          height: 240,
-          child: CraftCard(
-            title: title,
-            price: price,
-            isOfflineDraft: isDraft,
-            onTap: () {},
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppShape.cardRadius),
+        border: Border.all(color: AppColors.border, width: AppShape.hairline),
+      ),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: AppColors.canvas,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.image_outlined, color: AppColors.border, size: 28),
           ),
-        ),
-        const SizedBox(height: 8),
-        SyncIndicator(state: state),
-      ],
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '₹$price',
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: AppColors.action,
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+                const SizedBox(height: 6),
+                SyncIndicator(state: state),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

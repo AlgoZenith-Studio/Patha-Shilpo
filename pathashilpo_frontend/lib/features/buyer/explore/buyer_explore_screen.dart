@@ -237,36 +237,40 @@ class _BuyerExploreScreenState extends State<BuyerExploreScreen> {
                   // Quick Filter Toggles & Sorters
                   Row(
                     children: [
-                      FilterChip(
-                        avatar: Icon(
-                          _onlyGiTagged ? Icons.verified : Icons.verified_outlined,
-                          size: 14,
-                          color: _onlyGiTagged ? AppColors.giTagGreen : AppColors.textMuted,
-                        ),
-                        label: Text(
-                          t.buyerGiTaggedOnly,
-                          style: TextStyle(
-                            fontFamily: 'Lora',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
+                      Flexible(
+                        child: FilterChip(
+                          avatar: Icon(
+                            _onlyGiTagged ? Icons.verified : Icons.verified_outlined,
+                            size: 14,
                             color: _onlyGiTagged ? AppColors.giTagGreen : AppColors.textMuted,
                           ),
+                          label: Text(
+                            t.buyerGiTaggedOnly,
+                            style: TextStyle(
+                              fontFamily: 'Lora',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: _onlyGiTagged ? AppColors.giTagGreen : AppColors.textMuted,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          selected: _onlyGiTagged,
+                          selectedColor: AppColors.giTagBg,
+                          backgroundColor: Colors.transparent,
+                          side: BorderSide(
+                            color: _onlyGiTagged ? AppColors.giTagGreen : AppColors.border,
+                            width: 1,
+                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          onSelected: (val) {
+                            setState(() {
+                              _onlyGiTagged = val;
+                            });
+                          },
                         ),
-                        selected: _onlyGiTagged,
-                        selectedColor: AppColors.giTagBg,
-                        backgroundColor: Colors.transparent,
-                        side: BorderSide(
-                          color: _onlyGiTagged ? AppColors.giTagGreen : AppColors.border,
-                          width: 1,
-                        ),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                        onSelected: (val) {
-                          setState(() {
-                            _onlyGiTagged = val;
-                          });
-                        },
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 8),
                       // Sort Dropdown
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -361,7 +365,7 @@ class _BuyerExploreScreenState extends State<BuyerExploreScreen> {
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.58,
+                  childAspectRatio: 0.72,
                   crossAxisSpacing: 14,
                   mainAxisSpacing: 14,
                 ),

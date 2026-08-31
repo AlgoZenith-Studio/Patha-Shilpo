@@ -599,7 +599,7 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.58,
+                  childAspectRatio: 0.72,
                   crossAxisSpacing: 14,
                   mainAxisSpacing: 14,
                 ),

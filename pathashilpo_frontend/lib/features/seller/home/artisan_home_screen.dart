@@ -99,7 +99,7 @@ class _Dashboard extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
-          childAspectRatio: 0.66,
+          childAspectRatio: 0.72,
           children: <Widget>[
             CraftCard(
               title: 'Chanderi silk saree',

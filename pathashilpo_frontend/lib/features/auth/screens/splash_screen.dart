@@ -24,10 +24,10 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _decide() async {
-    await Future<void>.delayed(const Duration(milliseconds: 700));
+    final AuthController auth = context.read<AuthController>();
+    await auth.initSession();
     if (!mounted) return;
 
-    final AuthController auth = context.read<AuthController>();
     final String next = switch ((auth.stage, auth.role)) {
       (AuthStage.ready, UserRole.artisan) => Routes.artisanHome,
       (AuthStage.ready, UserRole.buyer) => Routes.buyerExplore,

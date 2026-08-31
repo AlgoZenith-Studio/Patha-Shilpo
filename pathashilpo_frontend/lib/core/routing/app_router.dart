@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../features/auth/screens/artisan_registration_screen.dart';
 import '../../features/auth/screens/otp_verify_screen.dart';
 import '../../features/auth/screens/phone_login_screen.dart';
 import '../../features/auth/screens/role_select_screen.dart';
@@ -23,6 +24,7 @@ abstract final class AppRouter {
       Routes.otp => const OtpVerifyScreen(),
       Routes.roleSelect => const RoleSelectScreen(),
       Routes.artisanHome => const ArtisanHomeScreen(),
+      Routes.artisanRegistration => const ArtisanRegistrationScreen(),
       Routes.artisanAddProduct => const AddProductFlow(),
       Routes.settings => const SettingsScreen(),
       // BuyerShell hosts its own bottom-nav and all buyer tabs internally,

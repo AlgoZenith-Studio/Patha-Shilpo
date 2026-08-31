@@ -10,6 +10,7 @@ abstract final class Routes {
   static const String otp = '/otp';
 
   static const String artisanHome = '/artisan';
+  static const String artisanRegistration = '/artisan/register';
   static const String artisanProducts = '/artisan/products';
   static const String artisanEnquiries = '/artisan/enquiries';
   static const String artisanProfile = '/artisan/profile';

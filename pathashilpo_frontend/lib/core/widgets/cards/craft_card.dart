@@ -47,10 +47,9 @@ class CraftCard extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              AspectRatio(
-                aspectRatio: 1,
+              Expanded(
+                flex: 11,
                 child: Stack(
                   fit: StackFit.expand,
                   children: <Widget>[
@@ -61,7 +60,7 @@ class CraftCard extends StatelessWidget {
                         color: AppColors.canvas,
                         child: const Icon(
                           Icons.image_outlined,
-                          size: 40,
+                          size: 36,
                           color: AppColors.border,
                         ),
                       ),
@@ -74,47 +73,65 @@ class CraftCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    if (titleHi != null) ...<Widget>[
-                      const SizedBox(height: 2),
-                      Text(
-                        titleHi!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall,
+              Expanded(
+                flex: 9,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.ink,
+                                ),
+                          ),
+                          if (titleHi != null) ...<Widget>[
+                            const SizedBox(height: 1),
+                            Text(
+                              titleHi!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontSize: 11,
+                                    color: AppColors.textMuted,
+                                  ),
+                            ),
+                          ],
+                          if (craftType != null) ...<Widget>[
+                            const SizedBox(height: 2),
+                            Text(
+                              craftType!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: AppTheme.bodyFont,
+                                fontFamilyFallback: AppTheme.scriptFallback,
+                                fontSize: 11.5,
+                                color: AppColors.border,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
-                    ],
-                    if (craftType != null) ...<Widget>[
-                      const SizedBox(height: 6),
-                      Text(
-                        craftType!,
-                        style: TextStyle(
-                          fontFamily: AppTheme.bodyFont,
-                          fontFamilyFallback: AppTheme.scriptFallback,
-                          fontSize: 13,
-                          color: AppColors.border,
+                      if (price != null)
+                        Text(
+                          '₹$price',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.action,
+                              ),
                         ),
-                      ),
                     ],
-                    if (price != null) ...<Widget>[
-                      const SizedBox(height: 8),
-                      Text(
-                        '₹$price',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ],
-                  ],
+                  ),
                 ),
               ),
             ],

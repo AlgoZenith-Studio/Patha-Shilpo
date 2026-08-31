@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/i18n/generated/app_localizations.dart';
+import '../../../core/i18n/locale_provider.dart';
+import '../../../core/routing/route_names.dart';
 import '../../../core/theme/colors.dart';
 import '../../../data/mock/mock_buyer_data.dart';
 import '../../../data/models/buyer_model.dart';
@@ -15,7 +18,6 @@ class BuyerProfileScreen extends StatefulWidget {
 
 class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
   late BuyerModel _buyer;
-  String _selectedLocale = 'en';
 
   @override
   void initState() {
@@ -26,6 +28,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations t = AppLocalizations.of(context);
+    final LocaleProvider localeProvider = context.watch<LocaleProvider>();
     final savedItems = MockBuyerData.products
         .where((p) => _buyer.savedProducts.contains(p.productId))
         .toList();
@@ -82,6 +85,8 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                             fontSize: 20,
                             color: AppColors.canvas,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         if (_buyer.company != null)
                           Text(
@@ -91,6 +96,8 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                               fontSize: 12.5,
                               color: Color(0xFFF3E5D0),
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         const SizedBox(height: 6),
                         Container(
@@ -189,13 +196,17 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Saved Masterpieces (${savedItems.length})',
-                  style: const TextStyle(
-                    fontFamily: 'Pally',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    color: AppColors.ink,
+                Flexible(
+                  child: Text(
+                    'Saved Masterpieces (${savedItems.length})',
+                    style: const TextStyle(
+                      fontFamily: 'Pally',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                      color: AppColors.ink,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -214,6 +225,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                   child: Text(
                     'No saved items yet. Tap the heart icon on any craft to save it.',
                     style: TextStyle(fontFamily: 'Lora', fontSize: 13, color: AppColors.textMuted),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               )
@@ -270,6 +282,8 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                                 Text(
                                   '₹${item.priceFinal} • ${item.artisanCluster}',
                                   style: const TextStyle(fontFamily: 'Lora', fontSize: 12, color: AppColors.textMuted),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             ),
@@ -304,20 +318,20 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Row(
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
                     children: [
-                      _buildLangChoice('English', 'en'),
-                      const SizedBox(width: 8),
-                      _buildLangChoice('हिंदी (Hindi)', 'hi'),
-                      const SizedBox(width: 8),
-                      _buildLangChoice('বাংলা (Bengali)', 'bn'),
+                      _buildLangChoice('English', 'en', localeProvider),
+                      _buildLangChoice('हिंदी (Hindi)', 'hi', localeProvider),
+                      _buildLangChoice('বাংলা (Bengali)', 'bn', localeProvider),
                     ],
                   ),
                   const Divider(color: AppColors.border, height: 24),
-                  // Role Switcher (MVP §1.5)
+                  // Artisan Onboarding & Registration
                   Text(
                     t.buyerSwitchRole,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Pally',
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
@@ -326,7 +340,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    'Are you a rural craftsman or artisan? Switch to Artisan Mode to list and price your handiwork.',
+                    'Are you a rural craftsman or artisan? Complete artisan registration to list, price, and sell your handiwork.',
                     style: TextStyle(fontFamily: 'Lora', fontSize: 12.5, color: AppColors.textMuted),
                   ),
                   const SizedBox(height: 12),
@@ -334,25 +348,19 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                     width: double.infinity,
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            backgroundColor: AppColors.ink,
-                            content: Text(
-                              'Switching to Artisan Mode ("मैं बनाता/बनाती हूँ")...',
-                              style: TextStyle(fontFamily: 'Lora', color: AppColors.canvas),
-                            ),
-                          ),
-                        );
+                        Navigator.pushNamed(context, Routes.artisanRegistration);
                       },
-                      icon: const Icon(Icons.handyman_outlined, color: AppColors.ink),
+                      icon: const Icon(Icons.handyman_outlined, color: AppColors.action),
                       label: const Text(
-                        'Switch to Artisan Mode • "मैं बनाता हूँ"',
+                        'Become an Artisan Seller',
                         style: TextStyle(
                           fontFamily: 'Pally',
                           fontWeight: FontWeight.w700,
                           fontSize: 14.5,
                           color: AppColors.ink,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: AppColors.action, width: 1.5),
@@ -376,16 +384,22 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: const TextStyle(fontFamily: 'Lora', fontSize: 13, color: AppColors.textMuted)),
-        Text(
-          value,
-          style: const TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.w600, fontSize: 13, color: AppColors.ink),
+        const SizedBox(width: 12),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: const TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.w600, fontSize: 13, color: AppColors.ink),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildLangChoice(String label, String code) {
-    final isSelected = _selectedLocale == code;
+  Widget _buildLangChoice(String label, String code, LocaleProvider localeProvider) {
+    final isSelected = localeProvider.locale.languageCode == code;
     return ChoiceChip(
       label: Text(
         label,
@@ -401,7 +415,9 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
       backgroundColor: AppColors.canvas,
       side: BorderSide(color: isSelected ? AppColors.heritage : AppColors.border),
       onSelected: (val) {
-        if (val) setState(() => _selectedLocale = code);
+        if (val) {
+          context.read<LocaleProvider>().setLocale(Locale(code));
+        }
       },
     );
   }
