@@ -70,13 +70,17 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                       children: [
                         const Icon(Icons.mark_chat_unread_outlined, color: AppColors.terracottaClay),
                         const SizedBox(width: 8),
-                        Text(
-                          'Direct Enquiry to ${widget.product.artisanName}',
-                          style: const TextStyle(
-                            fontFamily: 'Pally',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18,
-                            color: AppColors.deepUmber,
+                        Expanded(
+                          child: Text(
+                            'Direct Enquiry to ${widget.product.artisanName}',
+                            style: const TextStyle(
+                              fontFamily: 'Pally',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
+                              color: AppColors.deepUmber,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -438,16 +442,20 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                           children: [
                             const Icon(Icons.verified_user_outlined, color: AppColors.terracottaClay, size: 20),
                             const SizedBox(width: 8),
-                            const Text(
-                              'Fair Wage Transparency Breakdown',
-                              style: TextStyle(
-                                fontFamily: 'Pally',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 17,
-                                color: AppColors.deepUmber,
+                            const Expanded(
+                              child: Text(
+                                'Fair Wage Transparency Breakdown',
+                                style: TextStyle(
+                                  fontFamily: 'Pally',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 17,
+                                  color: AppColors.deepUmber,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            const Spacer(),
+                            const SizedBox(width: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
@@ -479,15 +487,18 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              'Direct Fair Trade Price:',
-                              style: TextStyle(
-                                fontFamily: 'Pally',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                                color: AppColors.deepUmber,
+                            const Flexible(
+                              child: Text(
+                                'Direct Fair Trade Price:',
+                                style: TextStyle(
+                                  fontFamily: 'Pally',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                  color: AppColors.deepUmber,
+                                ),
                               ),
                             ),
+                            const SizedBox(width: 8),
                             Text(
                               '₹${product.priceFinal}',
                               style: const TextStyle(
@@ -654,10 +665,15 @@ class _BuyerProductDetailScreenState extends State<BuyerProductDetailScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: const TextStyle(fontFamily: 'Lora', fontSize: 13, color: AppColors.textMuted),
+        Flexible(
+          child: Text(
+            label,
+            style: const TextStyle(fontFamily: 'Lora', fontSize: 13, color: AppColors.textMuted),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
+        const SizedBox(width: 8),
         Text(
           value,
           style: const TextStyle(

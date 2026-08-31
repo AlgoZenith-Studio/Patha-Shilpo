@@ -449,25 +449,29 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.canvasParchment,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.ochreGold.withOpacity(0.6)),
-                ),
-                child: Text(
-                  rfq.craft,
-                  style: const TextStyle(
-                    fontFamily: 'Lora',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                    color: AppColors.deepUmber,
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.canvasParchment,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.ochreGold.withOpacity(0.6)),
+                  ),
+                  child: Text(
+                    rfq.craft,
+                    style: const TextStyle(
+                      fontFamily: 'Lora',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      color: AppColors.deepUmber,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
@@ -500,9 +504,11 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildRfqMeta('Quantity', '${rfq.quantity} pcs'),
-              _buildRfqMeta('Deadline', rfq.deadline),
-              _buildRfqMeta('Budget', '₹${(rfq.budgetMin / 1000).toStringAsFixed(0)}K - ₹${(rfq.budgetMax / 1000).toStringAsFixed(0)}K'),
+              Flexible(child: _buildRfqMeta('Quantity', '${rfq.quantity} pcs')),
+              const SizedBox(width: 8),
+              Flexible(child: _buildRfqMeta('Deadline', rfq.deadline)),
+              const SizedBox(width: 8),
+              Flexible(child: _buildRfqMeta('Budget', '₹${(rfq.budgetMin / 1000).toStringAsFixed(0)}K - ₹${(rfq.budgetMax / 1000).toStringAsFixed(0)}K')),
             ],
           ),
         ],
@@ -517,6 +523,8 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
         Text(
           label,
           style: const TextStyle(fontFamily: 'Lora', fontSize: 11, color: AppColors.textMuted),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         Text(
           value,
@@ -526,6 +534,8 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
             fontSize: 13.5,
             color: AppColors.deepUmber,
           ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
