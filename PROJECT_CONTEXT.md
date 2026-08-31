@@ -27,7 +27,6 @@ Pathashilpa is an offline-first, voice-guided cataloguing, pricing and discovery
 | Media storage | **Firebase Cloud Storage** | GCP | Images and audio |
 | Offline store | **Hive + hive_flutter** | on-device | `session`, `drafts`, `queue`, `cache_products`, `cache_medians`, `media` |
 | Event triggers | **Cloud Functions (TypeScript)** | Firebase | `onUserCreated` custom claims; AI proxy fallbacks |
-| Web showcase | **React 18 + TS + Vite + Tailwind** | Vercel | Read-only Firestore marketing site |
 | Localization | **Flutter `intl` + `gen_l10n`** | ARB files | `app_en.arb`, `app_hi.arb`, `app_bn.arb` |
 
 ---
@@ -96,7 +95,7 @@ Only `artisan` and `buyer` are reachable from the UI in MVP. `moderator` and `de
 
 ## 6 · DESIGN SYSTEM — Flutter application
 
-> The marketing website uses a **different** palette and type stack — see `PRD.md` §13. See §10 for this open conflict.
+> This is the **only** design system in the project. The marketing website is out of repository scope (`PRD.md` §5.6), so the earlier palette conflict no longer exists.
 
 ### Palette — strict 5 HEX, no additions
 | HEX | Role |
@@ -165,10 +164,22 @@ Queue: FIFO, one item at a time, exponential backoff `2^attempts` capped at 30 s
 | Cloud Functions, `sync/` TS, `firestore.rules`, Docker/Render config | ❌ not started |
 
 ### Frontend — `pathashilpo_frontend/`
-🔴 **BLOCKED.** Flutter SDK not installed; **no `pubspec.yaml` exists**, so the directory is not yet a valid Flutter project. All ~60 Dart files are 0 bytes. `assets/data/medians.json` is empty and needs seeding.
+Flutter 3.47.2 · 157 deps resolved · `flutter analyze` clean · Android release APK target configured.
 
-### Web — `pathashilpa_web/`
-❌ Not started.
+| Component | Status |
+| :--- | :--- |
+| `pubspec.yaml`, `l10n.yaml`, fonts + assets registered | ✅ |
+| `core/theme/` — palette, shape tokens, full `ThemeData` | ✅ |
+| ARB i18n `en`/`hi`/`bn` + `LocaleProvider` | ✅ (`bn` partial by design) |
+| 9 shared core widgets + routing + `app.dart`/`main.dart` | ✅ |
+| `core/rbac/` — `RoleGuard` & auth claims model | ✅ |
+| `features/auth/` — Splash, Phone Login, OTP Verify, Role Select | ✅ |
+| `features/seller/` — Shell, Home, Products, Profile, Enquiries | ✅ |
+| `features/seller/add_product/` — 4-step wizard (Photo, Voice, Costs, Pricing Review) | ✅ |
+| `ai/pricing/` — deterministic FairWage pricing service & models | ✅ |
+| `scripts/` — wireless ADB pair & connect scripts (`.ps1`, `.sh`) + `.env.example` | ✅ |
+| `data/`, `ai/` cloud routers, `sync/` background engine | 🟡 in progress |
+| `assets/data/medians.json` | ❌ empty, needs seeding |
 
 ---
 
@@ -177,7 +188,7 @@ Queue: FIFO, one item at a time, exponential backoff `2^attempts` capped at 30 s
 ### Build order
 **Foundation first (nothing else starts until these are agreed):** models · Hive init · Firestore refs · theme · ARB files · role enum + guard.
 
-**Then in parallel:** (A) `ai/` routers + `sync/` engine → `add_product/` four steps · (B) auth + role select + artisan home/profile/products · (C) buyer explore/product/profile/enquiries · (D) React web + seed data + demo video.
+**Then in parallel:** (A) `ai/` routers + `sync/` engine → `add_product/` four steps · (B) auth + role select + artisan home/profile/products · (C) seed data + demo rehearsal. Buyer explore/product/profile/enquiries is a separate contributor's track.
 
 **Last:** moderator/dept stubs — 30 minutes, large credibility payoff, they prove RBAC is architectural rather than cosmetic.
 
@@ -212,14 +223,130 @@ Queue: FIFO, one item at a time, exponential backoff `2^attempts` capped at 30 s
 
 ---
 
-## 10 · OPEN CONFLICTS & DECISIONS NEEDED
+## 10 · RUNNING & TESTING ON A PHYSICAL PHONE / EMULATOR
+
+This section contains everything needed to pull the code, install dependencies, build the APK, and run it on an Android phone using either **Wireless ADB** or **USB Debugging**.
+
+### 10.1 · Prerequisites & Setup (First-time / After `git pull`)
+
+1. **Prerequisites on Developer Machine:**
+   - **Flutter SDK** (3.24+ / 3.47+ recommended): `flutter --version`
+   - **Android SDK Platform-Tools** (`adb`): included with Android Studio or standalone cmdline-tools
+   - **Java / OpenJDK 17** (for Gradle builds)
+2. **Install frontend dependencies:**
+   ```bash
+   cd pathashilpo_frontend
+   flutter pub get
+   ```
+3. **Build the Release or Debug APK:**
+   ```bash
+   flutter build apk --release
+   # APK location: pathashilpo_frontend/build/app/outputs/flutter-apk/app-release.apk
+   ```
+
+---
+
+### 10.2 · Option A: Wireless Debugging (No USB Cable Needed)
+
+Every phone session generates fresh ports and pairing codes. Device configuration is kept in `.env` (git-ignored) so developer-specific network details are never committed.
+
+#### Phone Setup:
+1. Ensure the phone and PC are connected to the **same Wi-Fi network**.
+2. On your phone: **Settings → Developer Options → Wireless debugging → Turn ON**.
+3. Tap **"Pair device with pairing code"**.
+   - Note the **Pairing IP:Port** (e.g. `192.168.1.3:46127`) and the **6-digit Wi-Fi pairing code** (e.g. `301014`).
+4. Look at the main **Wireless debugging** screen under *"IP address & Port"* for the **Connect IP:Port** (e.g. `192.168.1.3:41011`). *(Note: The connect port is different from the pairing port!)*
+
+#### Environment Configuration:
+1. In `pathashilpo_frontend/`, copy the example file:
+   ```bash
+   cp .env.example .env
+   ```
+2. Update `.env` with your current session values:
+   ```env
+   # From the "Pair device with pairing code" dialog
+   ADB_PAIR_HOST=192.168.1.3
+   ADB_PAIR_PORT=46127
+   ADB_PAIR_CODE=301014
+
+   # From the main Wireless debugging screen
+   ADB_CONNECT_HOST=192.168.1.3
+   ADB_CONNECT_PORT=41011
+
+   # Optional: Path to platform-tools/adb if not automatically on PATH
+   ANDROID_SDK_ROOT=
+
+   APP_ID=com.example.pathashilpa
+   ```
+
+#### Run the Automation Script:
+- **Windows (PowerShell):**
+  ```powershell
+  # Pair, connect, install APK, and launch:
+  .\scripts\wireless_connect.ps1 -InstallApk
+
+  # Or pair & connect only:
+  .\scripts\wireless_connect.ps1
+  ```
+- **macOS / Linux / WSL (Bash):**
+  ```bash
+  chmod +x ./scripts/wireless_connect.sh
+  
+  # Pair, connect, install APK, and launch:
+  ./scripts/wireless_connect.sh --install
+
+  # Or pair & connect only:
+  ./scripts/wireless_connect.sh
+  ```
+
+---
+
+### 10.3 · Option B: USB Debugging (Zero-Config / Plug & Play)
+
+If you prefer using a USB cable:
+
+1. **Phone Setup:**
+   - **Settings → Developer Options → USB Debugging → Turn ON**.
+   - Connect phone to PC via USB cable.
+   - Unlock phone and tap **"Allow USB Debugging"** (check *"Always allow from this computer"*).
+2. **Verify ADB Connection:**
+   ```bash
+   adb devices -l
+   # You should see your device listed as 'device' (not 'unauthorized')
+   ```
+3. **Install & Launch the APK:**
+   ```bash
+   # Direct install via adb:
+   adb install -r build/app/outputs/flutter-apk/app-release.apk
+
+   # Launch app on device:
+   adb shell monkey -p com.example.pathashilpa -c android.intent.category.LAUNCHER 1
+   ```
+4. **Or run with live Flutter hot-reload:**
+   ```bash
+   flutter run -d <device_id>
+   ```
+
+---
+
+### 10.4 · Option C: Direct Sideloading (Transferring APK to Friend)
+
+If a team member just wants to test the app without developer tooling:
+1. Send `pathashilpo_frontend/build/app/outputs/flutter-apk/app-release.apk` to their phone (via Drive, WhatsApp, or USB file transfer).
+2. On Android phone: open Files app → tap `app-release.apk` → allow "Install unknown apps" from that source → tap **Install**.
+3. Open **Pathashilpa** from the home screen.
+
+---
+
+## 11 · OPEN CONFLICTS & DECISIONS NEEDED
 
 | # | Issue | Current resolution |
 | :--- | :--- | :--- |
-| 1 | **Two divergent design systems** — app uses `#fffbb6`/Lora-Kalam-Rowan, marketing site uses `#8B3A2F`/Fraunces-Inter | Both preserved, scoped by surface. **Needs a brand decision.** |
+| 1 | ~~Two divergent design systems~~ | **Resolved** — the marketing site left repository scope, so only the app palette remains. |
 | 2 | Product name — "Pathashilpa" / "Patha-Shilpa" / "Patha-Shilpo"; dirs are `pathashilpo_*` | Prose standardises on **Pathashilpa**; directory names left untouched |
 | 3 | `AI_COWORKER/.../ARCHITECTURE.md` lists endpoints as `/ai/image/process` etc. | **Superseded** — shipped code and `TRD.md` §6.1 use `/ai/image`, `/ai/voice`, `/ai/listing` |
 | 4 | Backend auth is a stub | Must be replaced with `verify_id_token()` before any deploy |
 | 5 | `@GUARD` risk gate never ran | `AI_COWORKER/shared_memory/logs/risk_report.md` still `PENDING` |
-| 6 | Devanagari rendering unproven | Blocked on Flutter install; must be confirmed on a real device |
+| 6 | Devanagari rendering unproven | Must be confirmed on a physical Android handset |
 | 7 | Frontend dir structure differs from earlier docs (`features/seller/` not `features/artisan/`, `core/widgets/` not `lib/widgets/`, `ai/voice/` not `ai/speech/`) | **On-disk structure is authoritative** |
+

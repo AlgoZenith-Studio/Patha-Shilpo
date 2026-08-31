@@ -7,7 +7,9 @@
 
 ---
 
-# PART A — THE PRODUCT
+> **Repository scope:** this repo builds the **Flutter application only** — specifically the **artisan role**. The buyer role is owned by a separate contributor (see §5.6). No marketing website is built here.
+
+---
 
 ## 1 · SUMMARY
 
@@ -97,9 +99,8 @@ No credible government or peer-reviewed source exists for *middleman margin shar
 - Artisan: voice-guided onboarding, profile, product list, **four-step add-product flow**
 - AI: image quality check + crop/pad, speech-to-text, listing generation (EN + HI), price calculation
 - **Offline draft creation + sync engine with silent upgrade**
-- Buyer: browse, filter, product detail, artisan storefront, enquiry, RFQ form
+- Buyer: browse, filter, product detail, artisan storefront, enquiry, RFQ form — *separate contributor, see §5.6*
 - Firestore Security Rules enforcing RBAC
-- Public marketing website with policies
 
 ### 5.2 Mocked, and labelled as mocked
 
@@ -124,6 +125,22 @@ The MVP achieves the same offline guarantees without them:
 - Offline ASR → Android's own recogniser via `speech_to_text` (Tier 2), then record-and-form (Tier 3)
 - Offline image quality → classical Laplacian blur/brightness check + centre-crop and white pad
 - Tagging → derived from the transcript by the template engine, or from Gemini's structured output when online
+
+### 5.6 Repository and ownership scope
+
+This repository builds the **Flutter application only**, and within it the **artisan role**.
+
+| Area | Owner | In this repo |
+| :---- | :---- | :---- |
+| Shared foundation — theme, fonts, i18n, shared widgets, routing | this workstream | ✅ yes |
+| Artisan role — onboarding, profile, products, add-product flow, enquiries received | this workstream | ✅ yes |
+| AI routers, offline engine, sync | this workstream | ✅ yes |
+| **Buyer role** — explore, product detail, enquiry, RFQ, buyer profile | **separate contributor** | ✅ same repo, not this workstream |
+| **Marketing website** | — | ❌ **not built here** |
+
+**One binary, two shells** ([`TRD.md`](TRD.md) AD-3) — both roles ship in the same app, so the shared foundation is a contract between the two workstreams and must not be changed unilaterally. `BuyerShell` exists as the buyer workstream's entry point; `features/buyer/` is left to that contributor.
+
+The React marketing site is **out of scope for this repository entirely**. It is not deferred work here and should not appear in any build status as pending.
 
 ---
 
@@ -160,15 +177,13 @@ Feature module IDs are referenced by the build agents and by [`PROJECT_CONTEXT.m
 - Auto-sync worker on the `connectivity_plus` stream; upload compressed media; upsert `products/{localId}`; AI upgrade **without altering confirmed `priceFinal`**
 - State progression `CAPTURED → OFFLINE_PROCESSED → SYNCING → AI_UPGRADED → LIVE`
 
-### `FEAT-04` — Buyer Exploration & Enquiries
+### `FEAT-04` — Buyer Exploration & Enquiries — *separate contributor*
+> Owned by another contributor, not built in this workstream. Specified here because the artisan side consumes its output: `FEAT-02` produces the listings it reads, and enquiries it creates surface in the artisan's inbox.
+
 - Filter by craft type, region, price, tags
 - Artisan story and provenance block (`giTag`, `cluster`, `technique`, `verifiedBy`)
 - Enquiry submission (`quantity`, `message`) → `enquiries/{enquiryId}` with real-time artisan alerts
 - RFQ creation form for custom bulk orders
-
-### `FEAT-05` — Web Public Showcase
-- React + Vite + Tailwind marketing site reading public Firestore collections (`products`, `artisans`)
-- Artisan stories, cluster heritage, craft preservation
 
 ### Cross-cutting rules
 **AI services** — each pipeline is an abstract interface with an online and an offline implementation plus a router that selects by connectivity. The UI never knows which ran.
@@ -222,153 +237,12 @@ Feature module IDs are referenced by the build agents and by [`PROJECT_CONTEXT.m
 
 ---
 
-# PART B — LANDING PAGE SPECIFICATION
-
-**Stack:** React + TypeScript + Tailwind (Vite) · deployed on Vercel
-**Audience order:** SIH evaluators → artisans and their field partners → buyers
-
-> **Note on visual identity:** the palette and type below apply to the **marketing website only**. The Flutter application uses a separate approved palette and font stack — see [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md) §6. These two systems are currently divergent and should be reconciled before launch.
 
 ---
 
-## 12 · INFORMATION ARCHITECTURE
+## 12 · OPEN QUESTIONS
 
-```
-/                     Home
-/how-it-works         Artisan journey + buyer journey
-/pricing              Free for artisans · buyer plans · the pricing formula, openly
-/for-artisans         Benefits, FAQ, download CTA
-/for-buyers           Provenance, GI verification, bulk RFQ
-/about                Mission, the 0.2% story, team
-/press                Sample coverage (labelled)
-/press/:slug          Article
-/privacy              Privacy Policy
-/terms                Terms of Service
-/refund-policy        Returns & Refunds
-/artisan-charter      Six commitments to artisans
-/contact              Form + addresses
-```
-
-**Header:** logo · How it works · For artisans · For buyers · Pricing · About · `[Explore crafts]` primary CTA
-**Footer:** four columns — Product / For artisans / Company / Legal · language toggle EN·हिं · "Built for Smart India Hackathon 2026"
-
----
-
-## 13 · DESIGN SYSTEM — marketing website
-
-```css
---ink        #1A1A1A     --paper      #FDFBF7
---card       #FFFFFF     --border     #E5E0D8
---primary    #8B3A2F     --primary-2  #A8503F     /* terracotta */
---accent     #1F4E5F                              /* deep teal */
---success    #2F6E4A     --warn       #A9761B     --muted #7A736B
-```
-
-Display `"Fraunces", Georgia, serif` · Body `"Inter", system-ui, sans-serif` · Mono `"IBM Plex Mono"`
-
-Radius 8px cards / 999px pills · Shadow `0 1px 3px rgba(0,0,0,.06)` · Container `max-w-6xl` · Section padding `py-20 md:py-28`
-
-**Rule:** warm paper background, terracotta used sparingly for action only, generous whitespace. Craft photography carries the colour — the interface stays quiet.
-
----
-
-## 14 · HOME PAGE — SECTION BY SECTION
-
-### 14.1 Hero
-- **H1:** Your craft. Your price. Your name.
-- **Sub:** Pathashilpa turns a photograph and a spoken sentence into a live, fairly priced listing — in about ninety seconds, even with no internet.
-- **CTAs:** `Explore crafts` (primary) · `For artisans` (ghost)
-- **Visual:** phone mockup showing the review screen — cut-out saree, Hindi title, ₹2,850 price chip
-- **Trust line:** Built on Bhashini · Publishes to GeM and ONDC
-
-### 14.2 Stat strip — four tiles
-`0.2%` of handloom sales happen online · `95.5%` of rural mobile owners have a smartphone · `67%` of handloom households earn under ₹5,000/month · `35.2 lakh` weavers and allied workers. *Source line beneath, small.*
-
-### 14.3 The insight band *(full-width, dark)*
-> The phone is already in their hand. What's missing is software they can use.
-
-### 14.4 How it works — 3 columns
-**Photograph it** — Point the camera. The app cleans the background and fixes the lighting.
-**Speak about it** — Describe the piece in your own language. The AI writes the listing in English and Hindi.
-**It goes live** — A fair price with its reasoning, then published to your storefront, GeM and ONDC.
-*Footnote: All three steps work with no internet. The listing improves silently when you reconnect.*
-
-### 14.5 What makes it different — 5 cards
-Offline-first AI · Voice-only workflow · Explained pricing · Story as listing data · One record, all channels
-
-### 14.6 Featured artisans — 3 cards
-Photo, name, craft, cluster, one line of story, "View their work"
-
-### 14.7 Comparison table
-Condensed capability matrix — 6 rows, Pathashilpa column highlighted. Link: *See the full comparison*
-
-### 14.8 For artisans / For buyers — split band
-Two panels, each with three bullets and a CTA.
-
-### 14.9 Closing CTA
-> Every rival starts at the server. We start in the artisan's hand.
-
-`Explore crafts` · `Partner with us`
-
----
-
-## 15 · OTHER PAGES — required content
-
-**How it works** — 5-step artisan journey (Register · Capture · AI Studio · Speak · Publish) with screenshots; 3-step buyer journey; an offline explainer diagram showing which steps need no network.
-
-**Pricing** — "Free for artisans, forever" panel with the six things that cost nothing; buyer plans table (Retail free / B2B monthly / Institutional custom); **the fair-price formula shown openly** with a worked example; FAQ.
-
-**For artisans** — the six benefits, the 90-second promise, "what you need" (a phone, that's all), FAQ in Hindi and English, download CTA.
-
-**For buyers** — how provenance works, what GI verification means, the RFQ process, why made-to-order.
-
-**About** — the 0.2% story, mission, team, partners, SIH context.
-
-**Artisan Charter** *(differentiator — write it carefully)* — six commitments: the artisan never pays · the suggested price is never below the cost floor · they can override any price · their story stays attached to their product · they can export or delete all their data · we never sell artisan data.
-
-**Legal** — Privacy (voice recordings, Gemini/Firebase as processors, deletion rights, DPDP Act 2023) · Terms (artisan owns listings and images; price is advisory; enquiries are not binding; listing machine-made goods as handmade is prohibited) · Refunds (made-to-order binding on acceptance; transit damage; return shipping).
-
-**Press** — 5–6 sample article cards. **Add a visible line: "Sample coverage shown for demonstration purposes."** Do not present fabricated articles as real reporting.
-
----
-
-## 16 · ASSETS REQUIRED
-
-**Photography** — 9–12 craft product shots (sarees, ikat, toys, pottery) · 3 artisan portraits · 2 workshop/loom context shots. Use own photos or clearly-licensed stock; record attributions.
-
-**Graphics** — logo (wordmark + PS monogram) · phone mockup frame · offline/online flow diagram · comparison table graphic · favicon.
-
-**Copy** — all section text above · 3 artisan stories (2–3 sentences each) · 5–6 mock articles · FAQ set · complete legal text.
-
----
-
-## 17 · SEO & META
-
-- Title: `Pathashilpa — Your craft. Your price. Your name.`
-- Description: `An AI app that turns a photo and a voice note into a live, fairly priced listing for Indian artisans. Works offline. Publishes to GeM and ONDC.`
-- OG image 1200×630 with the hero line
-- Semantic headings, alt text on every image, `lang` attribute switching with the locale toggle
-
----
-
-## 18 · ACCEPTANCE CRITERIA
-
-- [ ] Loads under 2s on 4G; Lighthouse performance ≥ 85
-- [ ] Fully responsive 360px → 1440px
-- [ ] Every statistic carries its source
-- [ ] All legal pages complete, not placeholder text
-- [ ] Mock articles visibly labelled as samples
-- [ ] No unverified statistic appears anywhere
-- [ ] Colour contrast passes AA
-- [ ] All CTAs reach a real destination
-
----
-
-## 19 · OPEN QUESTIONS
-
-1. Registered team and product name for the portal — must match the deck exactly
+1. Registered team and product name — must match the deck exactly
 2. Which GI cluster is the pilot — Chanderi assumed throughout
 3. Whether the Bhashini ULCA key arrives before the demo
-4. Domain name for deployment
-5. Whether the artisan app ships as an APK download link on the site
-6. **Whether the marketing palette (§13) and the app palette (`PROJECT_CONTEXT.md` §6) should be unified** — they are currently two unrelated colour systems
+4. How the APK reaches artisans and evaluators for the demo

@@ -37,7 +37,7 @@ Used throughout this document:
 | Image pipeline | 🟢 fal.ai online + crop/pad offline | + on-device TFLite matting | §8.4, §19.2 |
 | Speech pipeline | 🟢 Sarvam→Bhashini→device ASR | + on-device Vosk, all 22 languages | §8.2–8.3, §19.1, §19.3 |
 | Listing generation | 🟢 Gemini + offline template | + image-conditioned generation | §8.1, §19.4 |
-| Pricing engine | 🟢 deterministic formula | + ML market band on realised sales | §17.4, §19.5 |
+| Pricing engine | 🟢 deterministic formula | + ML market band on realised sales | §17.3, §19.5 |
 | Discovery & search | 🟢 tag `array-contains-any` | + embeddings and vector search | §19.6 |
 | Moderation & provenance | 🟡 flag field + stub screen | + perceptual-hash dedup, review queue | §19.7 |
 | RBAC — 4 roles in rules | 🟢 rules real, 2 roles in UI | + full moderator and dept tooling | §5.2, §19.8 |
@@ -46,7 +46,8 @@ Used throughout this document:
 | Payments, escrow, settlement | ⬜ absent | + full order and payment rails | §19.9 |
 | Credit scoring, export enablement | ⬜ absent | + designed on sales history | §19.11 |
 | Observability | 🟡 Hive ring buffer, no SDK | + crash reporting, metrics, tracing | §13.2, §19.12 |
-| React marketing site | 🟢 | same | §11.6 |
+| Artisan role — onboarding, products, add-product, enquiries | 🟢 this workstream | same | §11.5 |
+| Buyer role — explore, detail, enquiry, RFQ | 🟢 separate contributor | same | §11.5 |
 
 **MVP hard boundary:** anything requiring a **bundled ML model** is out (breaks the ≤ 40 MB APK budget, §12), and anything requiring **money to move** is out (payments, escrow, settlement).
 
@@ -74,18 +75,20 @@ Used throughout this document:
 │  (Render)        │           │  AI proxies       │
 │  AI orchestration│           └──────────────────┘
 │  sync engine     │
-│  business logic  │                    ▲
-└──────────────────┘                    │ read-only
-       │ HTTPS                 ┌────────┴─────────┐
-       ▼                       │   REACT WEB      │
-┌──────────────────┐           │  (Vercel)        │
-│  AI PROVIDERS    │           └──────────────────┘
+│  business logic  │
+└──────────────────┘
+       │ HTTPS
+       ▼
+┌──────────────────┐
+│  AI PROVIDERS    │
 │  Gemini API      │
 │  Bhashini / ULCA │
 │  Sarvam AI       │
 │  fal.ai          │
 └──────────────────┘
 ```
+
+The ARTISAN and BUYER blocks are **two shells of one Flutter binary** (AD-3), not two apps. This repository builds the artisan shell and the shared foundation beneath both; the buyer shell is owned by a separate contributor (`PRD.md` §5.6).
 
 ## 2.2 Containers
 
@@ -101,7 +104,6 @@ Used throughout this document:
 | Bhashini / ULCA | external | ASR, MT, TTS (proxied via backend) |
 | Sarvam AI | external | ASR, TTS, translation (proxied via backend) |
 | fal.ai | external | image processing, background removal (proxied via backend) |
-| `pathashilpa_web` | Vite/React on Vercel | marketing site, read-only Firestore |
 
 ## 2.3 Architectural decisions
 
@@ -147,7 +149,7 @@ dependencies:
   dio: ^5.7.0
   connectivity_plus: ^6.0.5
   uuid: ^4.5.1
-  intl: ^0.19.0
+  intl: ^0.20.3                # corrected: flutter_localizations on Flutter 3.47 requires ^0.20.3, not ^0.19.0
   provider: ^6.1.2
   google_fonts: ^6.2.1
   cached_network_image: ^3.4.1
@@ -161,16 +163,7 @@ flutter:
   generate: true               # enables gen_l10n
 ```
 
-## 3.2 Web
-
-```
-react ^18 · react-dom ^18 · react-router-dom ^6
-typescript ^5 · vite ^5
-tailwindcss ^3 · postcss · autoprefixer
-lucide-react · firebase ^10 (read-only)
-```
-
-## 3.3 FastAPI backend — Python
+## 3.2 FastAPI backend — Python
 
 ```
 # requirements.txt
@@ -193,7 +186,7 @@ python-jose[cryptography]>=3.3.0 # JWT verification
 Pillow>=10.4.0                   # server-side image processing
 ```
 
-## 3.4 Cloud Functions — TypeScript
+## 3.3 Cloud Functions — TypeScript
 
 ```
 # functions/package.json
@@ -202,7 +195,7 @@ firebase-admin ^12
 typescript ^5
 ```
 
-## 3.5 Target device baseline
+## 3.4 Target device baseline
 
 Android 8.0 (API 26) · 2 GB RAM · quad-core ~1.4 GHz · 720×1280 · 2G/3G intermittent.
 **All performance budgets in §11 are stated against this device, not a flagship.**
@@ -955,35 +948,11 @@ Assets live in `pathashilpo_frontend/assets/data/` — the 7 OTF fonts (§10.1) 
 
 > **Missing router implementations.** The `ai/` tree currently carries views and TTS controllers only. The `image_router` / `speech_router` / `listing_router` abstractions required by §7 and AD-5 have no files yet and must be added under each pipeline's `controllers/`.
 
-## 11.6 React web structure — `pathashilpa_web/src/`
-
-Not yet created. Target layout:
-
-```
-src/
-├── main.tsx  App.tsx  index.css
-├── pages/
-│   ├── Home · HowItWorks · Pricing · ForArtisans · ForBuyers · About
-│   ├── Press · PressArticle
-│   ├── Privacy · Terms · RefundPolicy · ArtisanCharter · Contact
-│   └── NotFound
-├── components/
-│   ├── layout/     Header  Footer  Container  Section
-│   ├── ui/         Button  Card  Badge  Chip  Accordion  Stat
-│   └── sections/   Hero  StatStrip  HowItWorksSteps  FeaturedArtisans
-│                   ComparisonTable  FAQ  CTABand
-├── data/           mockArticles  mockArtisans  faqs  stats  nav
-├── lib/            firebase.ts (read-only)  cn.ts
-└── types/          index.ts
-```
-
-Page-by-page content requirements are specified in `PRD.md` Part B (§12–§18).
-
 ---
 
 # 12 · PERFORMANCE BUDGETS
 
-Measured on the §3.5 baseline device.
+Measured on the §3.4 baseline device.
 
 | Operation | Budget |
 |---|---|
@@ -1077,9 +1046,6 @@ firebase deploy --only functions
 flutter build apk --release \
   --dart-define=BACKEND_URL=https://pathashilpo-backend.onrender.com \
   --dart-define=ENV=demo
-
-# Web
-cd pathashilpa_web && npm run build && vercel --prod
 ```
 
 ## 15.3 Demo checklist
@@ -1091,7 +1057,6 @@ cd pathashilpa_web && npm run build && vercel --prod
 - [ ] Signed release APK on two physical devices
 - [ ] Airplane-mode path rehearsed end to end
 - [ ] Backend Gemini/Sarvam/fal endpoints verified
-- [ ] Web deployed, all links resolve
 - [ ] Screen recording captured **before** the live demo, as insurance
 
 ---
@@ -1142,14 +1107,7 @@ BACKEND_URL                 https://pathashilpo-backend.onrender.com
 ENV                         dev | demo
 ```
 
-## 17.3 Environment variables — Web
-
-```
-# .env
-VITE_FIREBASE_API_KEY  VITE_FIREBASE_PROJECT_ID  VITE_FIREBASE_APP_ID …
-```
-
-## 17.4 Pricing constants
+## 17.3 Pricing constants
 
 ```dart
 const fairWagePerHour = 150;   // ₹
@@ -1161,22 +1119,22 @@ const roundTo         = 50;    // ₹
 
 > 🟢 The **cost floor stays deterministic forever** — it is what makes the price explainable, identical offline, and a real floor under the artisan's earnings. 🔵 Only the market band above it becomes learned, once realised-sale data exists (§19.5). No ML ever computes the floor.
 
-## 17.5 Firestore emulator
+## 17.4 Firestore emulator
 
 ```bash
 firebase emulators:start --only firestore,auth,storage
 ```
 Rules tests live in `test/rules/` and run against the emulator in CI.
 
-## 17.6 Open technical decisions
+## 17.5 Open technical decisions
 
 1. Custom claims via Cloud Function — `on_user_created` defined, needs implementation
 2. On-device background removal (`u2netp` TFLite) — deferred; fal.ai handles it server-side
 3. Perceptual hashing library for duplicate detection — interface defined, implementation pending
-4. Whether to ship an APK download from the marketing site
+4. How the APK reaches artisans and evaluators for the demo
 5. Render free-tier vs paid — evaluate cold start impact during demo rehearsal
 6. Sarvam vs Bhashini priority ordering — currently Sarvam primary, may swap based on testing
-7. Whether the app palette (`PROJECT_CONTEXT.md` §6) and the marketing palette (`PRD.md` §13) should be unified — currently two unrelated colour systems
+7. Integration contract between the artisan and buyer workstreams — both ship in one binary (AD-3), so the shared foundation in `core/` must not be changed unilaterally
 
 ---
 
@@ -1208,9 +1166,41 @@ Also built: `core/config.py` (pydantic-settings), `schemas/ai.py`, all four serv
 3. **No backend tests.** §14 requires TestClient coverage of all `/api/v1/` routes; verification so far has been manual.
 4. `fal_service` catches bare `Exception` on both provider calls — intentional for graceful degradation, but it masks real bugs until logging is added.
 
-## 18.4 Frontend — blocked
+## 18.4 Frontend — foundation built
 
-🔴 The Flutter SDK is not installed and **no `pubspec.yaml` exists**, so `pathashilpo_frontend/` is not yet a valid Flutter project. All ~60 Dart sources are 0 bytes and `assets/data/medians.json` is empty. Nothing can be compiled, analysed or run until the toolchain lands.
+Flutter 3.47.2 is installed. `pubspec.yaml` authored, 157 dependencies resolved, `flutter analyze` clean, web build succeeds.
+
+| Component | Status |
+| :--- | :--- |
+| `pubspec.yaml` — deps, fonts, assets, `generate: true` | ✅ |
+| `core/theme/colors.dart` — 5 HEX + shape tokens | ✅ |
+| `core/theme/app_theme.dart` — full `ThemeData` + font fallback | ✅ |
+| ARB i18n `en` / `hi` / `bn` + `LocaleProvider` | ✅ (`bn` partial by design) |
+| 9 shared widgets — bilingual button, voice mic, cards, badges, shells | ✅ |
+| `main.dart`, `app.dart`, routing | ✅ |
+| Temporary design gallery (verification surface) | ✅ |
+| `features/seller/*` — artisan screens | ❌ next |
+| `features/auth/*` — splash, role select, phone, OTP | ❌ |
+| `data/`, `ai/` routers, `sync/` | ❌ |
+| `features/buyer/*` | — separate contributor |
+| `assets/data/medians.json` | ❌ empty, needs seeding |
+
+**Verified:** all three font families registered in the build's `FontManifest.json` with correct weights and styles.
+
+### ⚠ Verification gap — Android toolchain missing
+
+`flutter doctor` shows **no Android SDK**, so the only runnable target is web. Three things therefore remain unverified:
+
+1. **Devanagari rendering on Android.** On Chrome/Windows the fallback resolves to Nirmala UI; on Android 8 it resolves to Noto. A clean render in Chrome proves the *fallback chain works*, not that it works on the target device.
+2. **Camera, microphone and permissions** — `image_picker`, `speech_to_text`, `permission_handler` behave differently or not at all on web.
+3. **The airplane-mode demo** — the product thesis can only be demonstrated on a physical handset.
+
+A real Android device matters more here than an emulator.
+
+### Deviations from §3.1
+
+- `intl` bumped `^0.19.0` → `^0.20.3` (the pinned version does not resolve against Flutter 3.47's `flutter_localizations`); §3.1 has been corrected
+- `google_fonts` dropped — fonts load locally from `assets/data/`, so it is dead weight against the §12 APK budget
 
 ---
 
@@ -1263,7 +1253,7 @@ MVP sends **text only** to Gemini (§8.1) to hold latency and cost down.
 
 ## 19.5 Pricing — ML market band
 
-**The cost floor never becomes ML.** It stays the deterministic formula in §17.4 — that is what makes the price explainable and identical offline, and it is the artisan's protection against loss-making sales. Only the *market band* becomes learned.
+**The cost floor never becomes ML.** It stays the deterministic formula in §17.3 — that is what makes the price explainable and identical offline, and it is the artisan's protection against loss-making sales. Only the *market band* becomes learned.
 
 ```
 floor      = deterministic          ← unchanged, forever

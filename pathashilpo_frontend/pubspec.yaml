@@ -1,0 +1,81 @@
+name: pathashilpa
+description: Offline-first, voice-guided cataloguing and fair-pricing platform for rural Indian artisans.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # Firebase
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  cloud_firestore: ^5.4.4
+  firebase_storage: ^12.3.4
+
+  # Offline store
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # Capture & media
+  image_picker: ^1.1.2
+  image: ^4.2.0                # decode, crop, pad, compress
+  speech_to_text: ^7.0.0
+  flutter_tts: ^4.2.0
+  permission_handler: ^11.3.1
+
+  # Networking & platform
+  dio: ^5.7.0
+  connectivity_plus: ^6.0.5
+  uuid: ^4.5.1
+  intl: ^0.20.3                # TRD §3.1 pins ^0.19.0; flutter_localizations on Flutter 3.47 requires ^0.20.3
+  provider: ^6.1.2
+  cached_network_image: ^3.4.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner: ^2.4.13
+  hive_generator: ^2.0.1
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true               # enables gen_l10n
+
+  assets:
+    - assets/data/
+
+  # NOTE: fonts live under assets/data/ alongside medians.json, matching the
+  # existing on-disk layout. All three families are Latin-only — every TextStyle
+  # must declare fontFamilyFallback to the system Noto faces. See TRD.md §10.1.
+  fonts:
+    - family: Lora
+      fonts:
+        - asset: assets/data/Lora-SemiBold.otf
+          weight: 600
+        - asset: assets/data/Lora-Bold.otf
+          weight: 700
+
+    - family: Pally
+      fonts:
+        - asset: assets/data/Pally-Regular.otf
+          weight: 400
+        - asset: assets/data/Pally-Bold.otf
+          weight: 700
+
+    - family: Rowan
+      fonts:
+        - asset: assets/data/Rowan-Medium.otf
+          weight: 500
+        - asset: assets/data/Rowan-MediumItalic.otf
+          weight: 500
+          style: italic
+        - asset: assets/data/Rowan-SemiboldItalic.otf
+          weight: 600
+          style: italic

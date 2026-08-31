@@ -20,13 +20,15 @@ An artisan photographs a handicraft, speaks a description in their own language,
 
 **Positioning:** not another marketplace — the layer that *creates* the listing every other marketplace requires.
 
+> **Repository scope:** this repo builds the **Flutter application only**. Within it, this workstream owns the **artisan role** and the shared foundation; the **buyer role** is owned by a separate contributor. Both ship in one binary ([`TRD.md`](TRD.md) AD-3). No marketing website is built here.
+
 ---
 
 ## Documentation
 
 | Document | What's in it |
 | :--- | :--- |
-| [`PRD.md`](PRD.md) | Product requirements — problem, users, scope, journeys, business model, landing-page spec |
+| [`PRD.md`](PRD.md) | Product requirements — problem, users, scope, journeys, business model |
 | [`TRD.md`](TRD.md) | Technical requirements — **full product architecture and the MVP subset**, schemas, API contracts, security rules, budgets |
 | [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md) | **Single source of truth** — reconciled stack, design system, invariants, live build status |
 
@@ -149,7 +151,7 @@ flutter pub get
 flutter run
 ```
 
-> ⚠️ Not yet runnable — `pubspec.yaml` has not been authored and the Dart sources are empty placeholders. See **Status** below.
+The shared foundation and a design-system gallery are runnable today. `flutter run -d chrome` works now; Android needs the SDK installed (`flutter doctor`).
 
 ---
 
@@ -177,8 +179,9 @@ Backend (`pathashilpo_backend/.env`, and Render env vars in production):
 | Backend — AI layer (`/ai/listing`, `/ai/image`, `/ai/voice`, `/health`) | ✅ Built and verified |
 | Backend — auth | ⚠️ **Stubbed** — any bearer token is accepted; not deploy-safe |
 | Backend — sync, products, enquiries, RFQ, Firestore rules | ❌ Not started |
-| Frontend — Flutter app | 🔴 Blocked — no `pubspec.yaml`, sources empty |
-| Web — marketing site | ❌ Not started |
+| Frontend — foundation (theme, fonts, i18n, widgets, routing) | ✅ Built, analyzer-clean |
+| Frontend — artisan screens | ❌ Next |
+| Frontend — buyer role | 👥 Separate contributor |
 
 Full detail in [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md) §8.
 
@@ -186,7 +189,7 @@ Full detail in [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md) §8.
 
 - **Backend auth is a stub.** `app/core/security.py` does not call `firebase_admin.auth.verify_id_token()`. Must be replaced before deployment, and there is no rate limiting yet.
 - **The bundled fonts cannot render Hindi.** All seven supplied OTFs (Kalam, Lora, Rowan) are Latin-only — zero Devanagari glyphs. Every `TextStyle` must declare `fontFamilyFallback` to the system Noto faces, and this must be confirmed on a real device before the demo.
-- **Two divergent design systems** exist — one for the app, one for the marketing site. See `PROJECT_CONTEXT.md` §10.
+- **No Android SDK installed** — web is currently the only runnable target, so the Devanagari render on real Android, camera/mic behaviour, and the airplane-mode demo are all unverified.
 
 ---
 
