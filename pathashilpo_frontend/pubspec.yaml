@@ -1,7 +1,7 @@
 name: pathashilpa
 description: Offline-first, voice-guided cataloguing and fair-pricing platform for rural Indian artisans.
 publish_to: 'none'
-version: 1.0.0+2003
+version: 1.0.0+2005
 
 environment:
   sdk: '>=3.5.0 <4.0.0'

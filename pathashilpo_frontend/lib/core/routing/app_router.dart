@@ -8,6 +8,7 @@ import '../../features/seller/add_product/add_product_flow.dart';
 import '../../features/seller/home/artisan_home_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../i18n/generated/app_localizations.dart';
+import '../widgets/layout/buyer_shell.dart';
 import 'route_names.dart';
 
 /// Central route factory (TRD.md §11.3).
@@ -24,50 +25,15 @@ abstract final class AppRouter {
       Routes.artisanHome => const ArtisanHomeScreen(),
       Routes.artisanAddProduct => const AddProductFlow(),
       Routes.settings => const SettingsScreen(),
-      // The buyer shell is owned by a separate contributor (PRD.md §5.6).
-      Routes.buyerExplore => const _NotInThisWorkstream(),
+      // BuyerShell hosts its own bottom-nav and all buyer tabs internally,
+      // so a single route entry covers the whole buyer module.
+      Routes.buyerExplore => const BuyerShell(),
       _ => const _UnknownRoute(),
     };
 
     return MaterialPageRoute<dynamic>(
       builder: (_) => page,
       settings: settings,
-    );
-  }
-}
-
-class _NotInThisWorkstream extends StatelessWidget {
-  const _NotInThisWorkstream();
-
-  @override
-  Widget build(BuildContext context) {
-    final AppLocalizations t = AppLocalizations.of(context);
-
-    return Scaffold(
-      appBar: AppBar(title: Text(t.buyerShellTitle)),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Icon(Icons.construction_rounded, size: 48),
-              const SizedBox(height: 16),
-              Text(
-                t.buyerNotInWorkstream,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                t.buyerNotInWorkstreamBody,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

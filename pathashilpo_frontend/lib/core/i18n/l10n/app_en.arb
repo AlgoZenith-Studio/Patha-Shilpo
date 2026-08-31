@@ -1,9 +1,7 @@
 {
   "@@locale": "en",
-
   "appName": "Pathashilpa",
   "appTagline": "Your craft. Your price. Your name.",
-
   "commonNext": "Next",
   "commonBack": "Back",
   "commonCancel": "Cancel",
@@ -19,7 +17,6 @@
   "commonLanguage": "Language",
   "commonNotFound": "That screen does not exist.",
   "commonSampleData": "Sample data — real content arrives once the database is connected.",
-
   "authSignIn": "Sign in",
   "authPhoneTitle": "Your phone number",
   "authPhoneHint": "00000 00000",
@@ -28,16 +25,20 @@
   "authEnterCode": "Enter code",
   "authOtpTitle": "Enter the six-digit code",
   "authSentTo": "Sent to {phone}",
-  "@authSentTo": { "placeholders": { "phone": { "type": "String" } } },
+  "@authSentTo": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "authOtpInvalid": "That code is not right.",
   "authVerify": "Verify",
   "authDemoNotice": "Demo build: any six digits will work. Phone verification is not connected yet.",
-
   "roleQuestion": "What brings you here?",
   "roleIMakeThings": "I make things",
   "roleIWantToBuy": "I want to buy",
   "roleChooseOnce": "You can only choose once.",
-
   "navHome": "Home",
   "navProducts": "Products",
   "navEnquiries": "Enquiries",
@@ -45,35 +46,47 @@
   "navAdd": "Add",
   "navExplore": "Explore",
   "navRfq": "RFQ",
-
   "homeGreeting": "Namaste",
   "homeWelcome": "Welcome back",
   "homeAddPromptTitle": "Add a product in 90 seconds",
   "homeAddPromptBody": "Photograph it, speak about it, done — works without internet.",
   "homeYourProducts": "Your products",
-
   "productsTitle": "Your products",
   "productsEmpty": "No products yet. Tap Add to create your first listing.",
-
   "enquiriesTitle": "Enquiries",
   "enquiriesQuantity": "{count} pcs",
-  "@enquiriesQuantity": { "placeholders": { "count": { "type": "int" } } },
+  "@enquiriesQuantity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "enquiriesEmpty": "No enquiries yet.",
-
   "profileYourStory": "Your story",
   "profileYearsOfPractice": "{years} years of practice",
-  "@profileYearsOfPractice": { "placeholders": { "years": { "type": "int" } } },
+  "@profileYearsOfPractice": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
   "profileVerified": "Verified",
   "profileGiTag": "GI Tag",
   "profileHandloom": "Handloom",
-
   "settingsTitle": "Settings",
   "settingsLanguage": "Language",
   "settingsLanguageBody": "This controls every screen in the app.",
   "settingsAbout": "About",
   "settingsVersion": "Version {version}",
-  "@settingsVersion": { "placeholders": { "version": { "type": "String" } } },
-
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "addStepPhoto": "Photo",
   "addStepSpeak": "Speak",
   "addStepCosts": "Costs",
@@ -81,7 +94,6 @@
   "addLeaveTitle": "Leave without publishing?",
   "addLeaveBody": "Your draft is saved on this phone. You can finish it later.",
   "addSavedOffline": "Saved as an offline draft",
-
   "photoTitle": "Photograph your craft",
   "photoNone": "No photo yet",
   "photoGallery": "Gallery",
@@ -91,7 +103,6 @@
   "photoPoor": "Photo looks unclear — take it again",
   "photoCameraUnavailable": "Camera is not available here. Choose from gallery instead.",
   "photoOpenFailed": "Could not open that photo. Try another.",
-
   "voiceTitle": "Tell us about it",
   "voiceSubtitle": "Speak in your own language.",
   "voiceListening": "Listening…",
@@ -101,7 +112,6 @@
   "voiceTypeInstead": "Or describe it here",
   "voiceTypeHint": "e.g. blue silk chanderi saree, woven by hand",
   "voiceOpenSettings": "Open app settings",
-
   "costsTitle": "What did it cost you?",
   "costsMaterial": "Material cost",
   "costsHours": "Hours of work",
@@ -109,9 +119,17 @@
   "costsSeePrice": "See my price",
   "costsMaterials": "Materials",
   "costsYourLabour": "Your labour · {hours} × ₹{rate}",
-  "@costsYourLabour": { "placeholders": { "hours": { "type": "int" }, "rate": { "type": "int" } } },
+  "@costsYourLabour": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
   "costsFairWageNote": "Your time is counted at a fair wage — never at zero.",
-
   "reviewTitle": "Check and publish",
   "reviewOfflineDraft": "Offline Draft",
   "reviewWrittenByAi": "Written by AI from your description",
@@ -119,23 +137,158 @@
   "reviewYourPrice": "Your price",
   "reviewYouWillSellAt": "You will sell at",
   "reviewPriceFloorNote": "You may choose any price down to the floor of ₹{floor}. Below that you would lose money.",
-  "@reviewPriceFloorNote": { "placeholders": { "floor": { "type": "int" } } },
+  "@reviewPriceFloorNote": {
+    "placeholders": {
+      "floor": {
+        "type": "int"
+      }
+    }
+  },
   "reviewPublish": "Publish",
   "reviewPriceLocked": "Your price will not change after this.",
-
   "priceFloor": "Floor",
   "priceSuggested": "Suggested",
   "priceMaximum": "Maximum",
   "priceReasoning": "Materials ₹{materials} plus {hours} hours at the ₹{rate} fair wage (₹{labour}), with overhead. You will not earn less than the floor.",
-  "@priceReasoning": { "placeholders": { "materials": { "type": "int" }, "hours": { "type": "int" }, "rate": { "type": "int" }, "labour": { "type": "int" } } },
-
+  "@priceReasoning": {
+    "placeholders": {
+      "materials": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      },
+      "rate": {
+        "type": "int"
+      },
+      "labour": {
+        "type": "int"
+      }
+    }
+  },
   "syncSavedOnPhone": "Saved on this phone",
   "syncQueued": "Waiting to sync",
   "syncSyncing": "Syncing",
   "syncUpgraded": "Improved",
   "syncLive": "Live",
-
   "buyerShellTitle": "Buyer",
   "buyerNotInWorkstream": "The buyer role is being built separately.",
-  "buyerNotInWorkstreamBody": "Both roles ship in one app. This build covers the artisan side."
+  "buyerNotInWorkstreamBody": "Both roles ship in one app. This build covers the artisan side.",
+  "buyerTagline": "Offline-first rural artisan direct trade",
+  "buyerFairTrade": "Fair-Trade",
+  "buyerBulkRfq": "Bulk RFQ",
+  "buyerViewStorefront": "View Storefront",
+  "buyerAllCrafts": "All Crafts",
+  "buyerDirectConnect": "DIRECT ARTISAN CONNECT",
+  "buyerHeritageTreasures": "Heritage Handcrafted Treasures",
+  "buyerSearchHint": "Search by craft, GI tag or cluster...",
+  "buyerGiTaggedOnly": "GI Tagged Only",
+  "buyerCurated": "Curated",
+  "buyerPriceLowToHigh": "Price: Low to High",
+  "buyerHoursOfCraftLabel": "Hours of Craft",
+  "buyerResetFilters": "Reset All Filters",
+  "buyerQuantityRequired": "Quantity Required:",
+  "buyerSavedToBookmarks": "Saved to your bookmarks",
+  "buyerRemovedFromSaved": "Removed from saved",
+  "buyer100Direct": "100% Direct",
+  "buyerMaterialCost": "Material & Sourcing Cost:",
+  "buyerPackagingOverhead": "Packaging & Cluster Overhead:",
+  "buyerDirectFairPrice": "Direct Fair Trade Price:",
+  "buyerMoreFromCluster": "More Crafts from this Cluster",
+  "buyerSendEnquiry": "Send Direct Enquiry",
+  "buyerEnquiryNote": "Direct communication, with no commission or middleman.",
+  "buyerEnquiryHint": "Add notes, dimensions or questions for the artisan...",
+  "buyerYourMessage": "Your message:",
+  "buyerAcceptedByArtisan": "Accepted by artisan",
+  "buyerAwaitingReply": "Awaiting reply",
+  "buyerAccepted": "Accepted",
+  "buyerSent": "Sent",
+  "buyerTapForDetails": "Tap for details and call",
+  "buyerBulkAndCustomRfqs": "Bulk & Custom RFQs",
+  "buyerRfqForm": "Request for Quote Form",
+  "buyerBudgetBracket": "Budget Bracket (₹):",
+  "buyerNewRfq": "New RFQ",
+  "buyerNoActiveRfqs": "No Active RFQs",
+  "buyerQuotationsReceived": "Quotations Received",
+  "buyerActiveSourcing": "Active Sourcing",
+  "buyerQuantity": "Quantity",
+  "buyerDeadline": "Deadline",
+  "buyerBudget": "Budget",
+  "buyerCraftHeritage": "Craft Heritage",
+  "buyerHandmadeLive": "Handmade Live",
+  "buyerDirectFairRating": "Direct Fair Rating",
+  "buyerHeritageStory": "Heritage Story",
+  "buyerVoiceNote": "Voice Note",
+  "buyerAudioPaused": "Audio story paused.",
+  "buyerProfileTitle": "Buyer Profile",
+  "buyerSwitchRole": "Switch Role",
+  "buyerYearsPractice": "{years} Yrs",
+  "@buyerYearsPractice": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "buyerHoursCraft": "{hours}h craft",
+  "@buyerHoursCraft": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "buyerHoursOfCraftCount": "{hours} Hours of Craft",
+  "@buyerHoursOfCraftCount": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "buyerFairWageLine": "Fair Artisan Wage ({hours}h @ ₹{rate}/hr):",
+  "@buyerFairWageLine": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
+  "buyerDirectEnquiryTo": "Direct Enquiry to {name}",
+  "@buyerDirectEnquiryTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "buyerPcs": "{count} pcs",
+  "@buyerPcs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "buyerHeritageSubtitle": "Transparent fair-wage pricing, direct from GI-tagged rural clusters.",
+  "buyerArtisanHeritageStory": "The Artisan's Heritage Story",
+  "buyerListenVoiceNote": "Listen to the artisan's voice note",
+  "buyerListeningVoiceNote": "Listening to the voice note",
+  "buyerViewActiveRfqs": "View Active RFQs",
+  "buyerCreateNewRfq": "Create New RFQ",
+  "buyerCancelViewRfqs": "Cancel and view active RFQs",
+  "buyerEmailLabel": "Email:",
+  "buyerGstinVerified": "GSTIN Verified:",
+  "buyerRoleSourcing": "ROLE: {role} SOURCING",
+  "@buyerRoleSourcing": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "buyerSentEnquiries": "Sent Enquiries"
 }

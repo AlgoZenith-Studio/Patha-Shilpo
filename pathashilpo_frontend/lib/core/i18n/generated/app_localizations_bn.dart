@@ -370,4 +370,217 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get buyerNotInWorkstreamBody =>
       'দুটি অংশই একই অ্যাপে আসবে। এই বিল্ডটি কারিগরের জন্য।';
+
+  @override
+  String get buyerTagline =>
+      'ইন্টারনেট ছাড়াও গ্রামীণ কারিগরের সঙ্গে সরাসরি বাণিজ্য';
+
+  @override
+  String get buyerFairTrade => 'ন্যায্য বাণিজ্য';
+
+  @override
+  String get buyerBulkRfq => 'পাইকারি চাহিদা';
+
+  @override
+  String get buyerViewStorefront => 'দোকান দেখুন';
+
+  @override
+  String get buyerAllCrafts => 'সব শিল্প';
+
+  @override
+  String get buyerDirectConnect => 'কারিগরের সঙ্গে সরাসরি যোগাযোগ';
+
+  @override
+  String get buyerHeritageTreasures => 'ঐতিহ্যবাহী হস্তশিল্প';
+
+  @override
+  String get buyerSearchHint =>
+      'শিল্প, জিআই ট্যাগ বা ক্লাস্টার দিয়ে খুঁজুন...';
+
+  @override
+  String get buyerGiTaggedOnly => 'শুধু জিআই ট্যাগ';
+
+  @override
+  String get buyerCurated => 'নির্বাচিত';
+
+  @override
+  String get buyerPriceLowToHigh => 'দাম: কম থেকে বেশি';
+
+  @override
+  String get buyerHoursOfCraftLabel => 'শ্রমের ঘণ্টা';
+
+  @override
+  String get buyerResetFilters => 'সব ফিল্টার সরান';
+
+  @override
+  String get buyerQuantityRequired => 'কত পরিমাণ দরকার:';
+
+  @override
+  String get buyerSavedToBookmarks => 'আপনার সংগ্রহে সংরক্ষিত';
+
+  @override
+  String get buyerRemovedFromSaved => 'সংগ্রহ থেকে সরানো হয়েছে';
+
+  @override
+  String get buyer100Direct => '১০০% সরাসরি';
+
+  @override
+  String get buyerMaterialCost => 'উপকরণ ও সংগ্রহের খরচ:';
+
+  @override
+  String get buyerPackagingOverhead => 'প্যাকিং ও ক্লাস্টার খরচ:';
+
+  @override
+  String get buyerDirectFairPrice => 'সরাসরি ন্যায্য দাম:';
+
+  @override
+  String get buyerMoreFromCluster => 'এই ক্লাস্টারের আরও শিল্প';
+
+  @override
+  String get buyerSendEnquiry => 'সরাসরি জিজ্ঞাসা পাঠান';
+
+  @override
+  String get buyerEnquiryNote =>
+      'কমিশন বা মধ্যস্বত্বভোগী ছাড়াই সরাসরি যোগাযোগ।';
+
+  @override
+  String get buyerEnquiryHint => 'কারিগরের জন্য মাপ, প্রশ্ন বা তথ্য লিখুন...';
+
+  @override
+  String get buyerYourMessage => 'আপনার বার্তা:';
+
+  @override
+  String get buyerAcceptedByArtisan => 'কারিগর গ্রহণ করেছেন';
+
+  @override
+  String get buyerAwaitingReply => 'উত্তরের অপেক্ষায়';
+
+  @override
+  String get buyerAccepted => 'গৃহীত';
+
+  @override
+  String get buyerSent => 'পাঠানো হয়েছে';
+
+  @override
+  String get buyerTapForDetails => 'বিস্তারিত ও কলের জন্য চাপুন';
+
+  @override
+  String get buyerBulkAndCustomRfqs => 'পাইকারি ও বিশেষ চাহিদা';
+
+  @override
+  String get buyerRfqForm => 'দাম জিজ্ঞাসার ফর্ম';
+
+  @override
+  String get buyerBudgetBracket => 'বাজেট সীমা (₹):';
+
+  @override
+  String get buyerNewRfq => 'নতুন চাহিদা';
+
+  @override
+  String get buyerNoActiveRfqs => 'কোনো সক্রিয় চাহিদা নেই';
+
+  @override
+  String get buyerQuotationsReceived => 'দাম পাওয়া গেছে';
+
+  @override
+  String get buyerActiveSourcing => 'চলমান অনুসন্ধান';
+
+  @override
+  String get buyerQuantity => 'পরিমাণ';
+
+  @override
+  String get buyerDeadline => 'শেষ তারিখ';
+
+  @override
+  String get buyerBudget => 'বাজেট';
+
+  @override
+  String get buyerCraftHeritage => 'শিল্প ঐতিহ্য';
+
+  @override
+  String get buyerHandmadeLive => 'হাতে তৈরি';
+
+  @override
+  String get buyerDirectFairRating => 'সরাসরি ন্যায্য রেটিং';
+
+  @override
+  String get buyerHeritageStory => 'ঐতিহ্যের গল্প';
+
+  @override
+  String get buyerVoiceNote => 'কণ্ঠবার্তা';
+
+  @override
+  String get buyerAudioPaused => 'অডিও থামানো হয়েছে।';
+
+  @override
+  String get buyerProfileTitle => 'ক্রেতা প্রোফাইল';
+
+  @override
+  String get buyerSwitchRole => 'ভূমিকা বদলান';
+
+  @override
+  String buyerYearsPractice(int years) {
+    return '$years বছর';
+  }
+
+  @override
+  String buyerHoursCraft(int hours) {
+    return '$hours ঘণ্টা শ্রম';
+  }
+
+  @override
+  String buyerHoursOfCraftCount(int hours) {
+    return '$hours ঘণ্টার শ্রম';
+  }
+
+  @override
+  String buyerFairWageLine(int hours, int rate) {
+    return 'ন্যায্য মজুরি ($hours ঘণ্টা × ₹$rate):';
+  }
+
+  @override
+  String buyerDirectEnquiryTo(String name) {
+    return '$name কে সরাসরি জিজ্ঞাসা';
+  }
+
+  @override
+  String buyerPcs(int count) {
+    return '$count টি';
+  }
+
+  @override
+  String get buyerHeritageSubtitle =>
+      'স্বচ্ছ ন্যায্য মজুরি, সরাসরি জিআই-ট্যাগযুক্ত গ্রামীণ ক্লাস্টার থেকে।';
+
+  @override
+  String get buyerArtisanHeritageStory => 'কারিগরের ঐতিহ্যের গল্প';
+
+  @override
+  String get buyerListenVoiceNote => 'কারিগরের কণ্ঠবার্তা শুনুন';
+
+  @override
+  String get buyerListeningVoiceNote => 'কণ্ঠবার্তা শোনা হচ্ছে';
+
+  @override
+  String get buyerViewActiveRfqs => 'চলমান চাহিদা দেখুন';
+
+  @override
+  String get buyerCreateNewRfq => 'নতুন চাহিদা তৈরি করুন';
+
+  @override
+  String get buyerCancelViewRfqs => 'বাতিল করে চলমান চাহিদা দেখুন';
+
+  @override
+  String get buyerEmailLabel => 'ইমেইল:';
+
+  @override
+  String get buyerGstinVerified => 'জিএসটিআইএন যাচাইকৃত:';
+
+  @override
+  String buyerRoleSourcing(String role) {
+    return 'ভূমিকা: $role সংগ্রহ';
+  }
+
+  @override
+  String get buyerSentEnquiries => 'পাঠানো জিজ্ঞাসা';
 }

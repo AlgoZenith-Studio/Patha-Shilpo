@@ -777,6 +777,396 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Both roles ship in one app. This build covers the artisan side.'**
   String get buyerNotInWorkstreamBody;
+
+  /// No description provided for @buyerTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline-first rural artisan direct trade'**
+  String get buyerTagline;
+
+  /// No description provided for @buyerFairTrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair-Trade'**
+  String get buyerFairTrade;
+
+  /// No description provided for @buyerBulkRfq.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk RFQ'**
+  String get buyerBulkRfq;
+
+  /// No description provided for @buyerViewStorefront.
+  ///
+  /// In en, this message translates to:
+  /// **'View Storefront'**
+  String get buyerViewStorefront;
+
+  /// No description provided for @buyerAllCrafts.
+  ///
+  /// In en, this message translates to:
+  /// **'All Crafts'**
+  String get buyerAllCrafts;
+
+  /// No description provided for @buyerDirectConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'DIRECT ARTISAN CONNECT'**
+  String get buyerDirectConnect;
+
+  /// No description provided for @buyerHeritageTreasures.
+  ///
+  /// In en, this message translates to:
+  /// **'Heritage Handcrafted Treasures'**
+  String get buyerHeritageTreasures;
+
+  /// No description provided for @buyerSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by craft, GI tag or cluster...'**
+  String get buyerSearchHint;
+
+  /// No description provided for @buyerGiTaggedOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'GI Tagged Only'**
+  String get buyerGiTaggedOnly;
+
+  /// No description provided for @buyerCurated.
+  ///
+  /// In en, this message translates to:
+  /// **'Curated'**
+  String get buyerCurated;
+
+  /// No description provided for @buyerPriceLowToHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Price: Low to High'**
+  String get buyerPriceLowToHigh;
+
+  /// No description provided for @buyerHoursOfCraftLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours of Craft'**
+  String get buyerHoursOfCraftLabel;
+
+  /// No description provided for @buyerResetFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset All Filters'**
+  String get buyerResetFilters;
+
+  /// No description provided for @buyerQuantityRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity Required:'**
+  String get buyerQuantityRequired;
+
+  /// No description provided for @buyerSavedToBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to your bookmarks'**
+  String get buyerSavedToBookmarks;
+
+  /// No description provided for @buyerRemovedFromSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed from saved'**
+  String get buyerRemovedFromSaved;
+
+  /// No description provided for @buyer100Direct.
+  ///
+  /// In en, this message translates to:
+  /// **'100% Direct'**
+  String get buyer100Direct;
+
+  /// No description provided for @buyerMaterialCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Material & Sourcing Cost:'**
+  String get buyerMaterialCost;
+
+  /// No description provided for @buyerPackagingOverhead.
+  ///
+  /// In en, this message translates to:
+  /// **'Packaging & Cluster Overhead:'**
+  String get buyerPackagingOverhead;
+
+  /// No description provided for @buyerDirectFairPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct Fair Trade Price:'**
+  String get buyerDirectFairPrice;
+
+  /// No description provided for @buyerMoreFromCluster.
+  ///
+  /// In en, this message translates to:
+  /// **'More Crafts from this Cluster'**
+  String get buyerMoreFromCluster;
+
+  /// No description provided for @buyerSendEnquiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Direct Enquiry'**
+  String get buyerSendEnquiry;
+
+  /// No description provided for @buyerEnquiryNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct communication, with no commission or middleman.'**
+  String get buyerEnquiryNote;
+
+  /// No description provided for @buyerEnquiryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add notes, dimensions or questions for the artisan...'**
+  String get buyerEnquiryHint;
+
+  /// No description provided for @buyerYourMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message:'**
+  String get buyerYourMessage;
+
+  /// No description provided for @buyerAcceptedByArtisan.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted by artisan'**
+  String get buyerAcceptedByArtisan;
+
+  /// No description provided for @buyerAwaitingReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting reply'**
+  String get buyerAwaitingReply;
+
+  /// No description provided for @buyerAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get buyerAccepted;
+
+  /// No description provided for @buyerSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get buyerSent;
+
+  /// No description provided for @buyerTapForDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap for details and call'**
+  String get buyerTapForDetails;
+
+  /// No description provided for @buyerBulkAndCustomRfqs.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk & Custom RFQs'**
+  String get buyerBulkAndCustomRfqs;
+
+  /// No description provided for @buyerRfqForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Request for Quote Form'**
+  String get buyerRfqForm;
+
+  /// No description provided for @buyerBudgetBracket.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Bracket (₹):'**
+  String get buyerBudgetBracket;
+
+  /// No description provided for @buyerNewRfq.
+  ///
+  /// In en, this message translates to:
+  /// **'New RFQ'**
+  String get buyerNewRfq;
+
+  /// No description provided for @buyerNoActiveRfqs.
+  ///
+  /// In en, this message translates to:
+  /// **'No Active RFQs'**
+  String get buyerNoActiveRfqs;
+
+  /// No description provided for @buyerQuotationsReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Quotations Received'**
+  String get buyerQuotationsReceived;
+
+  /// No description provided for @buyerActiveSourcing.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Sourcing'**
+  String get buyerActiveSourcing;
+
+  /// No description provided for @buyerQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get buyerQuantity;
+
+  /// No description provided for @buyerDeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline'**
+  String get buyerDeadline;
+
+  /// No description provided for @buyerBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get buyerBudget;
+
+  /// No description provided for @buyerCraftHeritage.
+  ///
+  /// In en, this message translates to:
+  /// **'Craft Heritage'**
+  String get buyerCraftHeritage;
+
+  /// No description provided for @buyerHandmadeLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Handmade Live'**
+  String get buyerHandmadeLive;
+
+  /// No description provided for @buyerDirectFairRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct Fair Rating'**
+  String get buyerDirectFairRating;
+
+  /// No description provided for @buyerHeritageStory.
+  ///
+  /// In en, this message translates to:
+  /// **'Heritage Story'**
+  String get buyerHeritageStory;
+
+  /// No description provided for @buyerVoiceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice Note'**
+  String get buyerVoiceNote;
+
+  /// No description provided for @buyerAudioPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio story paused.'**
+  String get buyerAudioPaused;
+
+  /// No description provided for @buyerProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer Profile'**
+  String get buyerProfileTitle;
+
+  /// No description provided for @buyerSwitchRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch Role'**
+  String get buyerSwitchRole;
+
+  /// No description provided for @buyerYearsPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'{years} Yrs'**
+  String buyerYearsPractice(int years);
+
+  /// No description provided for @buyerHoursCraft.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h craft'**
+  String buyerHoursCraft(int hours);
+
+  /// No description provided for @buyerHoursOfCraftCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} Hours of Craft'**
+  String buyerHoursOfCraftCount(int hours);
+
+  /// No description provided for @buyerFairWageLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair Artisan Wage ({hours}h @ ₹{rate}/hr):'**
+  String buyerFairWageLine(int hours, int rate);
+
+  /// No description provided for @buyerDirectEnquiryTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct Enquiry to {name}'**
+  String buyerDirectEnquiryTo(String name);
+
+  /// No description provided for @buyerPcs.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pcs'**
+  String buyerPcs(int count);
+
+  /// No description provided for @buyerHeritageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transparent fair-wage pricing, direct from GI-tagged rural clusters.'**
+  String get buyerHeritageSubtitle;
+
+  /// No description provided for @buyerArtisanHeritageStory.
+  ///
+  /// In en, this message translates to:
+  /// **'The Artisan\'s Heritage Story'**
+  String get buyerArtisanHeritageStory;
+
+  /// No description provided for @buyerListenVoiceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen to the artisan\'s voice note'**
+  String get buyerListenVoiceNote;
+
+  /// No description provided for @buyerListeningVoiceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening to the voice note'**
+  String get buyerListeningVoiceNote;
+
+  /// No description provided for @buyerViewActiveRfqs.
+  ///
+  /// In en, this message translates to:
+  /// **'View Active RFQs'**
+  String get buyerViewActiveRfqs;
+
+  /// No description provided for @buyerCreateNewRfq.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New RFQ'**
+  String get buyerCreateNewRfq;
+
+  /// No description provided for @buyerCancelViewRfqs.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel and view active RFQs'**
+  String get buyerCancelViewRfqs;
+
+  /// No description provided for @buyerEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email:'**
+  String get buyerEmailLabel;
+
+  /// No description provided for @buyerGstinVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'GSTIN Verified:'**
+  String get buyerGstinVerified;
+
+  /// No description provided for @buyerRoleSourcing.
+  ///
+  /// In en, this message translates to:
+  /// **'ROLE: {role} SOURCING'**
+  String buyerRoleSourcing(String role);
+
+  /// No description provided for @buyerSentEnquiries.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent Enquiries'**
+  String get buyerSentEnquiries;
 }
 
 class _AppLocalizationsDelegate

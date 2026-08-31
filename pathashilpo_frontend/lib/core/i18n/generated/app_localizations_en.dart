@@ -371,4 +371,216 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get buyerNotInWorkstreamBody =>
       'Both roles ship in one app. This build covers the artisan side.';
+
+  @override
+  String get buyerTagline => 'Offline-first rural artisan direct trade';
+
+  @override
+  String get buyerFairTrade => 'Fair-Trade';
+
+  @override
+  String get buyerBulkRfq => 'Bulk RFQ';
+
+  @override
+  String get buyerViewStorefront => 'View Storefront';
+
+  @override
+  String get buyerAllCrafts => 'All Crafts';
+
+  @override
+  String get buyerDirectConnect => 'DIRECT ARTISAN CONNECT';
+
+  @override
+  String get buyerHeritageTreasures => 'Heritage Handcrafted Treasures';
+
+  @override
+  String get buyerSearchHint => 'Search by craft, GI tag or cluster...';
+
+  @override
+  String get buyerGiTaggedOnly => 'GI Tagged Only';
+
+  @override
+  String get buyerCurated => 'Curated';
+
+  @override
+  String get buyerPriceLowToHigh => 'Price: Low to High';
+
+  @override
+  String get buyerHoursOfCraftLabel => 'Hours of Craft';
+
+  @override
+  String get buyerResetFilters => 'Reset All Filters';
+
+  @override
+  String get buyerQuantityRequired => 'Quantity Required:';
+
+  @override
+  String get buyerSavedToBookmarks => 'Saved to your bookmarks';
+
+  @override
+  String get buyerRemovedFromSaved => 'Removed from saved';
+
+  @override
+  String get buyer100Direct => '100% Direct';
+
+  @override
+  String get buyerMaterialCost => 'Material & Sourcing Cost:';
+
+  @override
+  String get buyerPackagingOverhead => 'Packaging & Cluster Overhead:';
+
+  @override
+  String get buyerDirectFairPrice => 'Direct Fair Trade Price:';
+
+  @override
+  String get buyerMoreFromCluster => 'More Crafts from this Cluster';
+
+  @override
+  String get buyerSendEnquiry => 'Send Direct Enquiry';
+
+  @override
+  String get buyerEnquiryNote =>
+      'Direct communication, with no commission or middleman.';
+
+  @override
+  String get buyerEnquiryHint =>
+      'Add notes, dimensions or questions for the artisan...';
+
+  @override
+  String get buyerYourMessage => 'Your message:';
+
+  @override
+  String get buyerAcceptedByArtisan => 'Accepted by artisan';
+
+  @override
+  String get buyerAwaitingReply => 'Awaiting reply';
+
+  @override
+  String get buyerAccepted => 'Accepted';
+
+  @override
+  String get buyerSent => 'Sent';
+
+  @override
+  String get buyerTapForDetails => 'Tap for details and call';
+
+  @override
+  String get buyerBulkAndCustomRfqs => 'Bulk & Custom RFQs';
+
+  @override
+  String get buyerRfqForm => 'Request for Quote Form';
+
+  @override
+  String get buyerBudgetBracket => 'Budget Bracket (₹):';
+
+  @override
+  String get buyerNewRfq => 'New RFQ';
+
+  @override
+  String get buyerNoActiveRfqs => 'No Active RFQs';
+
+  @override
+  String get buyerQuotationsReceived => 'Quotations Received';
+
+  @override
+  String get buyerActiveSourcing => 'Active Sourcing';
+
+  @override
+  String get buyerQuantity => 'Quantity';
+
+  @override
+  String get buyerDeadline => 'Deadline';
+
+  @override
+  String get buyerBudget => 'Budget';
+
+  @override
+  String get buyerCraftHeritage => 'Craft Heritage';
+
+  @override
+  String get buyerHandmadeLive => 'Handmade Live';
+
+  @override
+  String get buyerDirectFairRating => 'Direct Fair Rating';
+
+  @override
+  String get buyerHeritageStory => 'Heritage Story';
+
+  @override
+  String get buyerVoiceNote => 'Voice Note';
+
+  @override
+  String get buyerAudioPaused => 'Audio story paused.';
+
+  @override
+  String get buyerProfileTitle => 'Buyer Profile';
+
+  @override
+  String get buyerSwitchRole => 'Switch Role';
+
+  @override
+  String buyerYearsPractice(int years) {
+    return '$years Yrs';
+  }
+
+  @override
+  String buyerHoursCraft(int hours) {
+    return '${hours}h craft';
+  }
+
+  @override
+  String buyerHoursOfCraftCount(int hours) {
+    return '$hours Hours of Craft';
+  }
+
+  @override
+  String buyerFairWageLine(int hours, int rate) {
+    return 'Fair Artisan Wage (${hours}h @ ₹$rate/hr):';
+  }
+
+  @override
+  String buyerDirectEnquiryTo(String name) {
+    return 'Direct Enquiry to $name';
+  }
+
+  @override
+  String buyerPcs(int count) {
+    return '$count pcs';
+  }
+
+  @override
+  String get buyerHeritageSubtitle =>
+      'Transparent fair-wage pricing, direct from GI-tagged rural clusters.';
+
+  @override
+  String get buyerArtisanHeritageStory => 'The Artisan\'s Heritage Story';
+
+  @override
+  String get buyerListenVoiceNote => 'Listen to the artisan\'s voice note';
+
+  @override
+  String get buyerListeningVoiceNote => 'Listening to the voice note';
+
+  @override
+  String get buyerViewActiveRfqs => 'View Active RFQs';
+
+  @override
+  String get buyerCreateNewRfq => 'Create New RFQ';
+
+  @override
+  String get buyerCancelViewRfqs => 'Cancel and view active RFQs';
+
+  @override
+  String get buyerEmailLabel => 'Email:';
+
+  @override
+  String get buyerGstinVerified => 'GSTIN Verified:';
+
+  @override
+  String buyerRoleSourcing(String role) {
+    return 'ROLE: $role SOURCING';
+  }
+
+  @override
+  String get buyerSentEnquiries => 'Sent Enquiries';
 }

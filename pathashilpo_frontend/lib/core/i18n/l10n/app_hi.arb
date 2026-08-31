@@ -1,9 +1,7 @@
 {
   "@@locale": "hi",
-
   "appName": "पथ-शिल्प",
   "appTagline": "आपका शिल्प। आपका दाम। आपका नाम।",
-
   "commonNext": "अगला",
   "commonBack": "पीछे",
   "commonCancel": "रहने दें",
@@ -19,7 +17,6 @@
   "commonLanguage": "भाषा",
   "commonNotFound": "यह पन्ना मौजूद नहीं है।",
   "commonSampleData": "नमूना जानकारी — असली जानकारी डेटाबेस जुड़ने पर आएगी।",
-
   "authSignIn": "अंदर आएँ",
   "authPhoneTitle": "आपका फ़ोन नंबर",
   "authPhoneHint": "00000 00000",
@@ -28,16 +25,20 @@
   "authEnterCode": "कोड डालें",
   "authOtpTitle": "छह अंकों का कोड डालें",
   "authSentTo": "{phone} पर भेजा गया",
-  "@authSentTo": { "placeholders": { "phone": { "type": "String" } } },
+  "@authSentTo": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "authOtpInvalid": "यह कोड सही नहीं है।",
   "authVerify": "जाँचें",
   "authDemoNotice": "यह नमूना ऐप है: कोई भी छह अंक चलेंगे। फ़ोन जाँच अभी नहीं जुड़ी है।",
-
   "roleQuestion": "आप यहाँ क्यों आए हैं?",
   "roleIMakeThings": "मैं बनाता/बनाती हूँ",
   "roleIWantToBuy": "मुझे खरीदना है",
   "roleChooseOnce": "यह चुनाव एक ही बार होगा।",
-
   "navHome": "घर",
   "navProducts": "सामान",
   "navEnquiries": "पूछताछ",
@@ -45,35 +46,47 @@
   "navAdd": "जोड़ें",
   "navExplore": "देखें",
   "navRfq": "दाम पूछें",
-
   "homeGreeting": "नमस्ते",
   "homeWelcome": "आपका स्वागत है",
   "homeAddPromptTitle": "90 सेकंड में सामान जोड़ें",
   "homeAddPromptBody": "तस्वीर लें, बोलें, हो गया — बिना इंटरनेट भी काम करता है।",
   "homeYourProducts": "आपका सामान",
-
   "productsTitle": "आपका सामान",
   "productsEmpty": "अभी कोई सामान नहीं। पहली सूची बनाने के लिए जोड़ें दबाएँ।",
-
   "enquiriesTitle": "पूछताछ",
   "enquiriesQuantity": "{count} नग",
-  "@enquiriesQuantity": { "placeholders": { "count": { "type": "int" } } },
+  "@enquiriesQuantity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "enquiriesEmpty": "अभी कोई पूछताछ नहीं।",
-
   "profileYourStory": "आपकी कहानी",
   "profileYearsOfPractice": "{years} साल का अनुभव",
-  "@profileYearsOfPractice": { "placeholders": { "years": { "type": "int" } } },
+  "@profileYearsOfPractice": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
   "profileVerified": "सत्यापित",
   "profileGiTag": "जीआई टैग",
   "profileHandloom": "हथकरघा",
-
   "settingsTitle": "सेटिंग",
   "settingsLanguage": "भाषा",
   "settingsLanguageBody": "यह पूरे ऐप की भाषा बदल देता है।",
   "settingsAbout": "ऐप के बारे में",
   "settingsVersion": "संस्करण {version}",
-  "@settingsVersion": { "placeholders": { "version": { "type": "String" } } },
-
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "addStepPhoto": "तस्वीर",
   "addStepSpeak": "बोलें",
   "addStepCosts": "लागत",
@@ -81,7 +94,6 @@
   "addLeaveTitle": "बिना प्रकाशित किए बाहर जाएँ?",
   "addLeaveBody": "आपका काम इस फ़ोन में सुरक्षित है। बाद में पूरा कर सकते हैं।",
   "addSavedOffline": "बिना इंटरनेट सहेजा गया",
-
   "photoTitle": "अपने शिल्प की तस्वीर लें",
   "photoNone": "अभी कोई तस्वीर नहीं",
   "photoGallery": "गैलरी",
@@ -91,7 +103,6 @@
   "photoPoor": "तस्वीर साफ़ नहीं है — फिर से लें",
   "photoCameraUnavailable": "कैमरा यहाँ उपलब्ध नहीं है। गैलरी से चुनें।",
   "photoOpenFailed": "यह तस्वीर नहीं खुली। दूसरी चुनें।",
-
   "voiceTitle": "इसके बारे में बताइए",
   "voiceSubtitle": "अपनी भाषा में बोलें।",
   "voiceListening": "सुन रहे हैं…",
@@ -101,7 +112,6 @@
   "voiceTypeInstead": "या यहाँ लिखें",
   "voiceTypeHint": "जैसे: नीली रेशमी चंदेरी साड़ी, हाथ से बुनी",
   "voiceOpenSettings": "ऐप की सेटिंग खोलें",
-
   "costsTitle": "इसमें कितना खर्च हुआ?",
   "costsMaterial": "सामान की लागत",
   "costsHours": "कितने घंटे लगे",
@@ -109,9 +119,17 @@
   "costsSeePrice": "मेरा दाम देखें",
   "costsMaterials": "सामान",
   "costsYourLabour": "आपकी मेहनत · {hours} × ₹{rate}",
-  "@costsYourLabour": { "placeholders": { "hours": { "type": "int" }, "rate": { "type": "int" } } },
+  "@costsYourLabour": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
   "costsFairWageNote": "आपके समय का पूरा दाम जोड़ा जाता है — कभी शून्य नहीं।",
-
   "reviewTitle": "जाँचें और प्रकाशित करें",
   "reviewOfflineDraft": "बिना इंटरनेट सहेजा",
   "reviewWrittenByAi": "आपके बताए अनुसार एआई ने लिखा",
@@ -119,23 +137,158 @@
   "reviewYourPrice": "आपका दाम",
   "reviewYouWillSellAt": "आप इस दाम पर बेचेंगे",
   "reviewPriceFloorNote": "आप ₹{floor} तक कोई भी दाम चुन सकते हैं। इससे कम पर नुकसान होगा।",
-  "@reviewPriceFloorNote": { "placeholders": { "floor": { "type": "int" } } },
+  "@reviewPriceFloorNote": {
+    "placeholders": {
+      "floor": {
+        "type": "int"
+      }
+    }
+  },
   "reviewPublish": "प्रकाशित करें",
   "reviewPriceLocked": "इसके बाद आपका दाम नहीं बदलेगा।",
-
   "priceFloor": "कम से कम",
   "priceSuggested": "सुझाया गया",
   "priceMaximum": "ज़्यादा से ज़्यादा",
   "priceReasoning": "सामान ₹{materials} और {hours} घंटे की मेहनत ₹{rate} प्रति घंटे के हिसाब से (₹{labour})। आपको कम से कम दाम से कम नहीं मिलेगा।",
-  "@priceReasoning": { "placeholders": { "materials": { "type": "int" }, "hours": { "type": "int" }, "rate": { "type": "int" }, "labour": { "type": "int" } } },
-
+  "@priceReasoning": {
+    "placeholders": {
+      "materials": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      },
+      "rate": {
+        "type": "int"
+      },
+      "labour": {
+        "type": "int"
+      }
+    }
+  },
   "syncSavedOnPhone": "इस फ़ोन में सहेजा",
   "syncQueued": "भेजने की प्रतीक्षा",
   "syncSyncing": "भेजा जा रहा है",
   "syncUpgraded": "बेहतर किया गया",
   "syncLive": "प्रकाशित",
-
   "buyerShellTitle": "खरीदार",
   "buyerNotInWorkstream": "खरीदार वाला हिस्सा अलग से बन रहा है।",
-  "buyerNotInWorkstreamBody": "दोनों हिस्से एक ही ऐप में आएँगे। यह बिल्ड कारीगर के लिए है।"
+  "buyerNotInWorkstreamBody": "दोनों हिस्से एक ही ऐप में आएँगे। यह बिल्ड कारीगर के लिए है।",
+  "buyerTagline": "ग्रामीण कारीगरों से सीधा व्यापार, बिना इंटरनेट भी",
+  "buyerFairTrade": "उचित व्यापार",
+  "buyerBulkRfq": "थोक माँग",
+  "buyerViewStorefront": "दुकान देखें",
+  "buyerAllCrafts": "सभी शिल्प",
+  "buyerDirectConnect": "कारीगर से सीधा संपर्क",
+  "buyerHeritageTreasures": "विरासती हस्तशिल्प",
+  "buyerSearchHint": "शिल्प, जीआई टैग या क्लस्टर से खोजें...",
+  "buyerGiTaggedOnly": "केवल जीआई टैग",
+  "buyerCurated": "चुनिंदा",
+  "buyerPriceLowToHigh": "दाम: कम से ज़्यादा",
+  "buyerHoursOfCraftLabel": "श्रम के घंटे",
+  "buyerResetFilters": "सभी फ़िल्टर हटाएँ",
+  "buyerQuantityRequired": "कितनी मात्रा चाहिए:",
+  "buyerSavedToBookmarks": "आपके संग्रह में सहेजा गया",
+  "buyerRemovedFromSaved": "संग्रह से हटाया गया",
+  "buyer100Direct": "100% सीधा",
+  "buyerMaterialCost": "सामान और ढुलाई की लागत:",
+  "buyerPackagingOverhead": "पैकिंग और क्लस्टर खर्च:",
+  "buyerDirectFairPrice": "सीधा उचित दाम:",
+  "buyerMoreFromCluster": "इसी क्लस्टर के और शिल्प",
+  "buyerSendEnquiry": "सीधी पूछताछ भेजें",
+  "buyerEnquiryNote": "बिना कमीशन और बिचौलिये के सीधी बातचीत।",
+  "buyerEnquiryHint": "कारीगर के लिए नाप, सवाल या जानकारी लिखें...",
+  "buyerYourMessage": "आपका संदेश:",
+  "buyerAcceptedByArtisan": "कारीगर ने स्वीकार किया",
+  "buyerAwaitingReply": "जवाब का इंतज़ार",
+  "buyerAccepted": "स्वीकृत",
+  "buyerSent": "भेजा गया",
+  "buyerTapForDetails": "जानकारी और कॉल के लिए दबाएँ",
+  "buyerBulkAndCustomRfqs": "थोक और विशेष माँग",
+  "buyerRfqForm": "दाम पूछने का फ़ॉर्म",
+  "buyerBudgetBracket": "बजट सीमा (₹):",
+  "buyerNewRfq": "नई माँग",
+  "buyerNoActiveRfqs": "कोई सक्रिय माँग नहीं",
+  "buyerQuotationsReceived": "दाम मिल गए",
+  "buyerActiveSourcing": "चल रही खोज",
+  "buyerQuantity": "मात्रा",
+  "buyerDeadline": "अंतिम तिथि",
+  "buyerBudget": "बजट",
+  "buyerCraftHeritage": "शिल्प विरासत",
+  "buyerHandmadeLive": "हाथ से बना",
+  "buyerDirectFairRating": "सीधी उचित रेटिंग",
+  "buyerHeritageStory": "विरासत की कहानी",
+  "buyerVoiceNote": "आवाज़ में",
+  "buyerAudioPaused": "आवाज़ रोक दी गई।",
+  "buyerProfileTitle": "खरीदार प्रोफ़ाइल",
+  "buyerSwitchRole": "भूमिका बदलें",
+  "buyerYearsPractice": "{years} वर्ष",
+  "@buyerYearsPractice": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "buyerHoursCraft": "{hours} घंटे श्रम",
+  "@buyerHoursCraft": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "buyerHoursOfCraftCount": "{hours} घंटे का श्रम",
+  "@buyerHoursOfCraftCount": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "buyerFairWageLine": "उचित मज़दूरी ({hours} घंटे × ₹{rate}):",
+  "@buyerFairWageLine": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
+  "buyerDirectEnquiryTo": "{name} को सीधी पूछताछ",
+  "@buyerDirectEnquiryTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "buyerPcs": "{count} नग",
+  "@buyerPcs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "buyerHeritageSubtitle": "पारदर्शी उचित मज़दूरी, सीधे जीआई-टैग वाले ग्रामीण क्लस्टरों से।",
+  "buyerArtisanHeritageStory": "कारीगर की विरासत की कहानी",
+  "buyerListenVoiceNote": "कारीगर की आवाज़ सुनें",
+  "buyerListeningVoiceNote": "आवाज़ सुनी जा रही है",
+  "buyerViewActiveRfqs": "चल रही माँगें देखें",
+  "buyerCreateNewRfq": "नई माँग बनाएँ",
+  "buyerCancelViewRfqs": "रद्द करें और चल रही माँगें देखें",
+  "buyerEmailLabel": "ईमेल:",
+  "buyerGstinVerified": "जीएसटीआईएन सत्यापित:",
+  "buyerRoleSourcing": "भूमिका: {role} खरीद",
+  "@buyerRoleSourcing": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "buyerSentEnquiries": "भेजी गई पूछताछ"
 }
