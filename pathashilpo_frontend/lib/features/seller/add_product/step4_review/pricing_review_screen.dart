@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../ai/listing/controllers/listing_router.dart';
 import '../../../../ai/listing/controllers/listing_template.dart';
 import '../../../../ai/pricing/models/price_result.dart';
 import '../../../../core/i18n/generated/app_localizations.dart';
@@ -29,22 +30,31 @@ class PricingReviewScreen extends StatefulWidget {
 }
 
 class _PricingReviewScreenState extends State<PricingReviewScreen> {
+  final ListingRouter _listingRouter = const ListingRouter();
+  bool _generating = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _generateListing());
   }
 
-  /// Offline template generation. When the backend is reachable this is where
-  /// `POST /api/v1/ai/listing` runs instead, with this as the fallback.
-  void _generateListing() {
+  /// Prefers the backend (`POST /api/v1/ai/listing`, Gemini) when reachable;
+  /// [ListingRouter] falls back to the offline template on any failure, so
+  /// this never leaves the artisan without a listing.
+  Future<void> _generateListing() async {
     final AddProductState draft = context.read<AddProductState>();
     if (draft.title != null) return;
 
-    final ListingResult r = const ListingTemplate().generate(
+    setState(() => _generating = true);
+
+    final ListingResult r = await _listingRouter.run(
       transcript: draft.transcript ?? '',
       hoursOfWork: draft.hoursOfWork,
     );
+
+    if (!mounted) return;
+    setState(() => _generating = false);
 
     draft.setListing(
       title: r.title,
@@ -62,7 +72,7 @@ class _PricingReviewScreenState extends State<PricingReviewScreen> {
     final AddProductState draft = context.watch<AddProductState>();
     final PriceResult? price = draft.price;
 
-    if (price == null) {
+    if (price == null || (_generating && draft.title == null)) {
       return const Center(child: CircularProgressIndicator());
     }
 

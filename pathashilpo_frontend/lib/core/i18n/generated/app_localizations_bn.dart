@@ -273,6 +273,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get voiceTypeHint => 'যেমন: নীল রেশমি চান্দেরি শাড়ি, হাতে বোনা';
 
   @override
+  String get voiceOpenSettings => 'অ্যাপ সেটিংস খুলুন';
+
+  @override
   String get costsTitle => 'এতে কত খরচ হয়েছে?';
 
   @override

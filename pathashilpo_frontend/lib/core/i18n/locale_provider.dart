@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-/// Locales the app ships. All three are **complete** — a partial locale would
+import '../../data/local/session_box.dart';
+
+/// Locales the app ships. All three are **complete** - a partial locale would
 /// fall back to English per key and mix scripts on screen, which the language
 /// rule forbids.
 const List<Locale> kSupportedLocales = <Locale>[
@@ -21,15 +23,17 @@ const Map<String, String> kLocaleNames = <String, String>{
 /// Holds the active UI locale.
 ///
 /// **This is the single control for the whole app.** Every user-visible string
-/// resolves through `AppLocalizations` against this locale — no screen renders
+/// resolves through `AppLocalizations` against this locale - no screen renders
 /// a second language alongside it.
 ///
-/// Resolution order is stored setting → device → `en` (TRD.md §10). The stored
-/// setting will move to the Hive `session` box once local persistence is wired;
-/// until then it lives in memory for the session.
+/// Resolution order is stored setting -> device -> `en` (TRD.md §10), backed
+/// by the Hive `session` box.
 class LocaleProvider extends ChangeNotifier {
-  LocaleProvider({Locale? initial}) : _locale = initial ?? _resolveFromDevice();
+  LocaleProvider({Locale? initial, SessionBox session = const SessionBox()})
+      : _session = session,
+        _locale = initial ?? _resolveInitial(session);
 
+  final SessionBox _session;
   Locale _locale;
 
   Locale get locale => _locale;
@@ -48,7 +52,15 @@ class LocaleProvider extends ChangeNotifier {
   static bool _isSupported(Locale l) =>
       kSupportedLocales.any((Locale s) => s.languageCode == l.languageCode);
 
-  static Locale _resolveFromDevice() {
+  static Locale _resolveInitial(SessionBox session) {
+    final String? stored = session.locale;
+    if (stored != null) {
+      final Locale? match = kSupportedLocales
+          .cast<Locale?>()
+          .firstWhere((Locale? l) => l?.languageCode == stored, orElse: () => null);
+      if (match != null) return match;
+    }
+
     final String deviceCode = PlatformDispatcher.instance.locale.languageCode;
     return kSupportedLocales.firstWhere(
       (Locale l) => l.languageCode == deviceCode,
@@ -56,8 +68,7 @@ class LocaleProvider extends ChangeNotifier {
     );
   }
 
-  /// Seam for Hive persistence (`session` box).
   void persist() {
-    // TODO(data): store locale in the Hive `session` box once wired.
+    _session.setLocale(_locale.languageCode);
   }
 }

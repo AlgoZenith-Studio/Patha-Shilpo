@@ -273,6 +273,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get voiceTypeHint => 'जैसे: नीली रेशमी चंदेरी साड़ी, हाथ से बुनी';
 
   @override
+  String get voiceOpenSettings => 'ऐप की सेटिंग खोलें';
+
+  @override
   String get costsTitle => 'इसमें कितना खर्च हुआ?';
 
   @override

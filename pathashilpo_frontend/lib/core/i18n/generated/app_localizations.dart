@@ -598,6 +598,12 @@ abstract class AppLocalizations {
   /// **'e.g. blue silk chanderi saree, woven by hand'**
   String get voiceTypeHint;
 
+  /// No description provided for @voiceOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open app settings'**
+  String get voiceOpenSettings;
+
   /// No description provided for @costsTitle.
   ///
   /// In en, this message translates to:

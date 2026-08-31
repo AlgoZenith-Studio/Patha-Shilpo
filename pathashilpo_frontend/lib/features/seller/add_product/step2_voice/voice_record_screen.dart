@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -33,6 +34,7 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   final TextEditingController _manual = TextEditingController();
 
   bool _available = false;
+  bool _permissionPermanentlyDenied = false;
   bool _listening = false;
   bool _checked = false;
   String _partial = '';
@@ -50,22 +52,42 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
   }
 
   Future<void> _init() async {
-    bool ok = false;
-    try {
-      ok = await _speech.initialize(
-        onStatus: (String s) {
-          if (!mounted) return;
-          if (s == 'done' || s == 'notListening') {
-            setState(() => _listening = false);
-          }
-        },
-        onError: (_) {
-          if (mounted) setState(() => _listening = false);
-        },
-      );
-    } catch (_) {
-      ok = false;
+    // speech_to_text.initialize() can only request the runtime permission if
+    // RECORD_AUDIO is declared in AndroidManifest.xml. Requesting it
+    // explicitly here, rather than relying on the plugin's implicit prompt,
+    // gives an honest "permission refused" message instead of a generic
+    // "not available" one when that's genuinely why it failed.
+    final PermissionStatus micStatus = await Permission.microphone.request();
+
+    if (micStatus.isPermanentlyDenied) {
+      if (!mounted) return;
+      setState(() {
+        _available = false;
+        _permissionPermanentlyDenied = true;
+        _checked = true;
+      });
+      return;
     }
+
+    bool ok = false;
+    if (micStatus.isGranted) {
+      try {
+        ok = await _speech.initialize(
+          onStatus: (String s) {
+            if (!mounted) return;
+            if (s == 'done' || s == 'notListening') {
+              setState(() => _listening = false);
+            }
+          },
+          onError: (_) {
+            if (mounted) setState(() => _listening = false);
+          },
+        );
+      } catch (_) {
+        ok = false;
+      }
+    }
+
     if (!mounted) return;
     setState(() {
       _available = ok;
@@ -168,6 +190,13 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
           const SizedBox(height: 4),
           Text(t.voiceUnavailableBody,
               style: Theme.of(context).textTheme.bodySmall),
+          if (_permissionPermanentlyDenied) ...<Widget>[
+            const SizedBox(height: 10),
+            OutlinedButton(
+              onPressed: openAppSettings,
+              child: Text(t.voiceOpenSettings),
+            ),
+          ],
         ],
       ),
     );

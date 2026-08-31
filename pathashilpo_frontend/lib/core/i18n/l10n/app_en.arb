@@ -100,6 +100,7 @@
   "voiceUnavailableBody": "Fill in the details below instead — your listing will still work.",
   "voiceTypeInstead": "Or describe it here",
   "voiceTypeHint": "e.g. blue silk chanderi saree, woven by hand",
+  "voiceOpenSettings": "Open app settings",
 
   "costsTitle": "What did it cost you?",
   "costsMaterial": "Material cost",

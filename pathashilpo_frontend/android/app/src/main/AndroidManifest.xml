@@ -1,4 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Debug builds get INTERNET via manifest merging automatically; a
+         release build does not, so this must be explicit or every backend
+         call (Dio to FastAPI) fails silently at the OS level. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Required for speech_to_text.initialize() to succeed - without this
+         declared, the plugin can't even request the runtime permission and
+         reports itself as unavailable (voice_record_screen.dart Tier 2). -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Required for image_picker's ImageSource.camera. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:label="pathashilpa"
         android:name="${applicationName}"
