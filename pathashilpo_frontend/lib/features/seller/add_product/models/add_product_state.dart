@@ -24,6 +24,14 @@ class AddProductState extends ChangeNotifier {
   // Step 1 - photo
   String? photoPath;
   Uint8List? photoBytes;
+
+  /// Backend-processed version of the photo (fal.ai background removal,
+  /// TRD.md §8.4). Null until [ImageRouter] returns a non-degraded result.
+  /// [photoBytes] is ALWAYS kept as the source of truth - the processed URL
+  /// is a display upgrade, never a replacement, so an offline publish still
+  /// has a real image to send.
+  String? processedImageUrl;
+  bool backgroundRemoved = false;
   double? qualityScore;
 
   // Step 2 - voice
@@ -52,9 +60,22 @@ class AddProductState extends ChangeNotifier {
   bool get hasPhoto => photoBytes != null || photoPath != null;
   bool get hasCosts => materialCost != null && hoursOfWork != null;
 
+  /// Records the result of the image pipeline. A degraded result is ignored
+  /// so a failed call never clears a URL an earlier attempt succeeded in
+  /// getting.
+  void setProcessedImage({required String url, required bool bgRemoved}) {
+    processedImageUrl = url;
+    backgroundRemoved = bgRemoved;
+    notifyListeners();
+    persist();
+  }
+
   void setPhoto({String? path, Uint8List? bytes, double? quality}) {
     photoPath = path;
     photoBytes = bytes;
+    // A new photo invalidates any processing done on the previous one.
+    processedImageUrl = null;
+    backgroundRemoved = false;
     qualityScore = quality;
     notifyListeners();
     persist();
@@ -114,6 +135,8 @@ class AddProductState extends ChangeNotifier {
       'localId': localId,
       'photoPath': photoPath,
       'photoBytes': photoBytes,
+      'processedImageUrl': processedImageUrl,
+      'backgroundRemoved': backgroundRemoved,
       'qualityScore': qualityScore,
       'transcript': transcript,
       'audioPath': audioPath,
@@ -138,6 +161,8 @@ class AddProductState extends ChangeNotifier {
   void loadFromMap(Map<String, dynamic> map) {
     photoPath = map['photoPath'] as String?;
     photoBytes = map['photoBytes'] as Uint8List?;
+    processedImageUrl = map['processedImageUrl'] as String?;
+    backgroundRemoved = map['backgroundRemoved'] as bool? ?? false;
     qualityScore = map['qualityScore'] as double?;
     transcript = map['transcript'] as String?;
     audioPath = map['audioPath'] as String?;

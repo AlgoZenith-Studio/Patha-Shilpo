@@ -19,6 +19,11 @@ class ArtisanModel {
   final String? idType;
   final String? gstin;
   final bool idVerified;
+
+  /// Storage path of the document photo, in the PRIVATE `identity/{uid}/`
+  /// bucket. Only the owner can read it (storage.rules). Null when the
+  /// artisan chose not to photograph the document.
+  final String? idDocumentUrl;
   final String story;
   final String storyHi;
   final int yearsOfPractice;
@@ -42,6 +47,7 @@ class ArtisanModel {
     this.idType,
     this.gstin,
     this.idVerified = false,
+    this.idDocumentUrl,
     required this.story,
     required this.storyHi,
     required this.yearsOfPractice,
@@ -67,6 +73,7 @@ class ArtisanModel {
       'idType': idType,
       'gstin': gstin,
       'idVerified': idVerified,
+      'idDocumentUrl': idDocumentUrl,
       'story': story,
       'storyHi': storyHi,
       'yearsOfPractice': yearsOfPractice,
@@ -93,6 +100,7 @@ class ArtisanModel {
       idType: map['idType'],
       gstin: map['gstin'],
       idVerified: map['idVerified'] ?? false,
+      idDocumentUrl: map['idDocumentUrl'],
       story: map['story'] ?? '',
       storyHi: map['storyHi'] ?? '',
       yearsOfPractice: map['yearsOfPractice']?.toInt() ?? 0,

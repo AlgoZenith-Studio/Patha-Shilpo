@@ -743,4 +743,16 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get errorNotSignedIn => 'आप साइन इन नहीं हैं। फिर से साइन इन करें।';
+
+  @override
+  String get profileIdDocOnFile => 'दस्तावेज़ की तस्वीर सुरक्षित है';
+
+  @override
+  String get profileIdDocMissing => 'दस्तावेज़ की तस्वीर नहीं जोड़ी गई';
+
+  @override
+  String get reviewEnhancingPhoto => 'फ़ोटो साफ़ की जा रही है…';
+
+  @override
+  String get reviewBackgroundRemoved => 'पृष्ठभूमि हटा दी गई';
 }

@@ -4,7 +4,20 @@ service cloud.firestore {
 
     function signedIn()  { return request.auth != null; }
     function uid()       { return request.auth.uid; }
-    function role()      { return get(/databases/$(db)/documents/users/$(uid())).data.role; }
+    // Role resolution, cheapest path first.
+    //
+    // `syncRoleClaim` (functions/src/index.ts) mirrors users/{uid}.role into
+    // the Auth custom claims. A claim rides inside the ID token and is free
+    // to read; the get() below is a BILLED document read on every single rule
+    // evaluation, so we only fall back to it.
+    //
+    // The fallback is not optional. A custom claim only reaches the client on
+    // the next token refresh (up to an hour), so a just-registered artisan
+    // has a roleless token for a while. Without the get() they would be
+    // locked out of their own profile immediately after signing up.
+    function hasRoleClaim() { return signedIn() && 'role' in request.auth.token; }
+    function docRole()   { return get(/databases/$(db)/documents/users/$(uid())).data.role; }
+    function role()      { return hasRoleClaim() ? request.auth.token.role : docRole(); }
     function isArtisan() { return signedIn() && role() == 'artisan'; }
     function isBuyer()   { return signedIn() && role() == 'buyer'; }
     function isMod()     { return signedIn() && role() == 'moderator'; }

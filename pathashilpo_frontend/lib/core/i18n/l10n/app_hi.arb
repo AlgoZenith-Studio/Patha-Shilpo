@@ -352,5 +352,9 @@
     }
   },
   "errorVerificationExpired": "यह कोड समाप्त हो गया है। नया कोड मँगाएँ।",
-  "errorNotSignedIn": "आप साइन इन नहीं हैं। फिर से साइन इन करें।"
+  "errorNotSignedIn": "आप साइन इन नहीं हैं। फिर से साइन इन करें।",
+  "profileIdDocOnFile": "दस्तावेज़ की तस्वीर सुरक्षित है",
+  "profileIdDocMissing": "दस्तावेज़ की तस्वीर नहीं जोड़ी गई",
+  "reviewEnhancingPhoto": "फ़ोटो साफ़ की जा रही है…",
+  "reviewBackgroundRemoved": "पृष्ठभूमि हटा दी गई"
 }

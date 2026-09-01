@@ -1,0 +1,68 @@
+rules_version = '2';
+
+// Cloud Storage rules — TRD.md §5.3.
+//
+// Product and artisan media are public because buyers must be able to browse
+// them without signing in. Identity documents are the exception and are
+// locked to their owner.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    function isImage() { return request.resource.contentType.matches('image/.*'); }
+
+    // Product photos and voice notes. Public read: a buyer browsing the
+    // catalogue is not signed in.
+    match /products/{artisanId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(artisanId)
+                   && request.resource.size < 2 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*|audio/.*');
+    }
+
+    // Artisan profile photo — shown on their public storefront.
+    match /artisans/{uid}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(uid)
+                   && request.resource.size < 500 * 1024
+                   && isImage();
+    }
+
+    match /users/{uid}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isOwner(uid)
+                   && request.resource.size < 500 * 1024
+                   && isImage();
+    }
+
+    // ---------------------------------------------------------------
+    // IDENTITY DOCUMENTS — PRIVATE.
+    //
+    // Aadhaar / PAN / GSTIN document photographs. These are regulated
+    // personal data (DPDP Act 2023, PRD.md §8) and must never be world
+    // readable, unlike everything above.
+    //
+    // Only the artisan who owns the document may read or write it. Not
+    // even other signed-in users can read these. Verification staff are
+    // deliberately NOT granted access here: MVP verifies nothing
+    // (TRD.md §5.6), so nobody needs to look at them yet. Access for an
+    // authorised verifier is a later, deliberate decision (§19.8).
+    //
+    // The document NUMBER is never stored anywhere - only the image, and
+    // only the document type is written to Firestore.
+    // ---------------------------------------------------------------
+    match /identity/{uid}/{allPaths=**} {
+      allow read: if isOwner(uid);
+      allow write: if isOwner(uid)
+                   && request.resource.size < 3 * 1024 * 1024
+                   && isImage();
+      allow delete: if isOwner(uid);
+    }
+
+    // Anything not matched above is denied.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

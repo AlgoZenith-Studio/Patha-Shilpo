@@ -43,6 +43,27 @@ class StorageService {
   }
 
   /// Uploads artisan profile picture
+  /// Uploads a photograph of an identity document (Aadhaar / PAN / GSTIN).
+  ///
+  /// Written to `identity/{uid}/` which is **private** in storage.rules -
+  /// readable only by the artisan who owns it. The document NUMBER is never
+  /// stored anywhere (TRD.md §5.6); only this image and the document *type*
+  /// are kept, and the type goes to Firestore, not here.
+  Future<String> uploadIdentityDocument({
+    required String uid,
+    required String idType,
+    required Uint8List bytes,
+  }) async {
+    final ref = _storage.ref().child('identity/$uid/$idType.jpg');
+    final metadata = SettableMetadata(
+      contentType: 'image/jpeg',
+      // Marks intent at the storage layer as well as in the rules.
+      customMetadata: <String, String>{'visibility': 'private'},
+    );
+    final uploadTask = await ref.putData(bytes, metadata);
+    return await uploadTask.ref.getDownloadURL();
+  }
+
   Future<String> uploadProfilePicture({
     required String uid,
     required Uint8List bytes,

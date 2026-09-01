@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/crafts.dart';
@@ -7,6 +10,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/widgets/buttons/primary_bilingual_button.dart';
 import '../../../data/models/artisan_model.dart';
+import '../../../data/remote/storage_service.dart';
 import '../controllers/auth_controller.dart';
 
 /// 3-Step Artisan Registration & Provenance Verification Wizard.
@@ -32,6 +36,11 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
 
   /// 'gstin' | 'pan' | 'aadhaar' - the type is what gets persisted.
   String? _idType;
+
+  /// Photograph of the document. The image is uploaded to private storage;
+  /// the number on it is never read or stored (TRD.md §5.6).
+  Uint8List? _idDocBytes;
+  bool _pickingDoc = false;
 
   // Step 1: Location & Cluster
   final TextEditingController _nameController = TextEditingController();
@@ -412,6 +421,11 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
               })),
         ],
 
+        if (_idType != null) ...[
+          const SizedBox(height: 16),
+          _buildDocumentCapture(),
+        ],
+
         const SizedBox(height: 14),
         Container(
           padding: const EdgeInsets.all(12),
@@ -441,6 +455,73 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
         ),
       ],
     );
+  }
+
+  /// Optional photo of the document. Optional on purpose: an artisan with a
+  /// cracked camera or poor light must still be able to finish registering
+  /// (TRD.md §13.1 - never block the artisan).
+  Widget _buildDocumentCapture() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Photo of the document (optional)',
+            style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: 6),
+        if (_idDocBytes != null)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.memory(_idDocBytes!,
+                height: 140, width: double.infinity, fit: BoxFit.cover),
+          ),
+        if (_idDocBytes != null) const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: _pickingDoc
+                    ? null
+                    : () => _pickDocument(ImageSource.camera),
+                icon: const Icon(Icons.photo_camera_outlined, size: 18),
+                label: Text(_idDocBytes == null ? 'Camera' : 'Retake'),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: _pickingDoc
+                    ? null
+                    : () => _pickDocument(ImageSource.gallery),
+                icon: const Icon(Icons.photo_library_outlined, size: 18),
+                label: const Text('Gallery'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Future<void> _pickDocument(ImageSource source) async {
+    setState(() => _pickingDoc = true);
+    try {
+      final XFile? file = await ImagePicker()
+          .pickImage(source: source, maxWidth: 1600, imageQuality: 80);
+      if (file != null) {
+        final Uint8List bytes = await file.readAsBytes();
+        if (mounted) setState(() => _idDocBytes = bytes);
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Could not open the camera. You can add the photo later.'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _pickingDoc = false);
+    }
   }
 
   Widget _buildIdQuestion(String question, String hint) {
@@ -572,6 +653,21 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
 
     if (user == null) return;
 
+    // Upload the document photo first, if one was taken. A failure here must
+    // not block registration - the artisan can add it later.
+    String? idDocUrl;
+    if (_idDocBytes != null && _idType != null) {
+      try {
+        idDocUrl = await StorageService().uploadIdentityDocument(
+          uid: user.uid,
+          idType: _idType!,
+          bytes: _idDocBytes!,
+        );
+      } catch (_) {
+        idDocUrl = null;
+      }
+    }
+
     final artisan = ArtisanModel(
       uid: user.uid,
       name: _nameController.text.trim(),
@@ -590,6 +686,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
       gstin: _idType == 'gstin' && _gstinController.text.trim().isNotEmpty
           ? _gstinController.text.trim()
           : null,
+      idDocumentUrl: idDocUrl,
       story: _storyController.text.trim(),
       storyHi: _storyController.text.trim(),
       yearsOfPractice: int.tryParse(_yearsController.text.trim()) ?? 5,

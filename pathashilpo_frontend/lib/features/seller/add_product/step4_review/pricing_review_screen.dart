@@ -1,8 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../ai/listing/controllers/listing_router.dart';
 import '../../../../ai/listing/controllers/listing_template.dart';
+import '../../../../ai/image/controllers/image_result.dart';
+import '../../../../ai/image/controllers/image_router.dart';
 import '../../../../ai/pricing/models/price_result.dart';
 import '../../../../core/i18n/generated/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -31,12 +35,44 @@ class PricingReviewScreen extends StatefulWidget {
 
 class _PricingReviewScreenState extends State<PricingReviewScreen> {
   final ListingRouter _listingRouter = const ListingRouter();
+  final ImageRouter _imageRouter = const ImageRouter();
   bool _generating = false;
+  bool _enhancingPhoto = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _generateListing());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _generateListing();
+      // Deliberately not awaited alongside the listing call: the two are
+      // independent, and the artisan should not wait on fal.ai to read their
+      // copy and price. The photo upgrades in place when it arrives.
+      _enhancePhoto();
+    });
+  }
+
+  /// Sends the captured photo to `POST /api/v1/ai/image` (fal.ai background
+  /// removal, TRD.md §8.4). [ImageRouter] never throws and returns a degraded
+  /// result when offline or on failure - in that case we keep showing the
+  /// original bytes, which is exactly the previous behaviour.
+  Future<void> _enhancePhoto() async {
+    final AddProductState draft = context.read<AddProductState>();
+    final Uint8List? bytes = draft.photoBytes;
+    if (bytes == null || draft.processedImageUrl != null) return;
+
+    setState(() => _enhancingPhoto = true);
+    final ImageResult r = await _imageRouter.run(bytes);
+    if (!mounted) return;
+    setState(() => _enhancingPhoto = false);
+
+    // A degraded result means nothing was processed - recording it would
+    // just store a base64 copy of bytes we already hold.
+    if (!r.degraded) {
+      draft.setProcessedImage(
+        url: r.imageUrl,
+        bgRemoved: r.backgroundRemoved,
+      );
+    }
   }
 
   /// Prefers the backend (`POST /api/v1/ai/listing`, Gemini) when reachable;
@@ -63,6 +99,59 @@ class _PricingReviewScreenState extends State<PricingReviewScreen> {
       descriptionHi: r.descriptionHi,
       tags: r.tags,
       generatedBy: r.generatedBy,
+    );
+  }
+
+  /// Shows the processed image when the backend returned one, otherwise the
+  /// original capture. The local bytes stay the fallback for the network
+  /// image too, so a dead URL never leaves an empty box.
+  Widget _buildPhoto(AppLocalizations t, AddProductState draft) {
+    final String? url = draft.processedImageUrl;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        ClipRRect(
+          borderRadius: BorderRadius.circular(AppShape.cardRadius),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: url == null
+                ? Image.memory(draft.photoBytes!, fit: BoxFit.cover)
+                : Image.network(
+                    url,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        Image.memory(draft.photoBytes!, fit: BoxFit.cover),
+                  ),
+          ),
+        ),
+        if (_enhancingPhoto) ...<Widget>[
+          const SizedBox(height: 8),
+          Row(
+            children: <Widget>[
+              const SizedBox(
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 10),
+              Text(t.reviewEnhancingPhoto,
+                  style: Theme.of(context).textTheme.bodySmall),
+            ],
+          ),
+        ] else if (draft.backgroundRemoved) ...<Widget>[
+          const SizedBox(height: 8),
+          Row(
+            children: <Widget>[
+              const Icon(Icons.auto_fix_high_rounded,
+                  size: 16, color: AppColors.action),
+              const SizedBox(width: 8),
+              Text(t.reviewBackgroundRemoved,
+                  style: Theme.of(context).textTheme.bodySmall),
+            ],
+          ),
+        ],
+      ],
     );
   }
 
@@ -102,14 +191,7 @@ class _PricingReviewScreenState extends State<PricingReviewScreen> {
           ),
           const SizedBox(height: 16),
 
-          if (draft.photoBytes != null)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(AppShape.cardRadius),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Image.memory(draft.photoBytes!, fit: BoxFit.cover),
-              ),
-            ),
+          if (draft.photoBytes != null) _buildPhoto(t, draft),
 
           const SizedBox(height: 16),
           Container(

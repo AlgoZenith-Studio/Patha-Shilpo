@@ -209,6 +209,27 @@ class _ProfileBody extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 6),
+              Row(
+                children: <Widget>[
+                  Icon(
+                    artisan.idDocumentUrl != null
+                        ? Icons.image_rounded
+                        : Icons.image_not_supported_outlined,
+                    size: 16,
+                    color: AppColors.border,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      artisan.idDocumentUrl != null
+                          ? t.profileIdDocOnFile
+                          : t.profileIdDocMissing,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
               Text(t.profileIdentityNote,
                   style: Theme.of(context).textTheme.bodySmall),
             ],

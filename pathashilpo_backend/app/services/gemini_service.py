@@ -5,9 +5,14 @@ import httpx
 
 from app.core.config import get_settings
 
+# TRD.md §8.1 specified gemini-2.0-flash, which Google has since retired
+# (the endpoint now 404s). gemini-3.6-flash is the current equivalent tier.
+# Pinned to an exact version rather than -latest so a silent model change
+# can never alter listing output without a deliberate edit here.
+GEMINI_MODEL = "gemini-3.6-flash"
 GEMINI_URL = (
     "https://generativelanguage.googleapis.com/v1beta/models/"
-    "gemini-2.0-flash:generateContent"
+    f"{GEMINI_MODEL}:generateContent"
 )
 
 REQUIRED_KEYS = (
@@ -50,7 +55,11 @@ async def _call_gemini(prompt: str, api_key: str) -> dict:
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
             "temperature": 0.4,
-            "maxOutputTokens": 800,
+            # TRD.md §8.1 specified 800, which was fine for gemini-2.0.
+            # Gemini 3.x spends reasoning tokens from the same budget, so 800
+            # truncates the JSON mid-object (finishReason: MAX_TOKENS) and the
+            # parse fails, silently dropping every request to the template.
+            "maxOutputTokens": 4096,
             "responseMimeType": "application/json",
         },
     }

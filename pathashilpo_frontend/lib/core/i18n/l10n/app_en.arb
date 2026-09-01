@@ -352,5 +352,9 @@
     }
   },
   "errorVerificationExpired": "That code has expired. Please request a new one.",
-  "errorNotSignedIn": "You are not signed in. Please sign in again."
+  "errorNotSignedIn": "You are not signed in. Please sign in again.",
+  "profileIdDocOnFile": "Document photo on file",
+  "profileIdDocMissing": "No document photo added",
+  "reviewEnhancingPhoto": "Cleaning up the photo…",
+  "reviewBackgroundRemoved": "Background removed"
 }

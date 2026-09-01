@@ -1455,6 +1455,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You are not signed in. Please sign in again.'**
   String get errorNotSignedIn;
+
+  /// No description provided for @profileIdDocOnFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Document photo on file'**
+  String get profileIdDocOnFile;
+
+  /// No description provided for @profileIdDocMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No document photo added'**
+  String get profileIdDocMissing;
+
+  /// No description provided for @reviewEnhancingPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleaning up the photo…'**
+  String get reviewEnhancingPhoto;
+
+  /// No description provided for @reviewBackgroundRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Background removed'**
+  String get reviewBackgroundRemoved;
 }
 
 class _AppLocalizationsDelegate

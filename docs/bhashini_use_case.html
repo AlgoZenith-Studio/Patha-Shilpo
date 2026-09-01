@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pathashilpa — Bhashini Use Case</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", Calibri, Arial, sans-serif;
+    color: #1c1c1c; font-size: 10.5pt; line-height: 1.5; margin: 0;
+  }
+  h1 { font-size: 20pt; margin: 0 0 2px; color: #513a24; }
+  .sub { font-size: 10pt; color: #6b6b6b; margin-bottom: 4px; }
+  .rule { height: 3px; background: #cc915c; margin: 10px 0 18px; }
+  h2 {
+    font-size: 12.5pt; color: #513a24; margin: 18px 0 6px;
+    border-bottom: 1px solid #ddd; padding-bottom: 3px;
+  }
+  h3 { font-size: 11pt; margin: 12px 0 4px; color: #333; }
+  p { margin: 0 0 8px; }
+  ul { margin: 0 0 8px; padding-left: 18px; }
+  li { margin-bottom: 3px; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 9.5pt; }
+  th, td { border: 1px solid #d8d8d8; padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: #f6efe4; color: #513a24; font-weight: 600; }
+  .box {
+    background: #faf6ee; border-left: 3px solid #cc915c;
+    padding: 10px 12px; margin: 10px 0;
+  }
+  .stat { font-weight: 700; color: #cc915c; }
+  code {
+    font-family: Consolas, monospace; font-size: 9pt;
+    background: #f2f2f2; padding: 1px 4px; border-radius: 3px;
+  }
+  .flow {
+    font-family: Consolas, monospace; font-size: 9pt; background: #f7f7f7;
+    border: 1px solid #e3e3e3; padding: 10px; white-space: pre; margin: 8px 0;
+  }
+  .foot { margin-top: 20px; padding-top: 8px; border-top: 1px solid #ddd;
+          font-size: 9pt; color: #6b6b6b; }
+</style>
+</head>
+<body>
+
+<h1>Pathashilpa</h1>
+<div class="sub">
+  Bhashini API Use Case &middot; Smart India Hackathon 2026<br>
+  AI-Driven Market Linkage and Smart Cataloging for Marginalized Artisans
+</div>
+<div class="rule"></div>
+
+<h2>1. The problem we are solving</h2>
+<p>
+  A marketplace listing requires four things: a clean photograph, product copy in
+  English, a defensible price, and completed registration. Rural artisans can
+  produce none of them. Every existing platform begins <em>after</em> those exist.
+  The artisan reaches "Create Listing" and stops.
+</p>
+<table>
+  <tr><th>Figure</th><th>Meaning</th><th>Source</th></tr>
+  <tr><td class="stat">0.2%</td><td>share of handloom sales occurring online</td><td>4th All India Handloom Census</td></tr>
+  <tr><td class="stat">95.5%</td><td>rural mobile owners who own a smartphone</td><td>NSO Telecom Survey, 2025</td></tr>
+  <tr><td class="stat">67%</td><td>handloom households earning under &#8377;5,000/month</td><td>PIB, Ministry of Textiles</td></tr>
+  <tr><td class="stat">35.2 lakh</td><td>handloom weavers and allied workers</td><td>PIB, Ministry of Textiles</td></tr>
+</table>
+<div class="box">
+  <strong>The insight:</strong> 0.2% online against 95.5% smartphone ownership.
+  The device barrier is already gone. What is missing is software the artisan can
+  operate &mdash; and the single largest obstacle is the requirement to write in
+  English. <strong>This is precisely the gap Bhashini closes for us.</strong>
+</div>
+
+<h2>2. How Bhashini is used</h2>
+<p>
+  Our target user is an artisan such as Kamala, 42, a Chanderi weaver who uses
+  WhatsApp voice notes daily but does not type, reads Hindi slowly, and speaks no
+  English. She should never have to write anything.
+</p>
+
+<h3>2.1 ASR &mdash; Automatic Speech Recognition <em>(primary, implemented)</em></h3>
+<p>
+  The artisan photographs the craft, then simply <strong>speaks about it</strong> in
+  Hindi or a regional dialect. Bhashini's ASR converts that speech to text, and that
+  transcript becomes the raw material for a complete bilingual product listing.
+</p>
+<div class="flow">Artisan speaks (Hindi / dialect)
+      &darr;
+Audio captured on device
+      &darr;
+FastAPI backend  &rarr;  Bhashini ULCA ASR pipeline
+      &darr;
+Transcript  &rarr;  bilingual listing (title, description, tags)
+      &darr;
+Published listing, in English AND Hindi</div>
+<p>
+  We call the standard two-step ULCA flow: <code>getModelsPipeline</code> to obtain
+  the pipeline configuration and callback endpoint, then the compute call with
+  base64 <code>audioContent</code> and the source language. The pipeline
+  configuration is cached per language for the session rather than re-fetched on
+  every request.
+</p>
+
+<h3>2.2 TTS &mdash; Text-to-Speech <em>(planned)</em></h3>
+<p>
+  Our pricing engine calculates a fair wage-based price and explains its reasoning.
+  For an artisan with limited literacy, <strong>hearing</strong> that explanation in
+  their own language is what builds trust in the number. We intend to use Bhashini
+  TTS to read the suggested price and the generated description aloud before the
+  artisan confirms.
+</p>
+
+<h3>2.3 Supporting services</h3>
+<table>
+  <tr><th>Service</th><th>Purpose in Pathashilpa</th></tr>
+  <tr><td>Denoiser</td><td>Artisans record inside working workshops &mdash; loom clatter, wheels, open courtyards. Denoising directly improves ASR accuracy in our real environment.</td></tr>
+  <tr><td>VAD</td><td>Trims silence so recordings stay within our 100&nbsp;KB per-clip sync budget on 2G/3G connections.</td></tr>
+  <tr><td>Punctuation</td><td>Raw transcripts carry none; punctuation materially improves the quality of the generated listing copy.</td></tr>
+  <tr><td>NMT</td><td>Cross-checking Hindi&harr;English listing copy where required.</td></tr>
+  <tr><td>OCR</td><td>Reserved for artisan identity-document verification in a later phase.</td></tr>
+</table>
+
+<h2>3. Languages</h2>
+<p>
+  The application ships complete interfaces in <strong>Hindi, English and Bengali</strong>,
+  with every artisan-facing screen fully translated. Speech language is deliberately
+  <em>independent</em> of interface language &mdash; an artisan may run the interface in
+  Hindi while speaking Bundeli or another regional dialect. Our roadmap targets the
+  full set of scheduled languages Bhashini supports, which is a primary reason for
+  choosing Bhashini over a single-language commercial provider.
+</p>
+
+<h2>4. Architecture and key handling</h2>
+<div class="box">
+  <strong>Bhashini credentials are never shipped in the mobile application.</strong>
+  All Bhashini calls are made server-side from our FastAPI backend, which holds the
+  <code>userID</code> and <code>ulcaApiKey</code> as server environment variables.
+  The mobile app authenticates to our backend with a verified Firebase ID token, and
+  the backend proxies the request. This prevents key extraction from the APK and
+  protects the quota from abuse.
+</div>
+<table>
+  <tr><th>Layer</th><th>Technology</th><th>Role</th></tr>
+  <tr><td>Mobile client</td><td>Flutter (Android 8.0+)</td><td>Capture, offline drafts, UI &mdash; holds no API keys</td></tr>
+  <tr><td>Backend</td><td>FastAPI (Python 3.11)</td><td>Bhashini calls, key custody, per-user rate limiting</td></tr>
+  <tr><td>Identity</td><td>Firebase Auth</td><td>Phone OTP; backend verifies every token</td></tr>
+</table>
+<p>
+  Speech recognition degrades gracefully across three tiers so the artisan is never
+  blocked: cloud ASR via Bhashini when connected, the on-device recogniser when the
+  network is weak, and a guided form as a final fallback. Requests are rate limited
+  per authenticated user to protect the shared public quota.
+</p>
+
+<h2>5. Expected usage</h2>
+<table>
+  <tr><th>Metric</th><th>Estimate</th></tr>
+  <tr><td>Audio length per request</td><td>10&ndash;30 seconds</td></tr>
+  <tr><td>ASR calls per listing</td><td>1 &mdash; one spoken description per product</td></tr>
+  <tr><td>Hackathon / pilot volume</td><td>Low hundreds of calls during development and demonstration</td></tr>
+  <tr><td>Rate limiting</td><td>Enforced server-side, per authenticated user</td></tr>
+</table>
+<p>
+  Usage is inherently modest: one ASR call is made per <em>product listed</em>, not
+  per view or per session. A listing takes an artisan roughly ninety seconds to
+  create, which naturally bounds request volume.
+</p>
+
+<h2>6. Why Bhashini</h2>
+<ul>
+  <li><strong>Indic language depth.</strong> Our users speak Hindi and regional dialects, not English. Bhashini is built for exactly this.</li>
+  <li><strong>Public digital infrastructure.</strong> As free national infrastructure, Bhashini keeps our operating cost near zero &mdash; which is what lets us commit that the artisan never pays and gives up no margin.</li>
+  <li><strong>Alignment of purpose.</strong> Bhashini exists to remove language as a barrier to digital participation. That is, precisely, the barrier keeping 35.2 lakh weavers off the internet.</li>
+</ul>
+
+<div class="foot">
+  <strong>Pathashilpa</strong> &mdash; "Your craft. Your price. Your name."<br>
+  Submitted for Smart India Hackathon 2026 &middot; Application name: <code>pathashilpo</code><br>
+  Platform: Android mobile application (Flutter) with a FastAPI backend.
+</div>
+
+</body>
+</html>

@@ -744,4 +744,16 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get errorNotSignedIn => 'আপনি সাইন ইন করেননি। আবার সাইন ইন করুন।';
+
+  @override
+  String get profileIdDocOnFile => 'নথির ছবি সংরক্ষিত আছে';
+
+  @override
+  String get profileIdDocMissing => 'নথির ছবি যোগ করা হয়নি';
+
+  @override
+  String get reviewEnhancingPhoto => 'ছবি পরিষ্কার করা হচ্ছে…';
+
+  @override
+  String get reviewBackgroundRemoved => 'পটভূমি সরানো হয়েছে';
 }

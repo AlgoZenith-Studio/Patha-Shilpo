@@ -748,4 +748,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorNotSignedIn => 'You are not signed in. Please sign in again.';
+
+  @override
+  String get profileIdDocOnFile => 'Document photo on file';
+
+  @override
+  String get profileIdDocMissing => 'No document photo added';
+
+  @override
+  String get reviewEnhancingPhoto => 'Cleaning up the photo…';
+
+  @override
+  String get reviewBackgroundRemoved => 'Background removed';
 }

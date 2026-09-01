@@ -352,5 +352,9 @@
     }
   },
   "errorVerificationExpired": "এই কোডের মেয়াদ শেষ। নতুন কোড চান।",
-  "errorNotSignedIn": "আপনি সাইন ইন করেননি। আবার সাইন ইন করুন।"
+  "errorNotSignedIn": "আপনি সাইন ইন করেননি। আবার সাইন ইন করুন।",
+  "profileIdDocOnFile": "নথির ছবি সংরক্ষিত আছে",
+  "profileIdDocMissing": "নথির ছবি যোগ করা হয়নি",
+  "reviewEnhancingPhoto": "ছবি পরিষ্কার করা হচ্ছে…",
+  "reviewBackgroundRemoved": "পটভূমি সরানো হয়েছে"
 }
