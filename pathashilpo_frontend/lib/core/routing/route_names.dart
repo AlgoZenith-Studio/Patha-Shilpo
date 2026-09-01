@@ -28,4 +28,7 @@ abstract final class Routes {
   /// Settings — the single control for the app's language.
   static const String settings = '/settings';
 
+  /// Info — plain-language explanation of what the app does and does not do.
+  static const String info = '/info';
+
 }

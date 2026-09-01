@@ -9,9 +9,16 @@ class ArtisanModel {
   final String craft;
   final String cluster;
   final String? giTag;
-  final String? aadhaarNumber;
-  final String? panNumber;
+
+  /// Which identity document the artisan holds: 'gstin' | 'pan' | 'aadhaar'.
+  ///
+  /// **The number itself is never stored** (TRD.md §5.6, §19.8). Aadhaar and
+  /// PAN are regulated personal data, and `artisans/{uid}` is world-readable,
+  /// so only the *type* is persisted. GSTIN is a public business registration
+  /// and is the one identifier safe to keep in full.
+  final String? idType;
   final String? gstin;
+  final bool idVerified;
   final String story;
   final String storyHi;
   final int yearsOfPractice;
@@ -32,9 +39,9 @@ class ArtisanModel {
     required this.craft,
     required this.cluster,
     this.giTag,
-    this.aadhaarNumber,
-    this.panNumber,
+    this.idType,
     this.gstin,
+    this.idVerified = false,
     required this.story,
     required this.storyHi,
     required this.yearsOfPractice,
@@ -57,9 +64,9 @@ class ArtisanModel {
       'craft': craft,
       'cluster': cluster,
       'giTag': giTag,
-      'aadhaarNumber': aadhaarNumber,
-      'panNumber': panNumber,
+      'idType': idType,
       'gstin': gstin,
+      'idVerified': idVerified,
       'story': story,
       'storyHi': storyHi,
       'yearsOfPractice': yearsOfPractice,
@@ -83,9 +90,9 @@ class ArtisanModel {
       craft: map['craft'] ?? '',
       cluster: map['cluster'] ?? '',
       giTag: map['giTag'],
-      aadhaarNumber: map['aadhaarNumber'],
-      panNumber: map['panNumber'],
+      idType: map['idType'],
       gstin: map['gstin'],
+      idVerified: map['idVerified'] ?? false,
       story: map['story'] ?? '',
       storyHi: map['storyHi'] ?? '',
       yearsOfPractice: map['yearsOfPractice']?.toInt() ?? 0,

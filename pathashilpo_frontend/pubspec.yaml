@@ -1,7 +1,7 @@
-name: pathashilpa
+﻿name: pathashilpa
 description: Offline-first, voice-guided cataloguing and fair-pricing platform for rural Indian artisans.
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.0+2009
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
@@ -36,6 +36,8 @@ dependencies:
   intl: ^0.20.2                # compatible with flutter_localizations in current Flutter SDK
   provider: ^6.1.2
   cached_network_image: ^3.4.1
+  flutter_dotenv: ^5.2.1       # loads .env (BACKEND_URL) - see core/config/env.dart
+  google_sign_in: ^6.2.1       # used by data/remote/auth_service.dart
 
 dev_dependencies:
   flutter_test:
@@ -50,10 +52,11 @@ flutter:
 
   assets:
     - assets/data/
+    - .env
 
   # NOTE: fonts live under assets/data/ alongside medians.json, matching the
-  # existing on-disk layout. All three families are Latin-only — every TextStyle
-  # must declare fontFamilyFallback to the system Noto faces. See TRD.md §10.1.
+  # existing on-disk layout. All three families are Latin-only â€” every TextStyle
+  # must declare fontFamilyFallback to the system Noto faces. See TRD.md Â§10.1.
   fonts:
     - family: Lora
       fonts:

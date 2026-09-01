@@ -20,6 +20,19 @@ class ArtisanRegistrationScreen extends StatefulWidget {
 class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
   int _currentStep = 0;
 
+  /// Identity cascade: ask for GSTIN first; only if the artisan says they
+  /// don't have one do we ask about PAN, and only then about Aadhaar.
+  /// Most rural artisans have none of the first two, so leading with GSTIN
+  /// and stepping down avoids showing three tax fields to someone who only
+  /// holds a Pehchan card.
+  static const int _idAskGstin = 0;
+  static const int _idAskPan = 1;
+  static const int _idAskAadhaar = 2;
+  int _idStage = _idAskGstin;
+
+  /// 'gstin' | 'pan' | 'aadhaar' - the type is what gets persisted.
+  String? _idType;
+
   // Step 1: Location & Cluster
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _nameHiController = TextEditingController();
@@ -222,19 +235,14 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
         );
 
       case 1:
-        final bool hasGstin = _gstinController.text.trim().isNotEmpty;
-        final bool hasPan = _panController.text.trim().isNotEmpty;
-        final bool hasAadhaar = _aadhaarController.text.trim().isNotEmpty;
-        final bool hasAnyId = hasGstin || hasPan || hasAadhaar;
-
         return Form(
           key: _formKeyStep2,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSectionHeader(
-                'Craft & Tax Identity Verification',
-                'Provide your craft details and at least one tax/identity document (GSTIN -> PAN -> Aadhaar).',
+                'Craft & Identity',
+                'Tell us about your craft, then confirm one identity document.',
               ),
               const SizedBox(height: 20),
               _buildDropdownField('Craft Category', CraftConstants.craftTypes, _selectedCraft, (val) {
@@ -247,79 +255,9 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
 
               const SizedBox(height: 20),
               const Divider(color: AppColors.border),
-              const SizedBox(height: 10),
-              Text(
-                'TAX & IDENTITY PROOF HIERARCHY',
-                style: TextStyle(
-                  fontFamily: 'Pally',
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.2,
-                  color: AppColors.action,
-                ),
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                '1. GSTIN (Primary) → 2. PAN Number (If no GSTIN) → 3. Aadhaar / Pehchan Card (If no PAN)',
-                style: TextStyle(fontFamily: 'Lora', fontSize: 12, color: AppColors.textMuted),
-              ),
               const SizedBox(height: 14),
 
-              // 1st Priority: GSTIN
-              _buildTextField(
-                _gstinController,
-                '1. GSTIN Number (Primary Tax ID)',
-                'e.g. 22AAAAA0000A1Z5',
-                required: false,
-              ),
-              const SizedBox(height: 14),
-
-              // 2nd Priority: PAN Number
-              _buildTextField(
-                _panController,
-                '2. PAN Card Number (Required if no GSTIN)',
-                'e.g. ABCDE1234F',
-                required: false,
-              ),
-              const SizedBox(height: 14),
-
-              // 3rd Priority: Aadhaar / Pehchan Card
-              _buildTextField(
-                _aadhaarController,
-                '3. Aadhaar / Artisan Pehchan Card (Required if no PAN)',
-                'e.g. 1234 5678 9012',
-                keyboardType: TextInputType.number,
-                required: false,
-              ),
-
-              if (!hasAnyId) ...[
-                const SizedBox(height: 14),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.amber.shade50,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.amber.shade400),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.info_outline, color: Colors.amber.shade900, size: 20),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          'At least one identity document (GSTIN, PAN, or Aadhaar) is required to proceed.',
-                          style: TextStyle(
-                            fontFamily: AppTheme.bodyFont,
-                            fontSize: 12.5,
-                            color: Colors.amber.shade900,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              _buildIdentityCascade(),
             ],
           ),
         );
@@ -370,6 +308,184 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
           ),
         );
     }
+  }
+
+  /// One question at a time: GSTIN -> PAN -> Aadhaar.
+  ///
+  /// Only the *type* is saved. The number is used for verification at the
+  /// point of entry and is never written to Firestore (TRD.md §5.6), which is
+  /// why the note below tells the artisan exactly that.
+  Widget _buildIdentityCascade() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'IDENTITY DOCUMENT',
+          style: TextStyle(
+            fontFamily: 'Pally',
+            fontSize: 11.5,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.2,
+            color: AppColors.action,
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        if (_idStage == _idAskGstin) ...[
+          _buildIdQuestion(
+            'Do you have a GST number?',
+            'Most individual artisans do not. That is fine.',
+          ),
+          if (_idType == 'gstin') ...[
+            const SizedBox(height: 12),
+            _buildTextField(_gstinController, 'GSTIN', 'e.g. 22AAAAA0000A1Z5'),
+          ],
+          const SizedBox(height: 12),
+          _buildYesNoRow(
+            onYes: () => setState(() => _idType = 'gstin'),
+            onNo: () => setState(() {
+              _idType = null;
+              _gstinController.clear();
+              _idStage = _idAskPan;
+            }),
+            selectedYes: _idType == 'gstin',
+          ),
+        ],
+
+        if (_idStage == _idAskPan) ...[
+          _buildIdQuestion(
+            'Do you have a PAN card?',
+            'Enter the number to confirm. We do not store it.',
+          ),
+          if (_idType == 'pan') ...[
+            const SizedBox(height: 12),
+            _buildTextField(_panController, 'PAN Number', 'e.g. ABCDE1234F'),
+          ],
+          const SizedBox(height: 12),
+          _buildYesNoRow(
+            onYes: () => setState(() => _idType = 'pan'),
+            onNo: () => setState(() {
+              _idType = null;
+              _panController.clear();
+              _idStage = _idAskAadhaar;
+            }),
+            selectedYes: _idType == 'pan',
+          ),
+          const SizedBox(height: 8),
+          _buildBackAStep(() => setState(() {
+                _idType = null;
+                _panController.clear();
+                _idStage = _idAskGstin;
+              })),
+        ],
+
+        if (_idStage == _idAskAadhaar) ...[
+          _buildIdQuestion(
+            'Aadhaar or Artisan Pehchan card',
+            'Enter the number to confirm. We do not store it.',
+          ),
+          const SizedBox(height: 12),
+          _buildTextField(
+            _aadhaarController,
+            'Aadhaar / Pehchan Number',
+            'e.g. 1234 5678 9012',
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _aadhaarController.text.trim().isEmpty
+                      ? null
+                      : () => setState(() => _idType = 'aadhaar'),
+                  child: Text(_idType == 'aadhaar' ? 'Confirmed' : 'Confirm'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          _buildBackAStep(() => setState(() {
+                _idType = null;
+                _aadhaarController.clear();
+                _idStage = _idAskPan;
+              })),
+        ],
+
+        const SizedBox(height: 14),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.heritage.withValues(alpha: 0.28),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.lock_outline_rounded,
+                  size: 18, color: AppColors.ink),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'We save only which document you hold - never the number '
+                  'itself. Your Aadhaar and PAN numbers are not stored anywhere.',
+                  style: TextStyle(
+                    fontFamily: AppTheme.bodyFont,
+                    fontFamilyFallback: AppTheme.scriptFallback,
+                    fontSize: 12.5,
+                    color: AppColors.ink,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIdQuestion(String question, String hint) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(question, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 2),
+        Text(hint, style: Theme.of(context).textTheme.bodySmall),
+      ],
+    );
+  }
+
+  Widget _buildYesNoRow({
+    required VoidCallback onYes,
+    required VoidCallback onNo,
+    required bool selectedYes,
+  }) {
+    return Row(
+      children: [
+        Expanded(
+          child: selectedYes
+              ? ElevatedButton(onPressed: onYes, child: const Text('Yes'))
+              : OutlinedButton(onPressed: onYes, child: const Text('Yes')),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: OutlinedButton(
+            onPressed: onNo,
+            child: const Text('I do not have one'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBackAStep(VoidCallback onBack) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: TextButton.icon(
+        onPressed: onBack,
+        icon: const Icon(Icons.arrow_back_rounded, size: 16),
+        label: const Text('Back a step'),
+      ),
+    );
   }
 
   Widget _buildSectionHeader(String title, String subtitle) {
@@ -432,14 +548,10 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
     } else if (_currentStep == 1) {
       if (!(_formKeyStep2.currentState?.validate() ?? false)) return;
 
-      final bool hasGstin = _gstinController.text.trim().isNotEmpty;
-      final bool hasPan = _panController.text.trim().isNotEmpty;
-      final bool hasAadhaar = _aadhaarController.text.trim().isNotEmpty;
-
-      if (!hasGstin && !hasPan && !hasAadhaar) {
+      if (_idType == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Please provide at least one document according to hierarchy: GSTIN, PAN Number, or Aadhaar/Pehchan Card.'),
+            content: Text('Please confirm one identity document to continue.'),
             backgroundColor: Colors.redAccent,
             behavior: SnackBarBehavior.floating,
           ),
@@ -470,9 +582,14 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
       craft: _selectedCraft,
       cluster: _clusterController.text.trim(),
       giTag: _giTagController.text.trim().isNotEmpty ? _giTagController.text.trim() : null,
-      aadhaarNumber: _aadhaarController.text.trim().isNotEmpty ? _aadhaarController.text.trim() : null,
-      panNumber: _panController.text.trim().isNotEmpty ? _panController.text.trim() : null,
-      gstin: _gstinController.text.trim().isNotEmpty ? _gstinController.text.trim() : null,
+      // Only the document TYPE is persisted. Aadhaar and PAN numbers are
+      // regulated personal data and artisans/{uid} is world-readable, so the
+      // numbers are deliberately dropped here (TRD.md §5.6, §19.8). GSTIN is
+      // a public business registration, so that one is kept in full.
+      idType: _idType,
+      gstin: _idType == 'gstin' && _gstinController.text.trim().isNotEmpty
+          ? _gstinController.text.trim()
+          : null,
       story: _storyController.text.trim(),
       storyHi: _storyController.text.trim(),
       yearsOfPractice: int.tryParse(_yearsController.text.trim()) ?? 5,

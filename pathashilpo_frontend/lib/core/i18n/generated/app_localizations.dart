@@ -265,7 +265,7 @@ abstract class AppLocalizations {
   /// No description provided for @authDemoNotice.
   ///
   /// In en, this message translates to:
-  /// **'Demo build: any six digits will work. Phone verification is not connected yet.'**
+  /// **'A code has been sent by SMS. It may take a few seconds to arrive.'**
   String get authDemoNotice;
 
   /// No description provided for @roleQuestion.
@@ -1167,6 +1167,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sent Enquiries'**
   String get buyerSentEnquiries;
+
+  /// No description provided for @profileNotSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'You are not signed in.'**
+  String get profileNotSignedIn;
+
+  /// No description provided for @profileLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your profile. Check your connection and try again.'**
+  String get profileLoadFailed;
+
+  /// No description provided for @profileIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile is not set up yet. Complete registration to see it here.'**
+  String get profileIncomplete;
+
+  /// No description provided for @profileNoStoryYet.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not added your story yet.'**
+  String get profileNoStoryYet;
+
+  /// No description provided for @profileProductsListed.
+  ///
+  /// In en, this message translates to:
+  /// **'Products listed'**
+  String get profileProductsListed;
+
+  /// No description provided for @profileRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating'**
+  String get profileRating;
+
+  /// No description provided for @profileIdentity.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity document'**
+  String get profileIdentity;
+
+  /// No description provided for @profileIdentityNote.
+  ///
+  /// In en, this message translates to:
+  /// **'For your safety, only the document type is stored - never the number itself.'**
+  String get profileIdentityNote;
+
+  /// No description provided for @profileIdGstin.
+  ///
+  /// In en, this message translates to:
+  /// **'GSTIN provided'**
+  String get profileIdGstin;
+
+  /// No description provided for @profileIdPan.
+  ///
+  /// In en, this message translates to:
+  /// **'PAN provided'**
+  String get profileIdPan;
+
+  /// No description provided for @profileIdAadhaar.
+  ///
+  /// In en, this message translates to:
+  /// **'Aadhaar / Pehchan card provided'**
+  String get profileIdAadhaar;
+
+  /// No description provided for @profileIdNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No identity document on file'**
+  String get profileIdNone;
+
+  /// No description provided for @infoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About this app'**
+  String get infoTitle;
+
+  /// No description provided for @infoSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What it does, and what it does not'**
+  String get infoSubtitle;
+
+  /// No description provided for @infoWhatThisIs.
+  ///
+  /// In en, this message translates to:
+  /// **'What Pathashilpa is'**
+  String get infoWhatThisIs;
+
+  /// No description provided for @infoWhatThisIsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A tool that turns a photograph and a spoken sentence into a complete, fairly priced product listing - even with no internet. It is the layer that creates the listing, not a shop.'**
+  String get infoWhatThisIsBody;
+
+  /// No description provided for @infoHowPricing.
+  ///
+  /// In en, this message translates to:
+  /// **'How your price is calculated'**
+  String get infoHowPricing;
+
+  /// No description provided for @infoHowPricingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials + (hours x fair wage) + overhead. The floor is the least you should ever accept - below it you lose money. You can always choose your own price above it, and once you confirm, it never changes.'**
+  String get infoHowPricingBody;
+
+  /// No description provided for @infoOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Working without internet'**
+  String get infoOffline;
+
+  /// No description provided for @infoOfflineBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every step of adding a product works offline. Your draft is saved on this phone and marked \'Offline Draft\'. When you reconnect it uploads on its own, the photo and words improve - and your confirmed price stays exactly the same.'**
+  String get infoOfflineBody;
+
+  /// No description provided for @infoPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Your privacy'**
+  String get infoPrivacy;
+
+  /// No description provided for @infoPrivacyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We store which identity document you hold, never the number itself. No Aadhaar or PAN number is saved anywhere. There is no location tracking and no analytics. You can delete your products and their photos at any time.'**
+  String get infoPrivacyBody;
+
+  /// No description provided for @infoNotYet.
+  ///
+  /// In en, this message translates to:
+  /// **'What this app does not do yet'**
+  String get infoNotYet;
+
+  /// No description provided for @infoNotYetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no payment or checkout. Buyers send you an enquiry and you arrange the sale directly with them. GeM and ONDC publishing is shown as a status only. Nothing here takes a commission from you.'**
+  String get infoNotYetBody;
+
+  /// No description provided for @infoBuyerWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What you can do here'**
+  String get infoBuyerWhat;
+
+  /// No description provided for @infoBuyerWhatBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse crafts, see exactly how each price was built, read the maker\'s story, and send them an enquiry or a bulk quote request. You deal with the artisan directly.'**
+  String get infoBuyerWhatBody;
+
+  /// No description provided for @infoBuyerNoCheckout.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no checkout - yet'**
+  String get infoBuyerNoCheckout;
+
+  /// No description provided for @infoBuyerNoCheckoutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot pay in the app today. Craft here is made to order, so the artisan commits materials and weeks of work before payment - that needs escrow to be fair to them. Until then, enquiries connect you directly with the maker.'**
+  String get infoBuyerNoCheckoutBody;
+
+  /// No description provided for @infoFairTrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Why the prices look different'**
+  String get infoFairTrade;
+
+  /// No description provided for @infoFairTradeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every price shows the artisan\'s material cost and their hours at a fair wage of Rs 150/hour. Nothing is hidden and no middleman margin is added.'**
+  String get infoFairTradeBody;
+
+  /// No description provided for @buyerActiveQuotations.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Quotations'**
+  String get buyerActiveQuotations;
+
+  /// No description provided for @buyerNoActiveRfqsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first quote request to reach master artisans directly.'**
+  String get buyerNoActiveRfqsBody;
+
+  /// No description provided for @buyerRfqLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your requests. Check your connection.'**
+  String get buyerRfqLoadFailed;
+
+  /// No description provided for @artisanRfqTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk requests'**
+  String get artisanRfqTitle;
+
+  /// No description provided for @artisanRfqSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyers looking for work in your craft'**
+  String get artisanRfqSubtitle;
+
+  /// No description provided for @artisanRfqRespond.
+  ///
+  /// In en, this message translates to:
+  /// **'I can make this'**
+  String get artisanRfqRespond;
+
+  /// No description provided for @artisanRfqResponded.
+  ///
+  /// In en, this message translates to:
+  /// **'You have offered to make this'**
+  String get artisanRfqResponded;
+
+  /// No description provided for @artisanRfqSent.
+  ///
+  /// In en, this message translates to:
+  /// **'The buyer has been told you can make this.'**
+  String get artisanRfqSent;
+
+  /// No description provided for @artisanRfqFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not send. Try again when you have signal.'**
+  String get artisanRfqFailed;
+
+  /// No description provided for @artisanRfqEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No bulk requests right now'**
+  String get artisanRfqEmpty;
+
+  /// No description provided for @artisanRfqEmptyNoCraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your craft to your profile to see matching requests.'**
+  String get artisanRfqEmptyNoCraft;
+
+  /// No description provided for @artisanRfqLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load requests. Check your connection.'**
+  String get artisanRfqLoadFailed;
+
+  /// No description provided for @artisanTabEnquiries.
+  ///
+  /// In en, this message translates to:
+  /// **'Enquiries'**
+  String get artisanTabEnquiries;
+
+  /// No description provided for @artisanTabRfqs.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk requests'**
+  String get artisanTabRfqs;
+
+  /// No description provided for @artisanRfqEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyers looking for {craft} will appear here.'**
+  String artisanRfqEmptyBody(String craft);
+
+  /// No description provided for @artisanRfqOtherResponses.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} artisan(s) have offered so far'**
+  String artisanRfqOtherResponses(int count);
+
+  /// No description provided for @errorVerificationExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'That code has expired. Please request a new one.'**
+  String get errorVerificationExpired;
+
+  /// No description provided for @errorNotSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'You are not signed in. Please sign in again.'**
+  String get errorNotSignedIn;
 }
 
 class _AppLocalizationsDelegate

@@ -117,9 +117,12 @@ class AuthController extends ChangeNotifier {
         );
         await _onAuthSuccess();
       } else {
-        // Fallback for emulator / stub testing
-        _stage = AuthStage.needsRole;
+        // No verificationId means the phone step never completed, so there is
+        // nothing to verify against. Previously this fell through to
+        // needsRole, which let an unauthenticated user into the app. Fail
+        // closed instead.
         _busy = false;
+        _errorKey = 'errorVerificationExpired';
         notifyListeners();
       }
     } catch (e) {
@@ -183,46 +186,57 @@ class AuthController extends ChangeNotifier {
       throw ArgumentError.value(role, 'role', 'not selectable at signup');
     }
 
+    final user = _authService.currentUser;
+    if (user == null) {
+      // Without a signed-in user there is no uid to write against, and
+      // letting the stage advance would put an unauthenticated user inside
+      // the app. Refuse rather than degrade.
+      _errorKey = 'errorNotSignedIn';
+      _stage = AuthStage.signedOut;
+      notifyListeners();
+      return;
+    }
+
     _busy = true;
     notifyListeners();
 
     _role = role;
-    final user = _authService.currentUser;
-    if (user != null) {
-      try {
-        if (role == UserRole.artisan) {
-          // Initialize base artisan document
-          await _firestoreService.saveArtisanProfile(
-            // Stub template that artisan can edit in Profile
-            ArtisanModel(
-              uid: user.uid,
-              name: 'Artisan ${user.phoneNumber?.substring(user.phoneNumber!.length - 4) ?? ""}',
-              nameHi: 'कारीगर',
-              village: 'Chanderi',
-              district: 'Ashoknagar',
-              state: 'Madhya Pradesh',
-              craft: 'Handloom',
-              cluster: 'Chanderi Cluster',
-              story: 'Traditional artisan preserving heritage handiwork.',
-              storyHi: 'पारंपरिक विरासत हस्तशिल्प को संरक्षित करने वाले कारीगर।',
-              yearsOfPractice: 5,
-              createdAt: DateTime.now(),
-            ),
-          );
-        } else {
-          // Initialize base buyer document
-          await _firestoreService.saveBuyerProfile(
-            BuyerModel(
-              uid: user.uid,
-              name: 'Buyer ${user.phoneNumber?.substring(user.phoneNumber!.length - 4) ?? ""}',
-              phone: user.phoneNumber ?? '',
-              createdAt: DateTime.now(),
-            ),
-          );
-        }
-      } catch (_) {
-        // Fallback for offline resilience
+    try {
+      if (role == UserRole.artisan) {
+        // Initialize base artisan document
+        await _firestoreService.saveArtisanProfile(
+          // Stub template that artisan can edit in Profile
+          ArtisanModel(
+            uid: user.uid,
+            name:
+                'Artisan ${user.phoneNumber?.substring(user.phoneNumber!.length - 4) ?? ""}',
+            nameHi: 'कारीगर',
+            village: 'Chanderi',
+            district: 'Ashoknagar',
+            state: 'Madhya Pradesh',
+            craft: 'Handloom',
+            cluster: 'Chanderi Cluster',
+            story: 'Traditional artisan preserving heritage handiwork.',
+            storyHi: 'पारंपरिक विरासत हस्तशिल्प को संरक्षित करने वाले कारीगर।',
+            yearsOfPractice: 5,
+            createdAt: DateTime.now(),
+          ),
+        );
+      } else {
+        // Initialize base buyer document
+        await _firestoreService.saveBuyerProfile(
+          BuyerModel(
+            uid: user.uid,
+            name:
+                'Buyer ${user.phoneNumber?.substring(user.phoneNumber!.length - 4) ?? ""}',
+            phone: user.phoneNumber ?? '',
+            createdAt: DateTime.now(),
+          ),
+        );
       }
+    } catch (_) {
+      // Offline resilience: the profile write can be retried later;
+      // the role itself is already known locally.
     }
 
     _stage = AuthStage.ready;

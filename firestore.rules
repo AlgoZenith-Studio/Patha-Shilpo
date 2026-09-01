@@ -1,0 +1,86 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    function signedIn()  { return request.auth != null; }
+    function uid()       { return request.auth.uid; }
+    function role()      { return get(/databases/$(db)/documents/users/$(uid())).data.role; }
+    function isArtisan() { return signedIn() && role() == 'artisan'; }
+    function isBuyer()   { return signedIn() && role() == 'buyer'; }
+    function isMod()     { return signedIn() && role() == 'moderator'; }
+    function isDept()    { return signedIn() && role() == 'dept'; }
+
+    // Users collection: role is immutable after first write
+    match /users/{userId} {
+      allow read:   if uid() == userId || isMod();
+      allow create: if uid() == userId
+                    && request.resource.data.role in ['artisan','buyer'];
+      allow update: if uid() == userId
+                    && request.resource.data.role == resource.data.role;
+      allow delete: if false;
+    }
+
+    // Artisans: public can read, only the artisan owner can write
+    match /artisans/{aid} {
+      allow read:  if true;
+      allow write: if uid() == aid && isArtisan();
+      allow update: if isMod()
+                    && request.resource.data.diff(resource.data)
+                       .affectedKeys().hasOnly(['verified']);
+    }
+
+    // Buyers: private profile
+    match /buyers/{bid} {
+      allow read, write: if uid() == bid && isBuyer();
+    }
+
+    // Products: public reads live products; only artisans create & manage own products
+    match /products/{pid} {
+      allow read: if resource.data.status == 'live'
+                  || uid() == resource.data.artisanId
+                  || isMod();
+      allow create: if isArtisan()
+                    && request.resource.data.artisanId == uid()
+                    && request.resource.data.localId is string;
+      allow update: if uid() == resource.data.artisanId
+                    && request.resource.data.artisanId == resource.data.artisanId;
+      allow delete: if uid() == resource.data.artisanId;
+      allow update: if isMod()
+                    && request.resource.data.diff(resource.data)
+                       .affectedKeys().hasOnly(['flagged','flagReason','status']);
+    }
+
+    // Enquiries: buyers create enquiries; only the involved buyer and artisan can read/respond
+    match /enquiries/{eid} {
+      allow create: if isBuyer() && request.resource.data.buyerUid == uid();
+      allow read:   if uid() == resource.data.buyerUid
+                    || uid() == resource.data.artisanId
+                    || isMod();
+      allow update: if (uid() == resource.data.artisanId
+                        && request.resource.data.diff(resource.data)
+                           .affectedKeys().hasOnly(['status']))
+                    || isMod();
+    }
+
+    // RFQs: buyers create RFQs; artisans & buyers can read active RFQs
+    match /rfqs/{rfqId} {
+      allow create: if isBuyer() && request.resource.data.buyerUid == uid();
+      allow read:   if signedIn();
+
+      // The buyer owns their RFQ and may edit it freely.
+      allow update: if uid() == resource.data.buyerUid
+                    || isMod();
+
+      // An artisan may add ONLY themselves to matchedArtisanIds, and may
+      // change nothing else. This is what lets them answer "I can make this"
+      // without being able to edit the buyer's request.
+      allow update: if isArtisan()
+                    && request.resource.data.diff(resource.data)
+                       .affectedKeys().hasOnly(['matchedArtisanIds'])
+                    && request.resource.data.matchedArtisanIds
+                       .hasAll(resource.data.matchedArtisanIds)
+                    && request.resource.data.matchedArtisanIds
+                       .removeAll(resource.data.matchedArtisanIds) == [uid()];
+    }
+  }
+}

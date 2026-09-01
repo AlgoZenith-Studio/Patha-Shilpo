@@ -34,7 +34,7 @@
   },
   "authOtpInvalid": "That code is not right.",
   "authVerify": "Verify",
-  "authDemoNotice": "Demo build: any six digits will work. Phone verification is not connected yet.",
+  "authDemoNotice": "A code has been sent by SMS. It may take a few seconds to arrive.",
   "roleQuestion": "What brings you here?",
   "roleIMakeThings": "I make things",
   "roleIWantToBuy": "I want to buy",
@@ -290,5 +290,67 @@
       }
     }
   },
-  "buyerSentEnquiries": "Sent Enquiries"
+  "buyerSentEnquiries": "Sent Enquiries",
+  "profileNotSignedIn": "You are not signed in.",
+  "profileLoadFailed": "Could not load your profile. Check your connection and try again.",
+  "profileIncomplete": "Your profile is not set up yet. Complete registration to see it here.",
+  "profileNoStoryYet": "You have not added your story yet.",
+  "profileProductsListed": "Products listed",
+  "profileRating": "Rating",
+  "profileIdentity": "Identity document",
+  "profileIdentityNote": "For your safety, only the document type is stored - never the number itself.",
+  "profileIdGstin": "GSTIN provided",
+  "profileIdPan": "PAN provided",
+  "profileIdAadhaar": "Aadhaar / Pehchan card provided",
+  "profileIdNone": "No identity document on file",
+  "infoTitle": "About this app",
+  "infoSubtitle": "What it does, and what it does not",
+  "infoWhatThisIs": "What Pathashilpa is",
+  "infoWhatThisIsBody": "A tool that turns a photograph and a spoken sentence into a complete, fairly priced product listing - even with no internet. It is the layer that creates the listing, not a shop.",
+  "infoHowPricing": "How your price is calculated",
+  "infoHowPricingBody": "Materials + (hours x fair wage) + overhead. The floor is the least you should ever accept - below it you lose money. You can always choose your own price above it, and once you confirm, it never changes.",
+  "infoOffline": "Working without internet",
+  "infoOfflineBody": "Every step of adding a product works offline. Your draft is saved on this phone and marked 'Offline Draft'. When you reconnect it uploads on its own, the photo and words improve - and your confirmed price stays exactly the same.",
+  "infoPrivacy": "Your privacy",
+  "infoPrivacyBody": "We store which identity document you hold, never the number itself. No Aadhaar or PAN number is saved anywhere. There is no location tracking and no analytics. You can delete your products and their photos at any time.",
+  "infoNotYet": "What this app does not do yet",
+  "infoNotYetBody": "There is no payment or checkout. Buyers send you an enquiry and you arrange the sale directly with them. GeM and ONDC publishing is shown as a status only. Nothing here takes a commission from you.",
+  "infoBuyerWhat": "What you can do here",
+  "infoBuyerWhatBody": "Browse crafts, see exactly how each price was built, read the maker's story, and send them an enquiry or a bulk quote request. You deal with the artisan directly.",
+  "infoBuyerNoCheckout": "There is no checkout - yet",
+  "infoBuyerNoCheckoutBody": "You cannot pay in the app today. Craft here is made to order, so the artisan commits materials and weeks of work before payment - that needs escrow to be fair to them. Until then, enquiries connect you directly with the maker.",
+  "infoFairTrade": "Why the prices look different",
+  "infoFairTradeBody": "Every price shows the artisan's material cost and their hours at a fair wage of Rs 150/hour. Nothing is hidden and no middleman margin is added.",
+  "buyerActiveQuotations": "Active Quotations",
+  "buyerNoActiveRfqsBody": "Create your first quote request to reach master artisans directly.",
+  "buyerRfqLoadFailed": "Could not load your requests. Check your connection.",
+  "artisanRfqTitle": "Bulk requests",
+  "artisanRfqSubtitle": "Buyers looking for work in your craft",
+  "artisanRfqRespond": "I can make this",
+  "artisanRfqResponded": "You have offered to make this",
+  "artisanRfqSent": "The buyer has been told you can make this.",
+  "artisanRfqFailed": "Could not send. Try again when you have signal.",
+  "artisanRfqEmpty": "No bulk requests right now",
+  "artisanRfqEmptyNoCraft": "Add your craft to your profile to see matching requests.",
+  "artisanRfqLoadFailed": "Could not load requests. Check your connection.",
+  "artisanTabEnquiries": "Enquiries",
+  "artisanTabRfqs": "Bulk requests",
+  "artisanRfqEmptyBody": "Buyers looking for {craft} will appear here.",
+  "@artisanRfqEmptyBody": {
+    "placeholders": {
+      "craft": {
+        "type": "String"
+      }
+    }
+  },
+  "artisanRfqOtherResponses": "{count} artisan(s) have offered so far",
+  "@artisanRfqOtherResponses": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorVerificationExpired": "That code has expired. Please request a new one.",
+  "errorNotSignedIn": "You are not signed in. Please sign in again."
 }

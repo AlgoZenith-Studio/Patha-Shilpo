@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../data/remote/firestore_service.dart';
+import '../../auth/controllers/auth_controller.dart';
 
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/theme/colors.dart';
@@ -47,7 +51,7 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
     return 6;
   }
 
-  void _submitRfq() {
+  Future<void> _submitRfq() async {
     if (_notesController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -58,24 +62,45 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
       return;
     }
 
+    final auth = context.read<AuthController>();
+    final user = auth.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please sign in to send a quote request.')),
+      );
+      return;
+    }
+
     final newRfq = RfqModel(
       rfqId: 'rfq_${DateTime.now().millisecondsSinceEpoch}',
-      buyerUid: MockBuyerData.currentBuyer.uid,
-      buyerName: MockBuyerData.currentBuyer.name,
+      buyerUid: user.uid,
+      buyerName: user.displayName ?? user.phoneNumber ?? 'Buyer',
       craft: _selectedCraft,
       cluster: _selectedCluster != 'All Clusters' ? _selectedCluster : null,
       quantity: _quantity,
       deadline: _deadline,
       budgetMin: _budgetRange.start.toInt(),
       budgetMax: _budgetRange.end.toInt(),
-      matchedArtisanIds: ['artisan_001', 'artisan_002'],
+      // Matching is server-side work that does not exist yet (TRD.md §19.6),
+      // so this stays empty rather than showing fabricated matches.
+      matchedArtisanIds: const <String>[],
       status: 'active',
       notes: _notesController.text.trim(),
       createdAt: DateTime.now(),
     );
 
+    try {
+      await FirestoreService().createRfq(newRfq);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not send the request. $e')),
+      );
+      return;
+    }
+    if (!mounted) return;
+
     setState(() {
-      MockBuyerData.initialRfqs.insert(0, newRfq);
       _isCreatingRfq = false;
       _notesController.clear();
     });
@@ -363,69 +388,99 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                 ),
               ),
             ] else ...[
-              // ACTIVE RFQs LIST
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Active Quotations (${MockBuyerData.initialRfqs.length})',
-                    style: const TextStyle(
-                      fontFamily: 'Pally',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
-                      color: AppColors.ink,
-                    ),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () => setState(() => _isCreatingRfq = true),
-                    icon: const Icon(Icons.add, size: 16, color: AppColors.ink),
-                    label: Text(t.buyerNewRfq),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
+              // ACTIVE RFQs LIST - live from Firestore
+              StreamBuilder<List<RfqModel>>(
+                stream: FirestoreService()
+                    .streamBuyerRfqs(context.read<AuthController>().currentUser?.uid ?? '__none__'),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<RfqModel>> snap) {
+                  final List<RfqModel> rfqs = snap.data ?? const <RfqModel>[];
+                  final bool loading =
+                      snap.connectionState == ConnectionState.waiting;
 
-              if (MockBuyerData.initialRfqs.isEmpty)
-                Container(
-                  padding: const EdgeInsets.all(32),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Icon(Icons.inventory_2_outlined, size: 48, color: AppColors.border),
-                        SizedBox(height: 10),
-                        Text(
-                          t.buyerNoActiveRfqs,
-                          style: TextStyle(fontFamily: 'Pally', fontWeight: FontWeight.w700, fontSize: 18, color: AppColors.ink),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              '${t.buyerActiveQuotations} (${rfqs.length})',
+                              style: const TextStyle(
+                                fontFamily: 'Pally',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 20,
+                                color: AppColors.ink,
+                              ),
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () =>
+                                setState(() => _isCreatingRfq = true),
+                            icon: const Icon(Icons.add,
+                                size: 16, color: AppColors.ink),
+                            label: Text(t.buyerNewRfq),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 8),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+
+                      if (loading)
+                        const Padding(
+                          padding: EdgeInsets.all(32),
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      else if (snap.hasError)
+                        _emptyBox(context, t.buyerRfqLoadFailed, '')
+                      else if (rfqs.isEmpty)
+                        _emptyBox(context, t.buyerNoActiveRfqs,
+                            t.buyerNoActiveRfqsBody)
+                      else
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: rfqs.length,
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 12),
+                          itemBuilder: (BuildContext context, int index) =>
+                              _buildRfqCard(rfqs[index]),
                         ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Create your first custom quote request to connect with master artisans.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontFamily: 'Lora', fontSize: 13, color: AppColors.textMuted),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: MockBuyerData.initialRfqs.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final rfq = MockBuyerData.initialRfqs[index];
-                    return _buildRfqCard(rfq);
-                  },
-                ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _emptyBox(BuildContext context, String title, String body) {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            const Icon(Icons.inventory_2_outlined,
+                size: 48, color: AppColors.border),
+            const SizedBox(height: 10),
+            Text(title, style: Theme.of(context).textTheme.titleLarge),
+            if (body.isNotEmpty) ...<Widget>[
+              const SizedBox(height: 4),
+              Text(body,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall),
             ],
           ],
         ),

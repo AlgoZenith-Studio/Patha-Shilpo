@@ -1,33 +1,57 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/config/env.dart';
 
 /// Shared Dio client for the FastAPI backend.
 ///
-/// Timeouts match what the backend actually enforces per provider
-/// (TRD.md §8.5): 12s for Gemini/listing, 30s for fal.ai/image. Using the
-/// longer one here as the connection default and letting each call override
-/// `receiveTimeout` per-request keeps this client simple.
+/// Timeouts match what the backend enforces per provider (TRD.md §8.5): 12s
+/// for Gemini/listing, 30s for fal.ai/image, set per-request.
 ///
-/// Sends a bearer token because every `/api/v1/*` route requires one - but
-/// `core/security.py` on the backend is currently a **stub** that accepts any
-/// non-empty token (TRD.md §18.3). This is not a real credential; it exists
-/// only to satisfy that stub until real Firebase auth is wired on both ends.
+/// Attaches the signed-in user's **real Firebase ID token** on every call.
+/// The backend verifies it with `firebase_admin.auth.verify_id_token()`
+/// (TRD.md §5.5), so an unauthenticated caller cannot reach the AI endpoints
+/// or spend the provider quota.
 class ApiClient {
   ApiClient._();
 
   static Dio? _instance;
 
   static Dio get instance {
-    return _instance ??= Dio(
+    return _instance ??= _build();
+  }
+
+  static Dio _build() {
+    final Dio dio = Dio(
       BaseOptions(
         baseUrl: Env.backendUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 30),
-        headers: <String, String>{
-          'Authorization': 'Bearer dev-token',
+      ),
+    );
+
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (RequestOptions options,
+            RequestInterceptorHandler handler) async {
+          try {
+            // Firebase refreshes this automatically when it is close to
+            // expiring, so fetching per request is the supported pattern.
+            final String? token =
+                await FirebaseAuth.instance.currentUser?.getIdToken();
+            if (token != null && token.isNotEmpty) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
+          } catch (_) {
+            // No token available - let the request go out unauthenticated and
+            // be rejected by the backend, rather than throwing here. The AI
+            // routers already treat a failure as "fall back to offline".
+          }
+          handler.next(options);
         },
       ),
     );
+
+    return dio;
   }
 }

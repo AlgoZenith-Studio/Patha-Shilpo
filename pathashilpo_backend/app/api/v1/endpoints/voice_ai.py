@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, status
 
-from app.core.security import get_current_user
+from app.core.rate_limit import ai_limiter
+from app.core.security import AuthenticatedUser, get_current_user
 from app.schemas.ai import VoiceResponse
 from app.services import bhashini_service, sarvam_service
 from app.services.bhashini_service import BhashiniError
@@ -13,8 +14,10 @@ router = APIRouter()
 async def transcribe_voice(
     file: UploadFile,
     source_language: str = Form(...),
-    _user=Depends(get_current_user),
+    user: AuthenticatedUser = Depends(get_current_user),
 ) -> VoiceResponse:
+    ai_limiter.check(user.uid)
+
     audio_bytes = await file.read()
 
     try:

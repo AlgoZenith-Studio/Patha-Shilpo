@@ -94,7 +94,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authDemoNotice =>
-      'Demo build: any six digits will work. Phone verification is not connected yet.';
+      'A code has been sent by SMS. It may take a few seconds to arrive.';
 
   @override
   String get roleQuestion => 'What brings you here?';
@@ -583,4 +583,169 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buyerSentEnquiries => 'Sent Enquiries';
+
+  @override
+  String get profileNotSignedIn => 'You are not signed in.';
+
+  @override
+  String get profileLoadFailed =>
+      'Could not load your profile. Check your connection and try again.';
+
+  @override
+  String get profileIncomplete =>
+      'Your profile is not set up yet. Complete registration to see it here.';
+
+  @override
+  String get profileNoStoryYet => 'You have not added your story yet.';
+
+  @override
+  String get profileProductsListed => 'Products listed';
+
+  @override
+  String get profileRating => 'Rating';
+
+  @override
+  String get profileIdentity => 'Identity document';
+
+  @override
+  String get profileIdentityNote =>
+      'For your safety, only the document type is stored - never the number itself.';
+
+  @override
+  String get profileIdGstin => 'GSTIN provided';
+
+  @override
+  String get profileIdPan => 'PAN provided';
+
+  @override
+  String get profileIdAadhaar => 'Aadhaar / Pehchan card provided';
+
+  @override
+  String get profileIdNone => 'No identity document on file';
+
+  @override
+  String get infoTitle => 'About this app';
+
+  @override
+  String get infoSubtitle => 'What it does, and what it does not';
+
+  @override
+  String get infoWhatThisIs => 'What Pathashilpa is';
+
+  @override
+  String get infoWhatThisIsBody =>
+      'A tool that turns a photograph and a spoken sentence into a complete, fairly priced product listing - even with no internet. It is the layer that creates the listing, not a shop.';
+
+  @override
+  String get infoHowPricing => 'How your price is calculated';
+
+  @override
+  String get infoHowPricingBody =>
+      'Materials + (hours x fair wage) + overhead. The floor is the least you should ever accept - below it you lose money. You can always choose your own price above it, and once you confirm, it never changes.';
+
+  @override
+  String get infoOffline => 'Working without internet';
+
+  @override
+  String get infoOfflineBody =>
+      'Every step of adding a product works offline. Your draft is saved on this phone and marked \'Offline Draft\'. When you reconnect it uploads on its own, the photo and words improve - and your confirmed price stays exactly the same.';
+
+  @override
+  String get infoPrivacy => 'Your privacy';
+
+  @override
+  String get infoPrivacyBody =>
+      'We store which identity document you hold, never the number itself. No Aadhaar or PAN number is saved anywhere. There is no location tracking and no analytics. You can delete your products and their photos at any time.';
+
+  @override
+  String get infoNotYet => 'What this app does not do yet';
+
+  @override
+  String get infoNotYetBody =>
+      'There is no payment or checkout. Buyers send you an enquiry and you arrange the sale directly with them. GeM and ONDC publishing is shown as a status only. Nothing here takes a commission from you.';
+
+  @override
+  String get infoBuyerWhat => 'What you can do here';
+
+  @override
+  String get infoBuyerWhatBody =>
+      'Browse crafts, see exactly how each price was built, read the maker\'s story, and send them an enquiry or a bulk quote request. You deal with the artisan directly.';
+
+  @override
+  String get infoBuyerNoCheckout => 'There is no checkout - yet';
+
+  @override
+  String get infoBuyerNoCheckoutBody =>
+      'You cannot pay in the app today. Craft here is made to order, so the artisan commits materials and weeks of work before payment - that needs escrow to be fair to them. Until then, enquiries connect you directly with the maker.';
+
+  @override
+  String get infoFairTrade => 'Why the prices look different';
+
+  @override
+  String get infoFairTradeBody =>
+      'Every price shows the artisan\'s material cost and their hours at a fair wage of Rs 150/hour. Nothing is hidden and no middleman margin is added.';
+
+  @override
+  String get buyerActiveQuotations => 'Active Quotations';
+
+  @override
+  String get buyerNoActiveRfqsBody =>
+      'Create your first quote request to reach master artisans directly.';
+
+  @override
+  String get buyerRfqLoadFailed =>
+      'Could not load your requests. Check your connection.';
+
+  @override
+  String get artisanRfqTitle => 'Bulk requests';
+
+  @override
+  String get artisanRfqSubtitle => 'Buyers looking for work in your craft';
+
+  @override
+  String get artisanRfqRespond => 'I can make this';
+
+  @override
+  String get artisanRfqResponded => 'You have offered to make this';
+
+  @override
+  String get artisanRfqSent => 'The buyer has been told you can make this.';
+
+  @override
+  String get artisanRfqFailed =>
+      'Could not send. Try again when you have signal.';
+
+  @override
+  String get artisanRfqEmpty => 'No bulk requests right now';
+
+  @override
+  String get artisanRfqEmptyNoCraft =>
+      'Add your craft to your profile to see matching requests.';
+
+  @override
+  String get artisanRfqLoadFailed =>
+      'Could not load requests. Check your connection.';
+
+  @override
+  String get artisanTabEnquiries => 'Enquiries';
+
+  @override
+  String get artisanTabRfqs => 'Bulk requests';
+
+  @override
+  String artisanRfqEmptyBody(String craft) {
+    return 'Buyers looking for $craft will appear here.';
+  }
+
+  @override
+  String artisanRfqOtherResponses(int count) {
+    return '$count artisan(s) have offered so far';
+  }
+
+  @override
+  String get errorVerificationExpired =>
+      'That code has expired. Please request a new one.';
+
+  @override
+  String get errorNotSignedIn => 'You are not signed in. Please sign in again.';
 }

@@ -94,7 +94,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get authDemoNotice =>
-      'এটি নমুনা অ্যাপ: যেকোনো ছয় অঙ্ক কাজ করবে। ফোন যাচাই এখনও যুক্ত হয়নি।';
+      'এসএমএসে কোড পাঠানো হয়েছে। আসতে কয়েক সেকেন্ড লাগতে পারে।';
 
   @override
   String get roleQuestion => 'আপনি কেন এসেছেন?';
@@ -583,4 +583,165 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get buyerSentEnquiries => 'পাঠানো জিজ্ঞাসা';
+
+  @override
+  String get profileNotSignedIn => 'আপনি সাইন ইন করেননি।';
+
+  @override
+  String get profileLoadFailed =>
+      'আপনার প্রোফাইল খোলেনি। সংযোগ দেখে আবার চেষ্টা করুন।';
+
+  @override
+  String get profileIncomplete =>
+      'আপনার প্রোফাইল এখনও তৈরি হয়নি। নিবন্ধন সম্পূর্ণ করুন।';
+
+  @override
+  String get profileNoStoryYet => 'আপনি এখনও আপনার গল্প যোগ করেননি।';
+
+  @override
+  String get profileProductsListed => 'তালিকাভুক্ত পণ্য';
+
+  @override
+  String get profileRating => 'রেটিং';
+
+  @override
+  String get profileIdentity => 'পরিচয় নথি';
+
+  @override
+  String get profileIdentityNote =>
+      'আপনার নিরাপত্তার জন্য কেবল নথির ধরন সংরক্ষিত হয়, নম্বর কখনও নয়।';
+
+  @override
+  String get profileIdGstin => 'জিএসটিআইএন দেওয়া হয়েছে';
+
+  @override
+  String get profileIdPan => 'প্যান দেওয়া হয়েছে';
+
+  @override
+  String get profileIdAadhaar => 'আধার / পরিচয়পত্র দেওয়া হয়েছে';
+
+  @override
+  String get profileIdNone => 'কোনো পরিচয় নথি নেই';
+
+  @override
+  String get infoTitle => 'এই অ্যাপ সম্পর্কে';
+
+  @override
+  String get infoSubtitle => 'এটি কী করে এবং কী করে না';
+
+  @override
+  String get infoWhatThisIs => 'পাথ-শিল্প কী';
+
+  @override
+  String get infoWhatThisIsBody =>
+      'একটি সরঞ্জাম যা একটি ছবি ও একটি কথা থেকে সম্পূর্ণ, ন্যায্য দামের তালিকা তৈরি করে — ইন্টারনেট ছাড়াও। এটি তালিকা তৈরির স্তর, দোকান নয়।';
+
+  @override
+  String get infoHowPricing => 'আপনার দাম কীভাবে হিসাব হয়';
+
+  @override
+  String get infoHowPricingBody =>
+      'উপকরণ + (ঘণ্টা × ন্যায্য মজুরি) + খরচ। সর্বনিম্ন দামের নিচে গেলে আপনার ক্ষতি। আপনি তার উপরে যেকোনো দাম বেছে নিতে পারেন, এবং নিশ্চিত করার পর তা আর বদলায় না।';
+
+  @override
+  String get infoOffline => 'ইন্টারনেট ছাড়া কাজ';
+
+  @override
+  String get infoOfflineBody =>
+      'পণ্য যোগ করার প্রতিটি ধাপ ইন্টারনেট ছাড়া কাজ করে। আপনার খসড়া এই ফোনে সংরক্ষিত থাকে। সংযোগ ফিরলে নিজে থেকেই পাঠানো হয়, ছবি ও লেখা উন্নত হয় — আর আপনার নিশ্চিত করা দাম একই থাকে।';
+
+  @override
+  String get infoPrivacy => 'আপনার গোপনীয়তা';
+
+  @override
+  String get infoPrivacyBody =>
+      'আমরা কেবল সংরক্ষণ করি আপনার কোন নথি আছে — নম্বর কখনও নয়। কোনো আধার বা প্যান নম্বর কোথাও রাখা হয় না। কোনো লোকেশন ট্র্যাকিং বা অ্যানালিটিক্স নেই। আপনি যেকোনো সময় আপনার পণ্য ও ছবি মুছে ফেলতে পারেন।';
+
+  @override
+  String get infoNotYet => 'এই অ্যাপ এখনও যা করে না';
+
+  @override
+  String get infoNotYetBody =>
+      'এখানে কোনো পেমেন্ট বা চেকআউট নেই। ক্রেতারা আপনাকে জিজ্ঞাসা পাঠান এবং আপনি সরাসরি তাঁদের সঙ্গে বিক্রি ঠিক করেন। GeM ও ONDC প্রকাশ কেবল স্ট্যাটাস হিসেবে দেখানো হয়। এখানে আপনার কাছ থেকে কোনো কমিশন নেওয়া হয় না।';
+
+  @override
+  String get infoBuyerWhat => 'আপনি এখানে কী করতে পারেন';
+
+  @override
+  String get infoBuyerWhatBody =>
+      'শিল্প দেখুন, প্রতিটি দাম কীভাবে হয়েছে জানুন, কারিগরের গল্প পড়ুন, এবং তাঁদের জিজ্ঞাসা বা পাইকারি চাহিদা পাঠান। আপনি সরাসরি কারিগরের সঙ্গে লেনদেন করেন।';
+
+  @override
+  String get infoBuyerNoCheckout => 'এখনও চেকআউট নেই';
+
+  @override
+  String get infoBuyerNoCheckoutBody =>
+      'আজ আপনি অ্যাপে পেমেন্ট করতে পারবেন না। এখানকার শিল্প অর্ডারে তৈরি হয়, তাই কারিগর পেমেন্টের আগেই উপকরণ ও সপ্তাহের শ্রম দেন — এর জন্য এসক্রো দরকার যাতে তাঁদের প্রতি ন্যায় হয়। ততক্ষণ, জিজ্ঞাসা আপনাকে সরাসরি কারিগরের সঙ্গে যুক্ত করে।';
+
+  @override
+  String get infoFairTrade => 'দাম আলাদা কেন দেখায়';
+
+  @override
+  String get infoFairTradeBody =>
+      'প্রতিটি দামে কারিগরের উপকরণ খরচ ও ঘণ্টাপ্রতি ₹১৫০ ন্যায্য মজুরি দেখানো হয়। কিছুই লুকানো নেই এবং কোনো মধ্যস্বত্বভোগীর লাভ যোগ করা হয় না।';
+
+  @override
+  String get buyerActiveQuotations => 'চলমান চাহিদা';
+
+  @override
+  String get buyerNoActiveRfqsBody =>
+      'কারিগরের কাছে সরাসরি পৌঁছাতে প্রথম চাহিদা তৈরি করুন।';
+
+  @override
+  String get buyerRfqLoadFailed => 'আপনার চাহিদা খোলেনি। সংযোগ দেখুন।';
+
+  @override
+  String get artisanRfqTitle => 'পাইকারি চাহিদা';
+
+  @override
+  String get artisanRfqSubtitle => 'আপনার শিল্পের জন্য ক্রেতাদের চাহিদা';
+
+  @override
+  String get artisanRfqRespond => 'আমি এটি বানাতে পারি';
+
+  @override
+  String get artisanRfqResponded => 'আপনি এটি বানানোর প্রস্তাব দিয়েছেন';
+
+  @override
+  String get artisanRfqSent => 'ক্রেতাকে জানানো হয়েছে।';
+
+  @override
+  String get artisanRfqFailed => 'পাঠানো যায়নি। সংযোগ পেলে আবার চেষ্টা করুন।';
+
+  @override
+  String get artisanRfqEmpty => 'এখন কোনো পাইকারি চাহিদা নেই';
+
+  @override
+  String get artisanRfqEmptyNoCraft =>
+      'মিল থাকা চাহিদা দেখতে প্রোফাইলে আপনার শিল্প যোগ করুন।';
+
+  @override
+  String get artisanRfqLoadFailed => 'চাহিদা খোলেনি। সংযোগ দেখুন।';
+
+  @override
+  String get artisanTabEnquiries => 'জিজ্ঞাসা';
+
+  @override
+  String get artisanTabRfqs => 'পাইকারি চাহিদা';
+
+  @override
+  String artisanRfqEmptyBody(String craft) {
+    return '$craft খুঁজছেন এমন ক্রেতারা এখানে দেখাবেন।';
+  }
+
+  @override
+  String artisanRfqOtherResponses(int count) {
+    return 'এখন পর্যন্ত $count জন কারিগর প্রস্তাব দিয়েছেন';
+  }
+
+  @override
+  String get errorVerificationExpired => 'এই কোডের মেয়াদ শেষ। নতুন কোড চান।';
+
+  @override
+  String get errorNotSignedIn => 'আপনি সাইন ইন করেননি। আবার সাইন ইন করুন।';
 }

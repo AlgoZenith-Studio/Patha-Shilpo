@@ -7,6 +7,7 @@ import '../../features/auth/screens/role_select_screen.dart';
 import '../../features/auth/screens/splash_screen.dart';
 import '../../features/seller/add_product/add_product_flow.dart';
 import '../../features/seller/home/artisan_home_screen.dart';
+import '../../features/info/info_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../i18n/generated/app_localizations.dart';
 import '../widgets/layout/buyer_shell.dart';
@@ -27,6 +28,7 @@ abstract final class AppRouter {
       Routes.artisanRegistration => const ArtisanRegistrationScreen(),
       Routes.artisanAddProduct => const AddProductFlow(),
       Routes.settings => const SettingsScreen(),
+      Routes.info => const InfoScreen(),
       // BuyerShell hosts its own bottom-nav and all buyer tabs internally,
       // so a single route entry covers the whole buyer module.
       Routes.buyerExplore => const BuyerShell(),

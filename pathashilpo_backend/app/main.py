@@ -3,10 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.api import api_router
 from app.core.config import get_settings
+from app.core.firebase import init_firebase
 
 settings = get_settings()
 
 app = FastAPI(title="Patha-Shilpa Backend", version="1.0.0")
+
+# Initialised at import so a missing service account is visible in the logs at
+# boot rather than on the first authenticated request.
+init_firebase()
 
 app.add_middleware(
     CORSMiddleware,

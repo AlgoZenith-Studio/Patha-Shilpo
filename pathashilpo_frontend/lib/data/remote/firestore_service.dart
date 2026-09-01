@@ -32,6 +32,15 @@ class FirestoreService {
     return _users.doc(uid).get();
   }
 
+  /// Read an artisan profile. Returns null when the artisan has not
+  /// registered yet, so callers can distinguish "new" from "failed".
+  Future<ArtisanModel?> getArtisan(String uid) async {
+    final DocumentSnapshot<Map<String, dynamic>> doc =
+        await _artisans.doc(uid).get();
+    if (!doc.exists || doc.data() == null) return null;
+    return ArtisanModel.fromMap(doc.data()!);
+  }
+
   /// Create or update an Artisan profile
   Future<void> saveArtisanProfile(ArtisanModel artisan) async {
     // 1. Set user role entry in users/{uid}
@@ -127,6 +136,54 @@ class FirestoreService {
       ...rfq.toMap(),
       'rfqId': docRef.id,
       'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Stream a single buyer's own RFQs, newest first - what the buyer sees in
+  /// their "Active RFQs" list.
+  Stream<List<RfqModel>> streamBuyerRfqs(String buyerUid) {
+    return _rfqs
+        .where('buyerUid', isEqualTo: buyerUid)
+        .snapshots()
+        .map((QuerySnapshot<Map<String, dynamic>> snap) {
+      final List<RfqModel> list =
+          snap.docs.map((doc) => RfqModel.fromMap(doc.data())).toList();
+      // Sorted client-side so this needs no composite index (TRD.md §4.2).
+      list.sort((RfqModel a, RfqModel b) => b.createdAt.compareTo(a.createdAt));
+      return list;
+    });
+  }
+
+  /// Open RFQs an artisan can actually fulfil, i.e. matching their craft.
+  ///
+  /// Filtered client-side on craft so this needs no composite index, and
+  /// sorted newest-first (TRD.md §4.2).
+  Stream<List<RfqModel>> streamOpenRfqsForCraft(String craft) {
+    return _rfqs
+        .where('status', isEqualTo: 'active')
+        .snapshots()
+        .map((QuerySnapshot<Map<String, dynamic>> snap) {
+      final List<RfqModel> list = snap.docs
+          .map((doc) => RfqModel.fromMap(doc.data()))
+          .where((RfqModel r) =>
+              craft.isEmpty ||
+              r.craft.toLowerCase() == craft.toLowerCase())
+          .toList();
+      list.sort((RfqModel a, RfqModel b) => b.createdAt.compareTo(a.createdAt));
+      return list;
+    });
+  }
+
+  /// An artisan signalling they can fulfil an RFQ.
+  ///
+  /// Uses arrayUnion so two artisans responding at once cannot clobber each
+  /// other, and responding twice is idempotent.
+  Future<void> respondToRfq({
+    required String rfqId,
+    required String artisanId,
+  }) async {
+    await _rfqs.doc(rfqId).update({
+      'matchedArtisanIds': FieldValue.arrayUnion(<String>[artisanId]),
     });
   }
 
