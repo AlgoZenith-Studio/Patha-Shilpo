@@ -1,0 +1,26 @@
+# The Dockerfile does `COPY . .`, so anything not excluded here is baked into
+# the image. Both entries below are also git-ignored, so Render's build context
+# (a git clone) never sees them — but a `docker build` run locally would, and
+# .env holds every live API key plus the Firebase service account.
+.env
+.env.*
+!.env.example
+.venv/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Deployment descriptors and local compose are not needed inside the image.
+render.yaml
+docker-compose.yml
+
+# Seeding is a developer tool run from a workstation against Firestore; it is
+# not part of the API image.
+scripts/
+
+.git/
+.gitignore
+*.md

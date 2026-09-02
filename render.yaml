@@ -1,0 +1,53 @@
+# Render Blueprint.
+#
+# This file must sit at the REPOSITORY ROOT — Render only looks for
+# `render.yaml` here, never inside a subdirectory. The backend lives in
+# `pathashilpo_backend/`, so `rootDir` points the build there; without it Render
+# would look for the Dockerfile at the repo root and fail.
+#
+# Every secret is `sync: false`, which means Render will NOT read a value from
+# this file — you set each one in the dashboard. Nothing secret belongs in here;
+# it is committed to a public repo.
+services:
+  - type: web
+    name: pathashilpo-backend
+    runtime: docker
+    plan: free
+    region: singapore
+
+    # Build context and Dockerfile both live in the backend folder.
+    rootDir: pathashilpo_backend
+    dockerfilePath: ./Dockerfile
+
+    healthCheckPath: /health
+    autoDeploy: true
+
+    envVars:
+      - key: ENV
+        value: production
+      # Render injects its own PORT and the Dockerfile honours it
+      # (`--port ${PORT:-8000}`). Pinning it here keeps the two in agreement.
+      - key: PORT
+        value: 10000
+      # Fine for a mobile client — native HTTP is not subject to CORS. Tighten
+      # this to real origins before shipping any web build.
+      - key: CORS_ORIGINS
+        value: "*"
+
+      # ---- Secrets: set these in the Render dashboard, not here ----
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SARVAM_API_KEY
+        sync: false
+      - key: BHASHINI_API_KEY
+        sync: false
+      - key: BHASHINI_USER_ID
+        sync: false
+      - key: FAL_KEY
+        sync: false
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      # Raw JSON or base64-encoded JSON; app/core/firebase.py accepts either.
+      # Base64 is far easier to paste as a single dashboard value.
+      - key: FIREBASE_SERVICE_ACCOUNT
+        sync: false

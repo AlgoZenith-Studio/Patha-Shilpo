@@ -1,17 +1,29 @@
-fastapi>=0.115.0
-uvicorn[standard]>=0.32.0
-pydantic>=2.9.0
-pydantic-settings>=2.5.0
+# Pinned to the versions this project is actually developed and tested against
+# (Python 3.12, 37/37 backend tests green).
+#
+# These were open-ended `>=` with no upper bound, which made the Render build
+# fail with `resolution-too-deep`: pip had to explore hundreds of version
+# combinations and gave up. Exact pins make the resolve trivial, the build
+# fast, and — most importantly — make production match what was tested.
+#
+# The Dockerfile pins python:3.12-slim. If this is ever built OUTSIDE Docker,
+# pin the interpreter too (Render: set PYTHON_VERSION=3.12.7), because several
+# of these have no wheels for 3.14 yet and pip will backtrack again.
+
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+pydantic==2.13.5
+pydantic-settings==2.15.0
 
 # Firebase Admin
-firebase-admin>=6.5.0
+firebase-admin==7.5.0
 
 # AI services
-google-generativeai>=0.8.0       # Gemini
-httpx>=0.27.0                    # Bhashini, Sarvam, fal.ai HTTP calls
-fal-client>=0.5.0                # fal.ai SDK
+google-generativeai==0.8.6       # Gemini
+httpx==0.28.1                    # Bhashini, Sarvam, fal.ai HTTP calls
+fal-client==1.0.1                # fal.ai SDK
 
 # Utilities
-python-multipart>=0.0.12         # file uploads
-python-jose[cryptography]>=3.3.0 # JWT verification
-Pillow>=10.4.0                   # server-side image processing
+python-multipart==0.0.32         # file uploads
+python-jose[cryptography]==3.5.0 # JWT verification
+Pillow==12.3.0                   # server-side image processing
