@@ -1,0 +1,10 @@
+# Test-only dependencies. Kept separate from requirements.txt so the Docker
+# image and the Render deploy do not ship a test runner.
+#
+#   pip install -r requirements.txt -r requirements-dev.txt
+#   pytest
+
+-r requirements.txt
+
+pytest>=8.3.0
+pytest-asyncio>=0.24.0

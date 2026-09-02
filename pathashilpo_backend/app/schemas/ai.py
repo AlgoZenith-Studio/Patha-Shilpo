@@ -37,3 +37,35 @@ class ImageResponse(BaseModel):
     enhanced: bool
     quality_score: float
     degraded: bool
+
+
+class TtsRequest(BaseModel):
+    """Text to read aloud — the Hindi price rationale, per PRD §6 step 4.
+
+    `max_length` is a cost guard, not a model limit: TTS is billed per
+    character and this endpoint is reachable by any signed-in user. 1000
+    characters comfortably covers a price rationale or a listing description
+    (itself capped at 600 by TRD §4.1).
+    """
+
+    text: str = Field(min_length=1, max_length=1000)
+    language_code: str = "hi"
+    # Sarvam selects a named voice; Bhashini takes a gender. Both are
+    # optional — each service falls back to its own default.
+    speaker: str | None = None
+    gender: Literal["female", "male"] = "female"
+
+
+class TtsResponse(BaseModel):
+    """Base64 audio rather than a raw body.
+
+    Costs ~33% more bytes than streaming the audio, which is acceptable for a
+    one-sentence rationale, and keeps `source` in the payload so the client
+    can tell an online readback from the `flutter_tts` fallback — the same
+    shape every other AI response uses.
+    """
+
+    audio: str
+    content_type: str
+    language_code: str
+    source: Literal["sarvam", "bhashini"]

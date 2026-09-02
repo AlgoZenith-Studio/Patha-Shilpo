@@ -1,15 +1,36 @@
+"""Sarvam AI client — ASR, TTS and translation (TRD.md §8.3).
+
+Sarvam is the **primary** speech provider for both directions; Bhashini is
+the fallback for languages and dialects it covers poorly. Unlike Bhashini,
+every call here is a single request with a static URL, which is why this
+client is so much shorter.
+
+Raises `SarvamError` for every failure mode, including a missing API key, so
+callers can treat "not configured" and "provider down" identically and fall
+through to the next tier.
+"""
+
 import base64
+import logging
 
 import httpx
 
 from app.core.config import get_settings
 
+logger = logging.getLogger(__name__)
+
 BASE_URL = "https://api.sarvam.ai"
-TIMEOUT = 10.0
+
+# Per the §8.5 failure matrix. TTS is tighter than ASR/translate because it
+# runs while the artisan waits to hear the price rationale read aloud —
+# falling to the device voice quickly beats a long silence.
+ASR_TIMEOUT = 10.0
+TTS_TIMEOUT = 8.0
+TRANSLATE_TIMEOUT = 10.0
 
 
 class SarvamError(Exception):
-    pass
+    """Any Sarvam failure. Callers treat this as 'try the next tier'."""
 
 
 def _headers() -> dict:
@@ -19,22 +40,41 @@ def _headers() -> dict:
     return {"api-subscription-key": settings.SARVAM_API_KEY}
 
 
-async def transcribe(audio_bytes: bytes, language_code: str) -> dict:
-    """Speech-to-text. Returns {transcript, language_code, confidence}."""
+async def _post(path: str, payload: dict, timeout: float) -> dict:
+    """One Sarvam call, with uniform error handling.
+
+    Never lets the response body reach the exception message — a provider
+    error can echo the submitted payload, which for ASR is the artisan's
+    audio and for TTS is their listing text (§5.6).
+    """
     try:
-        async with httpx.AsyncClient(timeout=TIMEOUT) as client:
+        async with httpx.AsyncClient(timeout=timeout) as client:
             response = await client.post(
-                f"{BASE_URL}/speech-to-text",
-                headers=_headers(),
-                json={
-                    "audio": base64.b64encode(audio_bytes).decode("ascii"),
-                    "language_code": language_code,
-                },
+                f"{BASE_URL}{path}", headers=_headers(), json=payload
             )
             response.raise_for_status()
-            data = response.json()
-    except (httpx.HTTPError, SarvamError) as exc:
-        raise SarvamError(str(exc)) from exc
+            return response.json()
+    except SarvamError:
+        raise
+    except (httpx.HTTPError, ValueError) as exc:
+        logger.warning(
+            "Sarvam %s failed (%s); falling through to the next tier",
+            path,
+            type(exc).__name__,
+        )
+        raise SarvamError(f"Sarvam {path} failed: {type(exc).__name__}") from exc
+
+
+async def transcribe(audio_bytes: bytes, language_code: str) -> dict:
+    """Speech-to-text. Returns {transcript, language_code, confidence}."""
+    data = await _post(
+        "/speech-to-text",
+        {
+            "audio": base64.b64encode(audio_bytes).decode("ascii"),
+            "language_code": language_code,
+        },
+        ASR_TIMEOUT,
+    )
 
     return {
         "transcript": data.get("transcript", ""),
@@ -43,45 +83,50 @@ async def transcribe(audio_bytes: bytes, language_code: str) -> dict:
     }
 
 
-async def synthesize(text: str, language_code: str, speaker: str | None = None) -> bytes:
+async def synthesize(
+    text: str,
+    language_code: str,
+    speaker: str | None = None,
+) -> bytes:
     """Text-to-speech. Returns raw audio bytes."""
-    payload = {"text": text, "language_code": language_code}
+    if not text.strip():
+        raise SarvamError("Cannot synthesize empty text")
+
+    payload: dict = {"text": text, "language_code": language_code}
     if speaker:
         payload["speaker"] = speaker
 
-    try:
-        async with httpx.AsyncClient(timeout=TIMEOUT) as client:
-            response = await client.post(
-                f"{BASE_URL}/text-to-speech",
-                headers=_headers(),
-                json=payload,
-            )
-            response.raise_for_status()
-            data = response.json()
-    except (httpx.HTTPError, SarvamError) as exc:
-        raise SarvamError(str(exc)) from exc
+    data = await _post("/text-to-speech", payload, TTS_TIMEOUT)
 
-    audio_b64 = data.get("audio") or data.get("audios", [None])[0]
+    # Sarvam has returned both shapes across API versions; accept either
+    # rather than breaking on a provider-side change.
+    audio_b64 = data.get("audio")
+    if not audio_b64:
+        audios = data.get("audios") or []
+        audio_b64 = audios[0] if audios else None
+
     if not audio_b64:
         raise SarvamError("Sarvam TTS response missing audio")
-    return base64.b64decode(audio_b64)
+
+    try:
+        return base64.b64decode(audio_b64)
+    except (ValueError, TypeError) as exc:
+        raise SarvamError("Sarvam TTS audio was not valid base64") from exc
 
 
 async def translate(text: str, source_language: str, target_language: str) -> str:
-    try:
-        async with httpx.AsyncClient(timeout=TIMEOUT) as client:
-            response = await client.post(
-                f"{BASE_URL}/translate",
-                headers=_headers(),
-                json={
-                    "input": text,
-                    "source_language": source_language,
-                    "target_language": target_language,
-                },
-            )
-            response.raise_for_status()
-            data = response.json()
-    except (httpx.HTTPError, SarvamError) as exc:
-        raise SarvamError(str(exc)) from exc
+    """Machine translation. Returns the translated text."""
+    if not text.strip():
+        return ""
+
+    data = await _post(
+        "/translate",
+        {
+            "input": text,
+            "source_language": source_language,
+            "target_language": target_language,
+        },
+        TRANSLATE_TIMEOUT,
+    )
 
     return data.get("translated_text", "")
