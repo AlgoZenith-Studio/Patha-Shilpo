@@ -17,6 +17,12 @@ dependencies:
   firebase_auth: ^5.3.1
   cloud_firestore: ^5.4.4
   firebase_storage: ^12.3.4
+  # v6 API: GoogleSignIn() + .signIn() as used in lib/data/remote/auth_service.dart.
+  # v7 removed both - do not bump without rewriting that file.
+  google_sign_in: ^6.2.1
+
+  # Runtime config from the bundled .env asset (see lib/core/config/env.dart)
+  flutter_dotenv: ^5.1.0
 
   # Offline store
   hive: ^2.2.3
