@@ -81,7 +81,8 @@ class AddProductState extends ChangeNotifier {
     persist();
   }
 
-  void setSpeech({required String transcript, String? audioPath, int tier = 3}) {
+  void setSpeech(
+      {required String transcript, String? audioPath, int tier = 3}) {
     this.transcript = transcript;
     this.audioPath = audioPath;
     speechTier = tier;
@@ -191,7 +192,8 @@ class AddProductState extends ChangeNotifier {
       {DraftsBox drafts = const DraftsBox()}) {
     final Map<String, dynamic>? saved = drafts.get(localId);
     if (saved == null) return null;
-    final AddProductState state = AddProductState(localId: localId, drafts: drafts);
+    final AddProductState state =
+        AddProductState(localId: localId, drafts: drafts);
     state.loadFromMap(saved);
     return state;
   }

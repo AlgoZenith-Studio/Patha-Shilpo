@@ -755,4 +755,204 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get reviewBackgroundRemoved => 'पृष्ठभूमि हटा दी गई';
+
+  @override
+  String get ttsListen => 'सुनें';
+
+  @override
+  String get ttsStop => 'रोकें';
+
+  @override
+  String get ttsUnavailable =>
+      'इस फ़ोन में इस भाषा के लिए कोई आवाज़ उपलब्ध नहीं है।';
+
+  @override
+  String get rfqHeroTitle => 'ग्रामीण क्लस्टरों से सीधी खरीद';
+
+  @override
+  String get rfqHeroBody =>
+      'बिना किसी बिचौलिये के कस्टम विशिष्टताएँ, थोक ऑर्डर या कॉर्पोरेट उपहार की माँग भेजें।';
+
+  @override
+  String get rfqSelectCraft => 'शिल्प श्रेणी चुनें';
+
+  @override
+  String get rfqTargetCluster => 'लक्षित क्लस्टर / क्षेत्र';
+
+  @override
+  String get rfqAllClusters => 'सभी क्लस्टर';
+
+  @override
+  String get rfqQuantityLabel => 'ऑर्डर मात्रा';
+
+  @override
+  String rfqPieces(int count) {
+    return '$count नग';
+  }
+
+  @override
+  String get rfqDeadlineLabel => 'डिलीवरी की अंतिम तिथि';
+
+  @override
+  String get rfqChooseDate => 'तिथि चुनें';
+
+  @override
+  String get rfqDeadlineNotSet => 'तय नहीं';
+
+  @override
+  String get rfqSpecsLabel => 'विशिष्टताएँ और अनुकूलन विवरण';
+
+  @override
+  String get rfqSpecsHint =>
+      'रंग, माप, आकृतियाँ या पैकेजिंग की ज़रूरतें बताएँ…';
+
+  @override
+  String get rfqMatchNote =>
+      'इस शिल्प के कारीगर आपकी माँग देखेंगे और बनाने की पेशकश कर सकेंगे।';
+
+  @override
+  String get rfqBroadcast => 'कारीगरों को अनुरोध भेजें';
+
+  @override
+  String get rfqNotesRequired => 'भेजने से पहले अपनी ज़रूरत बताएँ।';
+
+  @override
+  String get rfqSignInRequired =>
+      'अनुरोध भेजने हेतु खरीदार के रूप में साइन इन करें।';
+
+  @override
+  String get rfqSent =>
+      'अनुरोध भेजा गया। इस शिल्प के कारीगर अब उत्तर दे सकते हैं।';
+
+  @override
+  String get rfqSendFailed =>
+      'अनुरोध नहीं भेजा जा सका। कनेक्शन जाँचकर पुनः प्रयास करें।';
+
+  @override
+  String get rfqStatusActive => 'सक्रिय खरीद';
+
+  @override
+  String get rfqStatusMatched => 'कोटेशन प्राप्त';
+
+  @override
+  String rfqPcs(int count) {
+    return '$count नग';
+  }
+
+  @override
+  String rfqRespondedCount(int count) {
+    return '$count कारीगर यह बना सकते हैं';
+  }
+
+  @override
+  String get languagePickerLabel => 'भाषा';
+
+  @override
+  String get publishLive => 'प्रकाशित। अब खरीदार इस शिल्प को देख सकते हैं।';
+
+  @override
+  String get publishKeptDraft =>
+      'सर्वर से संपर्क नहीं हो सका। इसी फ़ोन में सहेजा गया - प्रकाशित करने हेतु दोबारा खोलें।';
+
+  @override
+  String get publishNoProfile =>
+      'शिल्प प्रकाशित करने से पहले अपना कारीगर पंजीकरण पूरा करें।';
+
+  @override
+  String get publishNotSignedIn =>
+      'प्रकाशित करने हेतु कारीगर के रूप में साइन इन करें।';
+
+  @override
+  String get productsEmptyBody =>
+      'अपना पहला शिल्प फ़ोटो करने हेतु + बटन दबाएँ।';
+
+  @override
+  String get productsLoadFailed => 'आपके शिल्प लोड नहीं हो सके';
+
+  @override
+  String get enquiriesEmptyBody =>
+      'जब कोई खरीदार आपके शिल्प के बारे में पूछेगा, वह यहाँ दिखेगा।';
+
+  @override
+  String get enquiriesLoadFailed => 'आपकी पूछताछ लोड नहीं हो सकी';
+
+  @override
+  String enquiryQuantity(int count) {
+    return 'मात्रा: $count';
+  }
+
+  @override
+  String enquiryFrom(String name) {
+    return '$name की ओर से';
+  }
+
+  @override
+  String get profileVerification => 'सत्यापन';
+
+  @override
+  String get profileUnverified => 'लंबित';
+
+  @override
+  String get rfqQueuedOffline =>
+      'सहेजा गया। ऑनलाइन होते ही आपका अनुरोध कारीगरों तक पहुँच जाएगा।';
+
+  @override
+  String get productChangePrice => 'मूल्य बदलें';
+
+  @override
+  String get productPriceUpdated => 'मूल्य बदल दिया गया।';
+
+  @override
+  String get productActionFailed =>
+      'यह पूरा नहीं हो सका। कनेक्शन जाँचकर पुनः प्रयास करें।';
+
+  @override
+  String get productUnlist => 'दुकान से हटाएँ';
+
+  @override
+  String get productRelist => 'दुकान में वापस लगाएँ';
+
+  @override
+  String get productUnlisted =>
+      'दुकान से हटा दिया गया। अब खरीदार इसे नहीं देख सकते।';
+
+  @override
+  String get productRelisted => 'दुकान में वापस लगा दिया गया।';
+
+  @override
+  String get productListed => 'खरीदारों को दिख रहा है';
+
+  @override
+  String get productNotListed => 'खरीदारों से छिपा है';
+
+  @override
+  String get productDelete => 'मिटाएँ';
+
+  @override
+  String get productDeleteTitle => 'यह शिल्प मिटाएँ?';
+
+  @override
+  String get productDeleteBody =>
+      'यह सूची हमेशा के लिए हट जाएगी। इसे वापस नहीं लाया जा सकता।';
+
+  @override
+  String get productMaterialCost => 'आपने सामग्री पर खर्च किया';
+
+  @override
+  String get productHoursOfWork => 'आपने कितने घंटे काम किया';
+
+  @override
+  String productLabourAtFairWage(int rate) {
+    return '₹$rate/घंटा की दर से आपकी मेहनत';
+  }
+
+  @override
+  String get productDescription => 'विवरण';
+
+  @override
+  String get profileSettingUp => 'आपकी खरीदार प्रोफ़ाइल तैयार की जा रही है…';
+
+  @override
+  String get profileSignInPrompt =>
+      'अपनी प्रोफ़ाइल, सहेजे गए शिल्प और पूछताछ देखने हेतु खरीदार के रूप में साइन इन करें।';
 }

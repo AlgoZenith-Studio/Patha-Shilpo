@@ -85,10 +85,10 @@ abstract final class AppColors {
 /// Shape and stroke constants from DESIGN_SYSTEM.md §2.
 abstract final class AppShape {
   /// Card corner radius (§2A).
-  static const double cardRadius = 18;
+  static const double cardRadius = 20;
 
   /// Bottom-sheet top corner radius (§2C).
-  static const double sheetRadius = 24;
+  static const double sheetRadius = 32;
 
   /// Card and chip border stroke (§2A).
   static const double hairline = 0.8;

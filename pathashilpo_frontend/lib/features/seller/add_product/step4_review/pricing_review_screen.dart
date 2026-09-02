@@ -7,6 +7,7 @@ import '../../../../ai/listing/controllers/listing_router.dart';
 import '../../../../ai/listing/controllers/listing_template.dart';
 import '../../../../ai/image/controllers/image_result.dart';
 import '../../../../ai/image/controllers/image_router.dart';
+import '../../../../ai/tts/views/tts_readback_button.dart';
 import '../../../../ai/pricing/models/price_result.dart';
 import '../../../../core/i18n/generated/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -166,8 +167,7 @@ class _PricingReviewScreenState extends State<PricingReviewScreen> {
     }
 
     // The listing engine emits both scripts; show only the active language.
-    final bool showHindi =
-        Localizations.localeOf(context).languageCode == 'hi';
+    final bool showHindi = Localizations.localeOf(context).languageCode == 'hi';
     final String title =
         (showHindi ? draft.titleHi : draft.title) ?? draft.title ?? '';
     final String description =
@@ -190,9 +190,7 @@ class _PricingReviewScreenState extends State<PricingReviewScreen> {
             ],
           ),
           const SizedBox(height: 16),
-
           if (draft.photoBytes != null) _buildPhoto(t, draft),
-
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(14),
@@ -237,27 +235,39 @@ class _PricingReviewScreenState extends State<PricingReviewScreen> {
               ],
             ),
           ),
-
           const SizedBox(height: 20),
           Text(t.reviewYourPrice,
               style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 10),
+          Builder(
+            builder: (BuildContext context) {
+              // Built once and shared: the card shows the rationale, the
+              // button reads out the exact same sentence. An artisan with
+              // limited literacy should hear precisely what is on screen,
+              // never a separately worded summary (PRD.md §6 step 4).
+              final String reasoning = t.priceReasoning(
+                price.materialCost,
+                price.hoursOfWork,
+                price.fairWagePerHour,
+                price.labourCost,
+              );
 
-          PriceBandCard(
-            floor: price.floor,
-            suggested: price.suggested,
-            max: price.max,
-            reasoning: t.priceReasoning(
-              price.materialCost,
-              price.hoursOfWork,
-              price.fairWagePerHour,
-              price.labourCost,
-            ),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  PriceBandCard(
+                    floor: price.floor,
+                    suggested: price.suggested,
+                    max: price.max,
+                    reasoning: reasoning,
+                  ),
+                  TtsReadbackButton(text: reasoning),
+                ],
+              );
+            },
           ),
-
           const SizedBox(height: 20),
           _PriceChooser(price: price, draft: draft),
-
           const SizedBox(height: 24),
           PrimaryBilingualButton(
             label: t.reviewPublish,

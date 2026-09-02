@@ -760,4 +760,202 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewBackgroundRemoved => 'Background removed';
+
+  @override
+  String get ttsListen => 'Listen';
+
+  @override
+  String get ttsStop => 'Stop';
+
+  @override
+  String get ttsUnavailable =>
+      'No voice available on this phone for this language.';
+
+  @override
+  String get rfqHeroTitle => 'Direct sourcing from rural clusters';
+
+  @override
+  String get rfqHeroBody =>
+      'Post custom specifications, bulk orders or corporate gifting needs with no intermediary margin.';
+
+  @override
+  String get rfqSelectCraft => 'Select craft discipline';
+
+  @override
+  String get rfqTargetCluster => 'Target cluster / region';
+
+  @override
+  String get rfqAllClusters => 'All clusters';
+
+  @override
+  String get rfqQuantityLabel => 'Order quantity';
+
+  @override
+  String rfqPieces(int count) {
+    return '$count pieces';
+  }
+
+  @override
+  String get rfqDeadlineLabel => 'Delivery deadline';
+
+  @override
+  String get rfqChooseDate => 'Choose a date';
+
+  @override
+  String get rfqDeadlineNotSet => 'Not set';
+
+  @override
+  String get rfqSpecsLabel => 'Specifications and customisation details';
+
+  @override
+  String get rfqSpecsHint =>
+      'Describe colours, dimensions, motifs or packaging needs…';
+
+  @override
+  String get rfqMatchNote =>
+      'Artisans working in this craft will see your request and can offer to make it.';
+
+  @override
+  String get rfqBroadcast => 'Send request to artisans';
+
+  @override
+  String get rfqNotesRequired =>
+      'Please describe what you need before sending.';
+
+  @override
+  String get rfqSignInRequired => 'Sign in as a buyer to send a request.';
+
+  @override
+  String get rfqSent => 'Request sent. Artisans in this craft can now respond.';
+
+  @override
+  String get rfqSendFailed =>
+      'Could not send the request. Check your connection and try again.';
+
+  @override
+  String get rfqStatusActive => 'Active sourcing';
+
+  @override
+  String get rfqStatusMatched => 'Quotations received';
+
+  @override
+  String rfqPcs(int count) {
+    return '$count pcs';
+  }
+
+  @override
+  String rfqRespondedCount(int count) {
+    return '$count artisan(s) can make this';
+  }
+
+  @override
+  String get languagePickerLabel => 'Language';
+
+  @override
+  String get publishLive => 'Published. Buyers can see this craft now.';
+
+  @override
+  String get publishKeptDraft =>
+      'Could not reach the server. Saved on this phone - open it again to publish.';
+
+  @override
+  String get publishNoProfile =>
+      'Finish your artisan registration before publishing a craft.';
+
+  @override
+  String get publishNotSignedIn => 'Sign in as an artisan to publish.';
+
+  @override
+  String get productsEmptyBody =>
+      'Tap the + button to photograph your first craft.';
+
+  @override
+  String get productsLoadFailed => 'Could not load your crafts';
+
+  @override
+  String get enquiriesEmptyBody =>
+      'When a buyer asks about one of your crafts it will appear here.';
+
+  @override
+  String get enquiriesLoadFailed => 'Could not load your enquiries';
+
+  @override
+  String enquiryQuantity(int count) {
+    return 'Quantity: $count';
+  }
+
+  @override
+  String enquiryFrom(String name) {
+    return 'From $name';
+  }
+
+  @override
+  String get profileVerification => 'Verification';
+
+  @override
+  String get profileUnverified => 'Pending';
+
+  @override
+  String get rfqQueuedOffline =>
+      'Saved. Your request will reach artisans as soon as you are back online.';
+
+  @override
+  String get productChangePrice => 'Change price';
+
+  @override
+  String get productPriceUpdated => 'Price updated.';
+
+  @override
+  String get productActionFailed =>
+      'That did not go through. Check your connection and try again.';
+
+  @override
+  String get productUnlist => 'Take off the storefront';
+
+  @override
+  String get productRelist => 'Put back on the storefront';
+
+  @override
+  String get productUnlisted =>
+      'Taken off the storefront. Buyers can no longer see it.';
+
+  @override
+  String get productRelisted => 'Back on the storefront.';
+
+  @override
+  String get productListed => 'Visible to buyers';
+
+  @override
+  String get productNotListed => 'Hidden from buyers';
+
+  @override
+  String get productDelete => 'Delete';
+
+  @override
+  String get productDeleteTitle => 'Delete this craft?';
+
+  @override
+  String get productDeleteBody =>
+      'This removes the listing for good. It cannot be undone.';
+
+  @override
+  String get productMaterialCost => 'Materials you paid for';
+
+  @override
+  String get productHoursOfWork => 'Hours you worked';
+
+  @override
+  String productLabourAtFairWage(int rate) {
+    return 'Your labour at ₹$rate/hour';
+  }
+
+  @override
+  String get productDescription => 'Description';
+
+  @override
+  String get profileSettingUp => 'Setting up your buyer profile…';
+
+  @override
+  String get profileSignInPrompt =>
+      'Sign in as a buyer to see your profile, saved crafts and enquiries.';
 }

@@ -1,3 +1,5 @@
+import 'timestamps.dart';
+
 /// Artisan Model according to TRD.md §4.1
 class ArtisanModel {
   final String uid;
@@ -109,9 +111,7 @@ class ArtisanModel {
       productCount: map['productCount']?.toInt() ?? 0,
       rating: (map['rating'] ?? 4.9).toDouble(),
       audioStoryUrl: map['audioStoryUrl'],
-      createdAt: map['createdAt'] != null
-          ? DateTime.tryParse(map['createdAt']) ?? DateTime.now()
-          : DateTime.now(),
+      createdAt: parseTimestamp(map['createdAt']),
     );
   }
 }

@@ -14,8 +14,9 @@ class StorageService {
     bool isOriginal = false,
   }) async {
     final fileName = isOriginal ? 'original.jpg' : 'processed.jpg';
-    final ref = _storage.ref().child('products/$artisanId/$productId/$fileName');
-    
+    final ref =
+        _storage.ref().child('products/$artisanId/$productId/$fileName');
+
     final metadata = SettableMetadata(
       contentType: 'image/jpeg',
       customMetadata: {'artisanId': artisanId, 'productId': productId},
@@ -31,8 +32,9 @@ class StorageService {
     required String productId,
     required File audioFile,
   }) async {
-    final ref = _storage.ref().child('products/$artisanId/$productId/audio.m4a');
-    
+    final ref =
+        _storage.ref().child('products/$artisanId/$productId/audio.m4a');
+
     final metadata = SettableMetadata(
       contentType: 'audio/mp4',
       customMetadata: {'artisanId': artisanId, 'productId': productId},

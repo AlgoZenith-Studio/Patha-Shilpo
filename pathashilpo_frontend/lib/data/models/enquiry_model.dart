@@ -1,3 +1,5 @@
+import 'timestamps.dart';
+
 /// Enquiry Model according to TRD.md §4.1
 class EnquiryModel {
   final String enquiryId;
@@ -66,9 +68,7 @@ class EnquiryModel {
       quantity: map['quantity']?.toInt() ?? 1,
       message: map['message'] ?? '',
       status: map['status'] ?? 'new',
-      createdAt: map['createdAt'] != null
-          ? DateTime.tryParse(map['createdAt']) ?? DateTime.now()
-          : DateTime.now(),
+      createdAt: parseTimestamp(map['createdAt']),
     );
   }
 }

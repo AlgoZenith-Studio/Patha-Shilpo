@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 
+import '../../../../ai/voice/controllers/on_device_stt_controller.dart';
+import '../../../../ai/voice/models/stt_state.dart';
 import '../../../../core/i18n/generated/app_localizations.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/widgets/buttons/primary_bilingual_button.dart';
-import '../../../../core/widgets/buttons/voice_mic_button.dart';
 import '../models/add_product_state.dart';
 
-/// Step 2 — vernacular voice description (PRD.md FEAT-02).
+/// Step 2 — Vernacular on-device voice description (PRD.md FEAT-02).
 ///
-/// Three tiers, degrading downward (TRD.md §7):
-///   1. cloud ASR via the backend — not wired here yet
-///   2. the device recogniser via `speech_to_text`
-///   3. a typed description, which always works
-///
-/// **The artisan is never blocked.** If tiers 1 and 2 are unavailable — no
-/// network, no recogniser, permission refused — tier 3 still produces a usable
-/// draft, which is the whole point.
+/// Multi-tiered voice cataloguing:
+///   1. On-Device Speech Recognition (Local, offline, privacy-first)
+///   2. Continuous dictation with live sound visualizer
+///   3. Typed manual description fallback so artisan is never blocked.
 class VoiceRecordScreen extends StatefulWidget {
   const VoiceRecordScreen({super.key, required this.onNext});
 
@@ -29,37 +24,40 @@ class VoiceRecordScreen extends StatefulWidget {
   State<VoiceRecordScreen> createState() => _VoiceRecordScreenState();
 }
 
-class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
-  final SpeechToText _speech = SpeechToText();
+class _VoiceRecordScreenState extends State<VoiceRecordScreen>
+    with SingleTickerProviderStateMixin {
+  final OnDeviceSttController _stt = OnDeviceSttController();
   final TextEditingController _manual = TextEditingController();
+  late AnimationController _waveAnim;
 
   bool _available = false;
   bool _permissionPermanentlyDenied = false;
   bool _listening = false;
   bool _checked = false;
   String _partial = '';
+  double _soundLevel = 0.0;
 
   @override
   void initState() {
     super.initState();
+    _waveAnim = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat(reverse: true);
     _init();
   }
 
   @override
   void dispose() {
+    _waveAnim.dispose();
     _manual.dispose();
+    _stt.stopListening();
     super.dispose();
   }
 
   Future<void> _init() async {
-    // speech_to_text.initialize() can only request the runtime permission if
-    // RECORD_AUDIO is declared in AndroidManifest.xml. Requesting it
-    // explicitly here, rather than relying on the plugin's implicit prompt,
-    // gives an honest "permission refused" message instead of a generic
-    // "not available" one when that's genuinely why it failed.
-    final PermissionStatus micStatus = await Permission.microphone.request();
-
-    if (micStatus.isPermanentlyDenied) {
+    final status = await Permission.microphone.status;
+    if (status.isPermanentlyDenied) {
       if (!mounted) return;
       setState(() {
         _available = false;
@@ -69,29 +67,12 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
       return;
     }
 
-    bool ok = false;
-    if (micStatus.isGranted) {
-      try {
-        ok = await _speech.initialize(
-          onStatus: (String s) {
-            if (!mounted) return;
-            if (s == 'done' || s == 'notListening') {
-              setState(() => _listening = false);
-            }
-          },
-          onError: (_) {
-            if (mounted) setState(() => _listening = false);
-          },
-        );
-      } catch (_) {
-        ok = false;
-      }
-    }
-
+    final ok = await _stt.initialize();
     if (!mounted) return;
     setState(() {
       _available = ok;
       _checked = true;
+      _permissionPermanentlyDenied = !ok && _stt.status == SttStatus.permissionDenied;
     });
   }
 
@@ -112,9 +93,9 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
           const SizedBox(height: 20),
 
           if (!_checked)
-            const Center(child: CircularProgressIndicator())
+            const Center(child: CircularProgressIndicator(color: AppColors.action))
           else if (_available)
-            _tier2(t)
+            _buildVoiceHero(t)
           else
             _tier3Notice(t),
 
@@ -125,7 +106,6 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
             hint: t.voiceTypeHint,
             onChanged: (_) => setState(() {}),
           ),
-
           const SizedBox(height: 20),
           PrimaryBilingualButton(
             label: t.commonNext,
@@ -142,58 +122,185 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
       _partial.trim().isNotEmpty ||
       (draft.transcript?.trim().isNotEmpty ?? false);
 
-  Widget _tier2(AppLocalizations t) {
-    return Column(
-      children: <Widget>[
-        Center(
-          child: VoiceMicButton(
-            isListening: _listening,
-            onPressed: _listening ? _stop : _start,
-          ),
+  Widget _buildVoiceHero(AppLocalizations t) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: _listening ? AppColors.action : AppColors.border.withValues(alpha: 0.8),
+          width: _listening ? 1.4 : 1.0,
         ),
-        Text(
-          _listening ? t.voiceListening : t.voiceTapToSpeak,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        if (_partial.isNotEmpty) ...<Widget>[
-          const SizedBox(height: 16),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(AppShape.cardRadius),
-              border:
-                  Border.all(color: AppColors.border, width: AppShape.hairline),
-            ),
-            child:
-                Text(_partial, style: Theme.of(context).textTheme.bodyLarge),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.ink.withValues(alpha: 0.04),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
           ),
         ],
-      ],
+      ),
+      child: Column(
+        children: <Widget>[
+          // On-device pill badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppColors.canvas,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.offline_bolt_rounded,
+                  size: 14,
+                  color: _listening ? Colors.green : AppColors.action,
+                ),
+                const SizedBox(width: 4),
+                const Text(
+                  'On-Device Speech Recognizer (Offline)',
+                  style: TextStyle(
+                    fontFamily: 'Pally',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 11.5,
+                    color: AppColors.ink,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Animated mic button
+          GestureDetector(
+            onTap: _listening ? _stop : _start,
+            child: AnimatedBuilder(
+              animation: _waveAnim,
+              builder: (context, child) {
+                final pulse = _listening
+                    ? (1.0 + (_soundLevel * 0.4) + (_waveAnim.value * 0.15))
+                    : 1.0;
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (_listening) ...[
+                      Container(
+                        width: 90 * pulse,
+                        height: 90 * pulse,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.action.withValues(alpha: 0.15),
+                        ),
+                      ),
+                      Container(
+                        width: 76 * pulse,
+                        height: 76 * pulse,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.action.withValues(alpha: 0.25),
+                        ),
+                      ),
+                    ],
+                    Container(
+                      width: 64,
+                      height: 64,
+                      decoration: BoxDecoration(
+                        color: _listening ? AppColors.action : AppColors.heritage,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: (_listening ? AppColors.action : AppColors.heritage)
+                                .withValues(alpha: 0.35),
+                            blurRadius: 14,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        _listening ? Icons.mic : Icons.mic_none_rounded,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          Text(
+            _listening ? t.voiceListening : t.voiceTapToSpeak,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Pally',
+              fontWeight: FontWeight.w700,
+              fontSize: 14,
+              color: _listening ? AppColors.action : AppColors.ink,
+            ),
+          ),
+
+          if (_partial.isNotEmpty) ...<Widget>[
+            const SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.canvas,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Text(
+                _partial,
+                style: const TextStyle(
+                  fontFamily: 'Lora',
+                  fontSize: 14.5,
+                  height: 1.45,
+                  color: AppColors.ink,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 
   Widget _tier3Notice(AppLocalizations t) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.heritage.withValues(alpha: 0.35),
-        borderRadius: BorderRadius.circular(AppShape.cardRadius),
+        color: AppColors.heritage.withValues(alpha: 0.25),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(t.voiceUnavailableTitle,
-              style: Theme.of(context).textTheme.titleSmall),
-          const SizedBox(height: 4),
+          Row(
+            children: [
+              const Icon(Icons.mic_off_outlined, color: AppColors.action, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(t.voiceUnavailableTitle,
+                    style: Theme.of(context).textTheme.titleSmall),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
           Text(t.voiceUnavailableBody,
               style: Theme.of(context).textTheme.bodySmall),
           if (_permissionPermanentlyDenied) ...<Widget>[
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             OutlinedButton(
               onPressed: openAppSettings,
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
               child: Text(t.voiceOpenSettings),
             ),
           ],
@@ -207,19 +314,31 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen> {
       _listening = true;
       _partial = '';
     });
-    await _speech.listen(
-      // Speech locale is independent of UI locale — an artisan may run the
-      // interface in English and speak Hindi (TRD.md §10).
-      listenOptions: SpeechListenOptions(localeId: 'hi_IN'),
-      onResult: (SpeechRecognitionResult r) {
+
+    final success = await _stt.startListening(
+      preferredLocale: 'hi_IN',
+      onResult: (SttResult r) {
         if (!mounted) return;
-        setState(() => _partial = r.recognizedWords);
+        setState(() {
+          _partial = r.text;
+          if (r.isFinal) {
+            _listening = false;
+          }
+        });
+      },
+      onSoundLevelChange: (level) {
+        if (!mounted) return;
+        setState(() => _soundLevel = level);
       },
     );
+
+    if (!success && mounted) {
+      setState(() => _listening = false);
+    }
   }
 
   Future<void> _stop() async {
-    await _speech.stop();
+    await _stt.stopListening();
     if (mounted) setState(() => _listening = false);
   }
 
@@ -262,7 +381,24 @@ class _GuidedForm extends StatelessWidget {
           controller: controller,
           onChanged: onChanged,
           maxLines: 4,
-          decoration: InputDecoration(hintText: hint),
+          style: const TextStyle(fontFamily: 'Lora', fontSize: 14),
+          decoration: InputDecoration(
+            hintText: hint,
+            filled: true,
+            fillColor: AppColors.surface,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: AppColors.action, width: 1.4),
+            ),
+          ),
         ),
       ],
     );

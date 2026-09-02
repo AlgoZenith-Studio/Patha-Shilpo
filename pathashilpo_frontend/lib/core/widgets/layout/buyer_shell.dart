@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../i18n/generated/app_localizations.dart';
+import '../../routing/route_names.dart';
 import '../../theme/colors.dart';
+import '../brand/app_logo.dart';
+import '../../../features/auth/controllers/auth_controller.dart';
 import '../../../features/buyer/explore/buyer_explore_screen.dart';
 import '../../../features/buyer/rfq/buyer_rfq_screen.dart';
 import '../../../features/buyer/enquiries/buyer_enquiries_screen.dart';
@@ -18,10 +22,42 @@ class _BuyerShellState extends State<BuyerShell> {
 
   final List<Widget> _pages = const [
     BuyerExploreScreen(),
-    BuyerRfqScreen(),
+    BuyerRfqScreen(embedded: true),
     BuyerEnquiriesScreen(),
     BuyerProfileScreen(),
   ];
+
+  Future<void> _handleLogout(BuildContext context) async {
+    final t = AppLocalizations.of(context);
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(t.commonSignOut),
+        content: const Text('Are you sure you want to log out of Patha-Shilpo?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.action,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(t.commonSignOut),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && context.mounted) {
+      await context.read<AuthController>().signOut();
+      if (context.mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil(Routes.login, (_) => false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,33 +81,8 @@ class _BuyerShellState extends State<BuyerShell> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
-                  // Brand Logo / Monogram
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.warmOchreGradient,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.heritage.withValues(alpha: 0.3),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'प',
-                        style: TextStyle(
-                          fontFamily: 'Pally',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 22,
-                          color: AppColors.ink,
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Official Brand SVG Logo
+                  const AppLogo(size: 38, showBackground: true),
                   const SizedBox(width: 10),
 
                   // Brand Titles with Pally Bold font
@@ -131,6 +142,14 @@ class _BuyerShellState extends State<BuyerShell> {
                         ),
                       ],
                     ),
+                  ),
+                  const SizedBox(width: 6),
+
+                  // Quick Logout Button
+                  IconButton(
+                    icon: const Icon(Icons.logout_rounded, size: 20, color: AppColors.ink),
+                    tooltip: t.commonSignOut,
+                    onPressed: () => _handleLogout(context),
                   ),
                 ],
               ),

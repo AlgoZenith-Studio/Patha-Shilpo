@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../auth/controllers/auth_controller.dart';
+import 'controllers/product_publisher.dart';
 import 'models/add_product_state.dart';
 import 'step1_photo/photo_capture_screen.dart';
 import 'step2_voice/voice_record_screen.dart';
@@ -117,13 +119,40 @@ class _AddProductFlowState extends State<AddProductFlow> {
     );
   }
 
-  void _publish() {
-    // The draft is complete and sellable from here (state OFFLINE_PROCESSED).
-    // Queueing it for sync lands when data/local and sync/ are wired.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context).addSavedOffline)),
-    );
-    Navigator.of(context).pop();
+  bool _publishing = false;
+
+  /// Uploads the photo and writes the product document.
+  ///
+  /// This used to show "saved offline" and pop without writing anything -
+  /// no upload, no document - so a finished listing silently disappeared.
+  Future<void> _publish() async {
+    if (_publishing) return; // a second tap must not upload twice
+    final AppLocalizations t = AppLocalizations.of(context);
+    final NavigatorState navigator = Navigator.of(context);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final String? uid = context.read<AuthController>().currentUser?.uid;
+
+    if (uid == null) {
+      messenger.showSnackBar(SnackBar(content: Text(t.publishNotSignedIn)));
+      return;
+    }
+
+    setState(() => _publishing = true);
+    final PublishResult result =
+        await ProductPublisher().publish(draft: _draft, artisanId: uid);
+    if (!mounted) return;
+    setState(() => _publishing = false);
+
+    final String message = switch (result.status) {
+      PublishStatus.published => t.publishLive,
+      PublishStatus.keptAsDraft => t.publishKeptDraft,
+      PublishStatus.noArtisanProfile => t.publishNoProfile,
+    };
+    messenger.showSnackBar(SnackBar(content: Text(message)));
+
+    // A draft that never reached Firebase stays on this screen so the artisan
+    // can retry without walking the four steps again.
+    if (result.status == PublishStatus.published) navigator.pop();
   }
 }
 

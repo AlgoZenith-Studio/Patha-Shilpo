@@ -6,6 +6,8 @@ import '../../../core/rbac/role.dart';
 import '../../../core/routing/route_names.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/widgets/brand/app_logo.dart';
+import '../../../core/widgets/language_switcher.dart';
 import '../../../core/widgets/buttons/primary_bilingual_button.dart';
 import '../controllers/auth_controller.dart';
 
@@ -22,6 +24,7 @@ class RoleSelectScreen extends StatelessWidget {
     final AuthController auth = context.watch<AuthController>();
 
     return Scaffold(
+      backgroundColor: AppColors.canvas,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
@@ -33,7 +36,16 @@ class RoleSelectScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
+                      const SizedBox(height: 8),
+                      // Language first: everything below this renders in
+                      // whichever of the three is selected, and Settings is
+                      // still two screens away at this point.
+                      const LanguageSwitcher(),
                       const Spacer(),
+                      const Center(
+                        child: AppLogo(size: 72, showBackground: true),
+                      ),
+                      const SizedBox(height: 24),
                       Text(
                         t.roleQuestion,
                         textAlign: TextAlign.center,
@@ -52,8 +64,9 @@ class RoleSelectScreen extends StatelessWidget {
                       PrimaryBilingualButton(
                         label: t.roleIWantToBuy,
                         icon: Icons.shopping_bag_rounded,
-                        onPressed:
-                            auth.busy ? null : () => _choose(context, UserRole.buyer),
+                        onPressed: auth.busy
+                            ? null
+                            : () => _choose(context, UserRole.buyer),
                       ),
 
                       const SizedBox(height: 24),
@@ -68,7 +81,8 @@ class RoleSelectScreen extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      if (auth.busy) const LinearProgressIndicator(minHeight: 2),
+                      if (auth.busy)
+                        const LinearProgressIndicator(minHeight: 2),
                       const SizedBox(height: 24),
                     ],
                   ),

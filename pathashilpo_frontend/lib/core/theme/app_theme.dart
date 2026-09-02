@@ -228,3 +228,34 @@ abstract final class AppTheme {
     );
   }
 }
+
+/// Button styles for buttons that sit **inside a Row**.
+///
+/// The app-wide `elevatedButtonTheme` and `outlinedButtonTheme` both set
+/// `minimumSize: Size.fromHeight(AppShape.minTapTarget)`, and
+/// `Size.fromHeight(56)` is `Size(double.infinity, 56)`. That is deliberate —
+/// it makes a button fill its Column, which is what almost every primary
+/// action here wants.
+///
+/// It is also a trap. A Row gives its children their intrinsic width, so an
+/// unwrapped button inside one inherits that infinite minimum and throws
+/// `BoxConstraints forces an infinite width` during layout, taking the whole
+/// screen down with a red error. That is exactly what made the buyer's
+/// "New RFQ" button look broken: the screen never laid out at all.
+///
+/// Use [inRow] for a button that should size to its content. A button that
+/// genuinely wants the full width belongs in `Expanded` or
+/// `SizedBox(width: double.infinity)` instead, which bounds it properly.
+abstract final class AppButtons {
+  /// Content-sized, with the tap-target height floor preserved.
+  static final ButtonStyle inRow = ElevatedButton.styleFrom(
+    minimumSize: const Size(0, AppShape.minTapTarget),
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+  );
+
+  /// Outlined variant of [inRow].
+  static final ButtonStyle inRowOutlined = OutlinedButton.styleFrom(
+    minimumSize: const Size(0, AppShape.minTapTarget),
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+  );
+}

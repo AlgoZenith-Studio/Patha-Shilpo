@@ -20,4 +20,5 @@ class SessionBox {
 
   String? get role => _box.get(_roleKey) as String?;
   Future<void> setRole(String role) => _box.put(_roleKey, role);
+  Future<void> clearRole() => _box.delete(_roleKey);
 }

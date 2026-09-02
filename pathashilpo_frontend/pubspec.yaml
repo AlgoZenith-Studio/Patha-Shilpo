@@ -1,4 +1,4 @@
-﻿name: pathashilpa
+name: pathashilpa
 description: Offline-first, voice-guided cataloguing and fair-pricing platform for rural Indian artisans.
 publish_to: 'none'
 version: 1.0.0+2009
@@ -17,13 +17,6 @@ dependencies:
   firebase_auth: ^5.3.1
   cloud_firestore: ^5.4.4
   firebase_storage: ^12.3.4
-  # v6 API: GoogleSignIn() + .signIn() as used in lib/data/remote/auth_service.dart.
-  # v7 removed both - do not bump without rewriting that file.
-  google_sign_in: ^6.2.1
-
-  # Runtime config from the bundled .env asset (see lib/core/config/env.dart)
-  flutter_dotenv: ^5.1.0
-
   # Offline store
   hive: ^2.2.3
   hive_flutter: ^1.1.0
@@ -33,6 +26,10 @@ dependencies:
   image: ^4.2.0                # decode, crop, pad, compress
   speech_to_text: ^7.0.0
   flutter_tts: ^4.2.0
+  # Plays the WAV bytes returned by POST /api/v1/ai/tts. flutter_tts only
+  # speaks text it synthesises itself, so the online (Sarvam/Bhashini) tier
+  # cannot use it for playback.
+  audioplayers: ^6.1.0
   permission_handler: ^11.3.1
 
   # Networking & platform
@@ -43,7 +40,10 @@ dependencies:
   provider: ^6.1.2
   cached_network_image: ^3.4.1
   flutter_dotenv: ^5.2.1       # loads .env (BACKEND_URL) - see core/config/env.dart
-  google_sign_in: ^6.2.1       # used by data/remote/auth_service.dart
+  # v6 API: GoogleSignIn() + .signIn() as used in data/remote/auth_service.dart.
+  # v7 removed both - do not bump without rewriting that file.
+  google_sign_in: ^6.2.1
+  flutter_svg: ^2.0.17
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +57,7 @@ flutter:
   generate: true               # enables gen_l10n
 
   assets:
+    - assets/
     - assets/data/
     - .env
 

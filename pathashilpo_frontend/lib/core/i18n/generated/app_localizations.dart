@@ -1479,6 +1479,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Background removed'**
   String get reviewBackgroundRemoved;
+
+  /// No description provided for @ttsListen.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen'**
+  String get ttsListen;
+
+  /// No description provided for @ttsStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get ttsStop;
+
+  /// No description provided for @ttsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No voice available on this phone for this language.'**
+  String get ttsUnavailable;
+
+  /// No description provided for @rfqHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct sourcing from rural clusters'**
+  String get rfqHeroTitle;
+
+  /// No description provided for @rfqHeroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Post custom specifications, bulk orders or corporate gifting needs with no intermediary margin.'**
+  String get rfqHeroBody;
+
+  /// No description provided for @rfqSelectCraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Select craft discipline'**
+  String get rfqSelectCraft;
+
+  /// No description provided for @rfqTargetCluster.
+  ///
+  /// In en, this message translates to:
+  /// **'Target cluster / region'**
+  String get rfqTargetCluster;
+
+  /// No description provided for @rfqAllClusters.
+  ///
+  /// In en, this message translates to:
+  /// **'All clusters'**
+  String get rfqAllClusters;
+
+  /// No description provided for @rfqQuantityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order quantity'**
+  String get rfqQuantityLabel;
+
+  /// No description provided for @rfqPieces.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pieces'**
+  String rfqPieces(int count);
+
+  /// No description provided for @rfqDeadlineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery deadline'**
+  String get rfqDeadlineLabel;
+
+  /// No description provided for @rfqChooseDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a date'**
+  String get rfqChooseDate;
+
+  /// No description provided for @rfqDeadlineNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get rfqDeadlineNotSet;
+
+  /// No description provided for @rfqSpecsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Specifications and customisation details'**
+  String get rfqSpecsLabel;
+
+  /// No description provided for @rfqSpecsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe colours, dimensions, motifs or packaging needs…'**
+  String get rfqSpecsHint;
+
+  /// No description provided for @rfqMatchNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Artisans working in this craft will see your request and can offer to make it.'**
+  String get rfqMatchNote;
+
+  /// No description provided for @rfqBroadcast.
+  ///
+  /// In en, this message translates to:
+  /// **'Send request to artisans'**
+  String get rfqBroadcast;
+
+  /// No description provided for @rfqNotesRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please describe what you need before sending.'**
+  String get rfqNotesRequired;
+
+  /// No description provided for @rfqSignInRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in as a buyer to send a request.'**
+  String get rfqSignInRequired;
+
+  /// No description provided for @rfqSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent. Artisans in this craft can now respond.'**
+  String get rfqSent;
+
+  /// No description provided for @rfqSendFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not send the request. Check your connection and try again.'**
+  String get rfqSendFailed;
+
+  /// No description provided for @rfqStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active sourcing'**
+  String get rfqStatusActive;
+
+  /// No description provided for @rfqStatusMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'Quotations received'**
+  String get rfqStatusMatched;
+
+  /// No description provided for @rfqPcs.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pcs'**
+  String rfqPcs(int count);
+
+  /// No description provided for @rfqRespondedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} artisan(s) can make this'**
+  String rfqRespondedCount(int count);
+
+  /// No description provided for @languagePickerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languagePickerLabel;
+
+  /// No description provided for @publishLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Published. Buyers can see this craft now.'**
+  String get publishLive;
+
+  /// No description provided for @publishKeptDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach the server. Saved on this phone - open it again to publish.'**
+  String get publishKeptDraft;
+
+  /// No description provided for @publishNoProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish your artisan registration before publishing a craft.'**
+  String get publishNoProfile;
+
+  /// No description provided for @publishNotSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in as an artisan to publish.'**
+  String get publishNotSignedIn;
+
+  /// No description provided for @productsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the + button to photograph your first craft.'**
+  String get productsEmptyBody;
+
+  /// No description provided for @productsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your crafts'**
+  String get productsLoadFailed;
+
+  /// No description provided for @enquiriesEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'When a buyer asks about one of your crafts it will appear here.'**
+  String get enquiriesEmptyBody;
+
+  /// No description provided for @enquiriesLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your enquiries'**
+  String get enquiriesLoadFailed;
+
+  /// No description provided for @enquiryQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity: {count}'**
+  String enquiryQuantity(int count);
+
+  /// No description provided for @enquiryFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From {name}'**
+  String enquiryFrom(String name);
+
+  /// No description provided for @profileVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification'**
+  String get profileVerification;
+
+  /// No description provided for @profileUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get profileUnverified;
+
+  /// No description provided for @rfqQueuedOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved. Your request will reach artisans as soon as you are back online.'**
+  String get rfqQueuedOffline;
+
+  /// No description provided for @productChangePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Change price'**
+  String get productChangePrice;
+
+  /// No description provided for @productPriceUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Price updated.'**
+  String get productPriceUpdated;
+
+  /// No description provided for @productActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That did not go through. Check your connection and try again.'**
+  String get productActionFailed;
+
+  /// No description provided for @productUnlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Take off the storefront'**
+  String get productUnlist;
+
+  /// No description provided for @productRelist.
+  ///
+  /// In en, this message translates to:
+  /// **'Put back on the storefront'**
+  String get productRelist;
+
+  /// No description provided for @productUnlisted.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken off the storefront. Buyers can no longer see it.'**
+  String get productUnlisted;
+
+  /// No description provided for @productRelisted.
+  ///
+  /// In en, this message translates to:
+  /// **'Back on the storefront.'**
+  String get productRelisted;
+
+  /// No description provided for @productListed.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible to buyers'**
+  String get productListed;
+
+  /// No description provided for @productNotListed.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden from buyers'**
+  String get productNotListed;
+
+  /// No description provided for @productDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get productDelete;
+
+  /// No description provided for @productDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this craft?'**
+  String get productDeleteTitle;
+
+  /// No description provided for @productDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes the listing for good. It cannot be undone.'**
+  String get productDeleteBody;
+
+  /// No description provided for @productMaterialCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials you paid for'**
+  String get productMaterialCost;
+
+  /// No description provided for @productHoursOfWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours you worked'**
+  String get productHoursOfWork;
+
+  /// No description provided for @productLabourAtFairWage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your labour at ₹{rate}/hour'**
+  String productLabourAtFairWage(int rate);
+
+  /// No description provided for @productDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get productDescription;
+
+  /// No description provided for @profileSettingUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Setting up your buyer profile…'**
+  String get profileSettingUp;
+
+  /// No description provided for @profileSignInPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in as a buyer to see your profile, saved crafts and enquiries.'**
+  String get profileSignInPrompt;
 }
 
 class _AppLocalizationsDelegate

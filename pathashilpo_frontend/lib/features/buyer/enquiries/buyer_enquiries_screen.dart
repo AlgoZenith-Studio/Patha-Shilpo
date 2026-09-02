@@ -1,9 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/theme/colors.dart';
-import '../../../data/mock/mock_buyer_data.dart';
 import '../../../data/models/enquiry_model.dart';
+import '../../../data/remote/firestore_service.dart';
+import '../../auth/controllers/auth_controller.dart';
 
 class BuyerEnquiriesScreen extends StatefulWidget {
   const BuyerEnquiriesScreen({super.key});
@@ -15,13 +18,21 @@ class BuyerEnquiriesScreen extends StatefulWidget {
 class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
   String _filter = 'all'; // all | new | accepted
 
-  List<EnquiryModel> get _filteredEnquiries {
-    if (_filter == 'new') {
-      return MockBuyerData.initialEnquiries.where((e) => e.status == 'new').toList();
-    } else if (_filter == 'accepted') {
-      return MockBuyerData.initialEnquiries.where((e) => e.status == 'accepted').toList();
-    }
-    return MockBuyerData.initialEnquiries;
+  /// Subscribed once so switching filter tabs does not re-subscribe. The
+  /// filter is applied to the snapshot in [_applyFilter] instead.
+  late final Stream<List<EnquiryModel>> _enquiryStream;
+
+  @override
+  void initState() {
+    super.initState();
+    final String uid =
+        context.read<AuthController>().currentUser?.uid ?? '__none__';
+    _enquiryStream = FirestoreService().streamBuyerEnquiries(uid);
+  }
+
+  List<EnquiryModel> _applyFilter(List<EnquiryModel> source) {
+    if (_filter == 'all') return source;
+    return source.where((EnquiryModel e) => e.status == _filter).toList();
   }
 
   void _showEnquiryDetails(EnquiryModel enquiry) {
@@ -32,10 +43,19 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
       backgroundColor: Colors.transparent,
       builder: (ctx) {
         return Container(
-          padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+          decoration: BoxDecoration(
             color: AppColors.canvas,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(AppShape.sheetRadius),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.ink.withValues(alpha: 0.12),
+                blurRadius: 24,
+                offset: const Offset(0, -4),
+              ),
+            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -43,11 +63,11 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
             children: [
               Center(
                 child: Container(
-                  width: 40,
-                  height: 4,
+                  width: 44,
+                  height: 4.5,
                   decoration: BoxDecoration(
-                    color: AppColors.border.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(2),
+                    color: AppColors.border.withValues(alpha: 0.8),
+                    borderRadius: BorderRadius.circular(3),
                   ),
                 ),
               ),
@@ -55,17 +75,18 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
               Row(
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      enquiry.productImageUrl,
+                    borderRadius: BorderRadius.circular(16),
+                    child: CachedNetworkImage(
+                      imageUrl: enquiry.productImageUrl,
                       width: 50,
                       height: 50,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      errorWidget: (_, __, ___) => Container(
                         width: 50,
                         height: 50,
                         color: AppColors.canvas,
-                        child: const Icon(Icons.palette_outlined, size: 24, color: AppColors.action),
+                        child: const Icon(Icons.palette_outlined,
+                            size: 24, color: AppColors.action),
                       ),
                     ),
                   ),
@@ -87,7 +108,10 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
                         ),
                         Text(
                           'Artisan: ${enquiry.artisanName}',
-                          style: const TextStyle(fontFamily: 'Lora', fontSize: 12, color: AppColors.textMuted),
+                          style: const TextStyle(
+                              fontFamily: 'Lora',
+                              fontSize: 12,
+                              color: AppColors.textMuted),
                         ),
                       ],
                     ),
@@ -97,7 +121,10 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
               const SizedBox(height: 16),
               Text(
                 t.buyerYourMessage,
-                style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.w600, color: AppColors.ink),
+                style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink),
               ),
               const SizedBox(height: 4),
               Container(
@@ -110,27 +137,37 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
                 ),
                 child: Text(
                   enquiry.message,
-                  style: const TextStyle(fontFamily: 'Lora', fontSize: 13.5, color: AppColors.ink),
+                  style: const TextStyle(
+                      fontFamily: 'Lora', fontSize: 13.5, color: AppColors.ink),
                 ),
               ),
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Quantity: ${enquiry.quantity} unit(s)', style: const TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.w600)),
+                  Text('Quantity: ${enquiry.quantity} unit(s)',
+                      style: const TextStyle(
+                          fontFamily: 'Lora', fontWeight: FontWeight.w600)),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: enquiry.status == 'accepted' ? AppColors.giTagBg : AppColors.canvas,
+                      color: enquiry.status == 'accepted'
+                          ? AppColors.giTagBg
+                          : AppColors.canvas,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      enquiry.status == 'accepted' ? t.buyerAcceptedByArtisan : t.buyerAwaitingReply,
+                      enquiry.status == 'accepted'
+                          ? t.buyerAcceptedByArtisan
+                          : t.buyerAwaitingReply,
                       style: TextStyle(
                         fontFamily: 'Lora',
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: enquiry.status == 'accepted' ? AppColors.giTagGreen : AppColors.action,
+                        color: enquiry.status == 'accepted'
+                            ? AppColors.giTagGreen
+                            : AppColors.action,
                       ),
                     ),
                   ),
@@ -147,7 +184,8 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
                         backgroundColor: AppColors.ink,
                         content: Text(
                           'Direct phone connect initiated with ${enquiry.artisanName}',
-                          style: const TextStyle(fontFamily: 'Lora', color: AppColors.canvas),
+                          style: const TextStyle(
+                              fontFamily: 'Lora', color: AppColors.canvas),
                         ),
                       ),
                     );
@@ -155,7 +193,11 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
                   icon: const Icon(Icons.call_rounded, color: AppColors.ink),
                   label: const Text(
                     'Direct Phone Call with Artisan',
-                    style: TextStyle(fontFamily: 'Pally', fontWeight: FontWeight.w700, fontSize: 15, color: AppColors.ink),
+                    style: TextStyle(
+                        fontFamily: 'Pally',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        color: AppColors.ink),
                   ),
                 ),
               ),
@@ -168,66 +210,83 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final enquiries = _filteredEnquiries;
-
     return Scaffold(
       backgroundColor: AppColors.canvas,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).buyerSentEnquiries),
       ),
-      body: Column(
-        children: [
-          // Filter Chips Strip
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-            child: Row(
-              children: [
-                _buildFilterTab('All (${MockBuyerData.initialEnquiries.length})', 'all'),
-                const SizedBox(width: 8),
-                _buildFilterTab('New (${MockBuyerData.initialEnquiries.where((e) => e.status == 'new').length})', 'new'),
-                const SizedBox(width: 8),
-                _buildFilterTab('Accepted (${MockBuyerData.initialEnquiries.where((e) => e.status == 'accepted').length})', 'accepted'),
-              ],
-            ),
-          ),
+      body: StreamBuilder<List<EnquiryModel>>(
+        stream: _enquiryStream,
+        builder:
+            (BuildContext context, AsyncSnapshot<List<EnquiryModel>> snapshot) {
+          final List<EnquiryModel> all =
+              snapshot.data ?? const <EnquiryModel>[];
+          final List<EnquiryModel> enquiries = _applyFilter(all);
+          return Column(
+            children: [
+              // Filter Chips Strip. Counts come from the unfiltered snapshot, so
+              // each tab shows its own total rather than the current view's.
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                child: Row(
+                  children: [
+                    _buildFilterTab('All (${all.length})', 'all'),
+                    const SizedBox(width: 8),
+                    _buildFilterTab(
+                        'New (${all.where((e) => e.status == 'new').length})',
+                        'new'),
+                    const SizedBox(width: 8),
+                    _buildFilterTab(
+                        'Accepted (${all.where((e) => e.status == 'accepted').length})',
+                        'accepted'),
+                  ],
+                ),
+              ),
 
-          // Enquiries List
-          Expanded(
-            child: enquiries.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.chat_bubble_outline_rounded, size: 48, color: AppColors.border),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'No Enquiries Found',
-                          style: TextStyle(
-                            fontFamily: 'Pally',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18,
-                            color: AppColors.ink,
-                          ),
+              // Enquiries List
+              Expanded(
+                child: enquiries.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.chat_bubble_outline_rounded,
+                                size: 48, color: AppColors.border),
+                            const SizedBox(height: 12),
+                            const Text(
+                              'No Enquiries Found',
+                              style: TextStyle(
+                                fontFamily: 'Pally',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                                color: AppColors.ink,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Browse the craft collection and send enquiries to master artisans.',
+                              style: TextStyle(
+                                  fontFamily: 'Lora',
+                                  fontSize: 13,
+                                  color: AppColors.textMuted),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Browse the craft collection and send enquiries to master artisans.',
-                          style: TextStyle(fontFamily: 'Lora', fontSize: 13, color: AppColors.textMuted),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    itemCount: enquiries.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      final enquiry = enquiries[index];
-                      return _buildEnquiryCard(enquiry);
-                    },
-                  ),
-          ),
-        ],
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        itemCount: enquiries.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          final enquiry = enquiries[index];
+                          return _buildEnquiryCard(enquiry);
+                        },
+                      ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -247,7 +306,8 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
       selected: isSelected,
       selectedColor: AppColors.heritage,
       backgroundColor: AppColors.surface,
-      side: BorderSide(color: isSelected ? AppColors.heritage : AppColors.border),
+      side:
+          BorderSide(color: isSelected ? AppColors.heritage : AppColors.border),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       onSelected: (val) {
         if (val) setState(() => _filter = key);
@@ -281,16 +341,17 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    enquiry.productImageUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: enquiry.productImageUrl,
                     width: 54,
                     height: 54,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorWidget: (_, __, ___) => Container(
                       width: 54,
                       height: 54,
                       color: AppColors.canvas,
-                      child: const Icon(Icons.palette_outlined, size: 24, color: AppColors.action),
+                      child: const Icon(Icons.palette_outlined,
+                          size: 24, color: AppColors.action),
                     ),
                   ),
                 ),
@@ -324,9 +385,12 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: enquiry.status == 'accepted' ? AppColors.giTagBg : AppColors.canvas,
+                    color: enquiry.status == 'accepted'
+                        ? AppColors.giTagBg
+                        : AppColors.canvas,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -335,7 +399,9 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
                       fontFamily: 'Lora',
                       fontSize: 11.5,
                       fontWeight: FontWeight.w700,
-                      color: enquiry.status == 'accepted' ? AppColors.giTagGreen : AppColors.action,
+                      color: enquiry.status == 'accepted'
+                          ? AppColors.giTagGreen
+                          : AppColors.action,
                     ),
                   ),
                 ),
@@ -359,7 +425,10 @@ class _BuyerEnquiriesScreenState extends State<BuyerEnquiriesScreen> {
               children: [
                 Text(
                   'Quantity: ${enquiry.quantity} pcs',
-                  style: const TextStyle(fontFamily: 'Lora', fontSize: 11.5, color: AppColors.textMuted),
+                  style: const TextStyle(
+                      fontFamily: 'Lora',
+                      fontSize: 11.5,
+                      color: AppColors.textMuted),
                 ),
                 Text(
                   t.buyerTapForDetails,

@@ -1,3 +1,5 @@
+import 'timestamps.dart';
+
 /// Buyer Model according to TRD.md §4.1
 class BuyerModel {
   final String uid;
@@ -54,9 +56,7 @@ class BuyerModel {
       interests: List<String>.from(map['interests'] ?? []),
       states: List<String>.from(map['states'] ?? []),
       savedProducts: List<String>.from(map['savedProducts'] ?? []),
-      createdAt: map['createdAt'] != null
-          ? DateTime.tryParse(map['createdAt']) ?? DateTime.now()
-          : DateTime.now(),
+      createdAt: parseTimestamp(map['createdAt']),
     );
   }
 }

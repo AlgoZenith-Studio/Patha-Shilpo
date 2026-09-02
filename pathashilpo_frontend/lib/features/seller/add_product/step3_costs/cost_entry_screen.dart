@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../ai/voice/views/on_device_voice_modal.dart';
 import '../../../../core/constants/pricing_constants.dart';
 import '../../../../core/i18n/generated/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -59,10 +60,8 @@ class _CostEntryScreenState extends State<CostEntryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(t.costsTitle,
-              style: Theme.of(context).textTheme.headlineMedium),
+          Text(t.costsTitle, style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 24),
-
           _BigNumberField(
             controller: _cost,
             label: t.costsMaterial,
@@ -76,10 +75,8 @@ class _CostEntryScreenState extends State<CostEntryScreen> {
             suffix: t.costsHoursSuffix,
             onChanged: (_) => setState(() {}),
           ),
-
           const SizedBox(height: 24),
           if (_valid) _LivePreview(cost: _costValue!, hours: _hoursValue!),
-
           const SizedBox(height: 24),
           PrimaryBilingualButton(
             label: t.costsSeePrice,
@@ -140,6 +137,25 @@ class _BigNumberField extends StatelessWidget {
             prefixText: prefix,
             suffixText: suffix,
             hintText: '0',
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.mic_rounded, color: AppColors.action),
+              tooltip: 'Speak number (On-Device STT Fallback)',
+              onPressed: () async {
+                final spoken = await showOnDeviceVoiceModal(
+                  context,
+                  title: 'बोलें: $label',
+                  hint: 'संख्या बोलें (जैसे: 500 या 8)...',
+                  preferredLocaleCode: 'hi',
+                );
+                if (spoken != null && spoken.isNotEmpty) {
+                  final digits = spoken.replaceAll(RegExp(r'\D'), '');
+                  if (digits.isNotEmpty) {
+                    controller.text = digits;
+                    onChanged(digits);
+                  }
+                }
+              },
+            ),
           ),
         ),
       ],
@@ -190,8 +206,7 @@ class _LivePreview extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Flexible(
-              child:
-                  Text(label, style: Theme.of(context).textTheme.bodyMedium),
+              child: Text(label, style: Theme.of(context).textTheme.bodyMedium),
             ),
             Text(value, style: Theme.of(context).textTheme.titleMedium),
           ],

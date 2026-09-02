@@ -38,10 +38,8 @@ class _PhotoCaptureScreenState extends State<PhotoCaptureScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(t.photoTitle,
-              style: Theme.of(context).textTheme.headlineMedium),
+          Text(t.photoTitle, style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 20),
-
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -67,12 +65,10 @@ class _PhotoCaptureScreenState extends State<PhotoCaptureScreen> {
                     ),
             ),
           ),
-
           if (draft.qualityScore != null) ...<Widget>[
             const SizedBox(height: 12),
             _QualityMeter(score: draft.qualityScore!),
           ],
-
           if (_error != null) ...<Widget>[
             const SizedBox(height: 12),
             Text(
@@ -80,7 +76,6 @@ class _PhotoCaptureScreenState extends State<PhotoCaptureScreen> {
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
-
           const SizedBox(height: 16),
           Row(
             children: <Widget>[
@@ -191,7 +186,9 @@ class _QualityMeter extends StatelessWidget {
         Row(
           children: <Widget>[
             Icon(
-              _isPoor ? Icons.warning_amber_rounded : Icons.check_circle_rounded,
+              _isPoor
+                  ? Icons.warning_amber_rounded
+                  : Icons.check_circle_rounded,
               size: 18,
               color: _isPoor ? AppColors.heritage : AppColors.action,
             ),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../i18n/generated/app_localizations.dart';
@@ -32,7 +33,7 @@ class ArtisanMiniCard extends StatelessWidget {
           CircleAvatar(
             radius: 28,
             backgroundColor: AppColors.heritage,
-            backgroundImage: artisan.photoUrl != null ? NetworkImage(artisan.photoUrl!) : null,
+            backgroundImage: artisan.photoUrl != null ? CachedNetworkImageProvider(artisan.photoUrl!) : null,
             child: artisan.photoUrl == null
                 ? const Icon(Icons.person, color: AppColors.ink)
                 : null,

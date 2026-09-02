@@ -356,5 +356,104 @@
   "profileIdDocOnFile": "Document photo on file",
   "profileIdDocMissing": "No document photo added",
   "reviewEnhancingPhoto": "Cleaning up the photo…",
-  "reviewBackgroundRemoved": "Background removed"
+  "reviewBackgroundRemoved": "Background removed",
+  "ttsListen": "Listen",
+  "ttsStop": "Stop",
+  "ttsUnavailable": "No voice available on this phone for this language.",
+  "rfqHeroTitle": "Direct sourcing from rural clusters",
+  "rfqHeroBody": "Post custom specifications, bulk orders or corporate gifting needs with no intermediary margin.",
+  "rfqSelectCraft": "Select craft discipline",
+  "rfqTargetCluster": "Target cluster / region",
+  "rfqAllClusters": "All clusters",
+  "rfqQuantityLabel": "Order quantity",
+  "rfqPieces": "{count} pieces",
+  "@rfqPieces": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rfqDeadlineLabel": "Delivery deadline",
+  "rfqChooseDate": "Choose a date",
+  "rfqDeadlineNotSet": "Not set",
+  "rfqSpecsLabel": "Specifications and customisation details",
+  "rfqSpecsHint": "Describe colours, dimensions, motifs or packaging needs…",
+  "rfqMatchNote": "Artisans working in this craft will see your request and can offer to make it.",
+  "rfqBroadcast": "Send request to artisans",
+  "rfqNotesRequired": "Please describe what you need before sending.",
+  "rfqSignInRequired": "Sign in as a buyer to send a request.",
+  "rfqSent": "Request sent. Artisans in this craft can now respond.",
+  "rfqSendFailed": "Could not send the request. Check your connection and try again.",
+  "rfqStatusActive": "Active sourcing",
+  "rfqStatusMatched": "Quotations received",
+  "rfqPcs": "{count} pcs",
+  "@rfqPcs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rfqRespondedCount": "{count} artisan(s) can make this",
+  "@rfqRespondedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "languagePickerLabel": "Language",
+  "publishLive": "Published. Buyers can see this craft now.",
+  "publishKeptDraft": "Could not reach the server. Saved on this phone - open it again to publish.",
+  "publishNoProfile": "Finish your artisan registration before publishing a craft.",
+  "publishNotSignedIn": "Sign in as an artisan to publish.",
+  "productsEmptyBody": "Tap the + button to photograph your first craft.",
+  "productsLoadFailed": "Could not load your crafts",
+  "enquiriesEmptyBody": "When a buyer asks about one of your crafts it will appear here.",
+  "enquiriesLoadFailed": "Could not load your enquiries",
+  "enquiryQuantity": "Quantity: {count}",
+  "@enquiryQuantity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "enquiryFrom": "From {name}",
+  "@enquiryFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profileVerification": "Verification",
+  "profileUnverified": "Pending",
+  "rfqQueuedOffline": "Saved. Your request will reach artisans as soon as you are back online.",
+  "productChangePrice": "Change price",
+  "productPriceUpdated": "Price updated.",
+  "productActionFailed": "That did not go through. Check your connection and try again.",
+  "productUnlist": "Take off the storefront",
+  "productRelist": "Put back on the storefront",
+  "productUnlisted": "Taken off the storefront. Buyers can no longer see it.",
+  "productRelisted": "Back on the storefront.",
+  "productListed": "Visible to buyers",
+  "productNotListed": "Hidden from buyers",
+  "productDelete": "Delete",
+  "productDeleteTitle": "Delete this craft?",
+  "productDeleteBody": "This removes the listing for good. It cannot be undone.",
+  "productMaterialCost": "Materials you paid for",
+  "productHoursOfWork": "Hours you worked",
+  "productLabourAtFairWage": "Your labour at ₹{rate}/hour",
+  "@productLabourAtFairWage": {
+    "placeholders": {
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
+  "productDescription": "Description",
+  "profileSettingUp": "Setting up your buyer profile…",
+  "profileSignInPrompt": "Sign in as a buyer to see your profile, saved crafts and enquiries."
 }

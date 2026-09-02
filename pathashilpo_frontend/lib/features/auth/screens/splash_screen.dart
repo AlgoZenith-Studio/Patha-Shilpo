@@ -8,6 +8,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../controllers/auth_controller.dart';
 
+import '../../../core/widgets/brand/app_logo.dart';
+
 /// Splash — decides the destination (TRD.md §11.3).
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -43,14 +45,20 @@ class _SplashScreenState extends State<SplashScreen> {
     final AppLocalizations t = AppLocalizations.of(context);
 
     return Scaffold(
+      backgroundColor: AppColors.canvas,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const AppLogo(
+              size: 100,
+              showBackground: true,
+            ),
+            const SizedBox(height: 24),
             Text(t.appName, style: Theme.of(context).textTheme.displayMedium),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             Text(t.appTagline, style: AppTheme.story),
-            const SizedBox(height: 40),
+            const SizedBox(height: 48),
             const SizedBox(
               width: 26,
               height: 26,

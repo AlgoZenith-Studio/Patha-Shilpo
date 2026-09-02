@@ -15,7 +15,11 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations t = AppLocalizations.of(context);
-    final LocaleProvider locale = context.watch<LocaleProvider>();
+    // Read from Localizations, not by watching LocaleProvider: the provider
+    // lives above MaterialApp, so a dependency registered here is torn down
+    // by the very rebuild it triggers. See LanguageSwitcher for the full
+    // explanation of the assertion that caused.
+    final String activeCode = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       appBar: AppBar(title: Text(t.settingsTitle)),
@@ -40,9 +44,11 @@ class SettingsScreen extends StatelessWidget {
             ),
             clipBehavior: Clip.antiAlias,
             child: RadioGroup<String>(
-              groupValue: locale.locale.languageCode,
+              groupValue: activeCode,
               onChanged: (String? code) {
-                if (code != null) locale.setLocale(Locale(code));
+                if (code != null) {
+                  context.read<LocaleProvider>().setLocale(Locale(code));
+                }
               },
               child: Column(
                 children: <Widget>[

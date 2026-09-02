@@ -59,7 +59,6 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                         ),
                       ),
                       const SizedBox(height: 24),
-
                       TextField(
                         controller: _controller,
                         keyboardType: TextInputType.number,
@@ -79,14 +78,12 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                         ),
                         decoration: const InputDecoration(counterText: ''),
                       ),
-
                       if (auth.errorKey != null) ...<Widget>[
                         const SizedBox(height: 12),
                         Text(t.authOtpInvalid,
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodySmall),
                       ],
-
                       const SizedBox(height: 16),
                       Container(
                         padding: const EdgeInsets.all(12),
@@ -97,14 +94,14 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
                         child: Text(t.authDemoNotice,
                             style: Theme.of(context).textTheme.bodySmall),
                       ),
-
                       const Spacer(),
                       PrimaryBilingualButton(
                         label: t.authVerify,
                         onPressed: auth.busy ? null : _submit,
                       ),
                       const SizedBox(height: 12),
-                      if (auth.busy) const LinearProgressIndicator(minHeight: 2),
+                      if (auth.busy)
+                        const LinearProgressIndicator(minHeight: 2),
                       const SizedBox(height: 20),
                     ],
                   ),

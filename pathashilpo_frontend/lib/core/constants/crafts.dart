@@ -1,16 +1,11 @@
-/// Standard Indian craft categories and cluster presets according to TRD.md §4.1
+/// Geography presets according to TRD.md §4.1.
+///
+/// The craft vocabulary that used to live here has moved to [CraftTaxonomy]
+/// (`craft_taxonomy.dart`). It was a *second* list of craft names, disagreeing
+/// with the one buyers searched by, and RFQ matching compared the two with
+/// string equality - so no buyer request ever reached an artisan. Add craft
+/// categories there, never here.
 abstract final class CraftConstants {
-  static const List<String> craftTypes = <String>[
-    'Handloom & Textiles',
-    'Terracotta & Pottery',
-    'Woodcarving & Woodwork',
-    'Dhokra & Metalware',
-    'Bamboo & Cane Craft',
-    'Leather & Jutti Craft',
-    'Stone Carving',
-    'Applique & Embroidery',
-  ];
-
   static const List<String> indianStates = <String>[
     'Madhya Pradesh',
     'West Bengal',

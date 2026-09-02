@@ -1,3 +1,5 @@
+import 'timestamps.dart';
+
 /// RFQ Model according to TRD.md §4.1
 class RfqModel {
   final String rfqId;
@@ -62,9 +64,7 @@ class RfqModel {
       matchedArtisanIds: List<String>.from(map['matchedArtisanIds'] ?? []),
       status: map['status'] ?? 'active',
       notes: map['notes'],
-      createdAt: map['createdAt'] != null
-          ? DateTime.tryParse(map['createdAt']) ?? DateTime.now()
-          : DateTime.now(),
+      createdAt: parseTimestamp(map['createdAt']),
     );
   }
 }

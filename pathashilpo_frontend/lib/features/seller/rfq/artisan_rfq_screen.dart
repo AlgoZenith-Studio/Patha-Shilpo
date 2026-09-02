@@ -36,8 +36,7 @@ class ArtisanRfqScreen extends StatelessWidget {
 
         return StreamBuilder<List<RfqModel>>(
           stream: FirestoreService().streamOpenRfqsForCraft(craft),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<RfqModel>> snap) {
+          builder: (BuildContext context, AsyncSnapshot<List<RfqModel>> snap) {
             if (snap.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -67,8 +66,7 @@ class ArtisanRfqScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(t.artisanRfqTitle,
-                            style:
-                                Theme.of(context).textTheme.headlineMedium),
+                            style: Theme.of(context).textTheme.headlineMedium),
                         Text(t.artisanRfqSubtitle,
                             style: Theme.of(context).textTheme.bodySmall),
                       ],
@@ -132,27 +130,22 @@ class _RfqCardState extends State<_RfqCard> {
               ),
             ],
           ),
-          Text(widget.rfq.craft,
-              style: Theme.of(context).textTheme.bodySmall),
-
+          Text(widget.rfq.craft, style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 12),
           Row(
             children: <Widget>[
               _Meta(
                 label: t.buyerBudget,
-                value:
-                    '₹${widget.rfq.budgetMin} - ₹${widget.rfq.budgetMax}',
+                value: '₹${widget.rfq.budgetMin} - ₹${widget.rfq.budgetMax}',
               ),
               _Meta(label: t.buyerDeadline, value: widget.rfq.deadline),
             ],
           ),
-
           if (widget.rfq.notes != null && widget.rfq.notes!.isNotEmpty) ...[
             const SizedBox(height: 10),
             Text(widget.rfq.notes!,
                 style: Theme.of(context).textTheme.bodyMedium),
           ],
-
           const SizedBox(height: 14),
           if (alreadyResponded)
             Row(

@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/remote/firestore_service.dart';
@@ -6,13 +10,23 @@ import '../../auth/controllers/auth_controller.dart';
 
 import '../../../core/i18n/generated/app_localizations.dart';
 import '../../../core/theme/colors.dart';
-import '../../../data/mock/mock_buyer_data.dart';
+import '../../../core/constants/craft_taxonomy.dart';
 import '../../../data/models/rfq_model.dart';
 
 class BuyerRfqScreen extends StatefulWidget {
   final String? prefilledCraft;
 
-  const BuyerRfqScreen({super.key, this.prefilledCraft});
+  /// True when hosted inside [BuyerShell]'s IndexedStack, which already
+  /// provides an app bar and a bottom nav. Without this the screen stacked a
+  /// second AppBar inside the shell's body, eating the vertical space the
+  /// "New request" control needed and pushing it below the fold.
+  final bool embedded;
+
+  const BuyerRfqScreen({
+    super.key,
+    this.prefilledCraft,
+    this.embedded = false,
+  });
 
   @override
   State<BuyerRfqScreen> createState() => _BuyerRfqScreenState();
@@ -20,15 +34,17 @@ class BuyerRfqScreen extends StatefulWidget {
 
 class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
   late String _selectedCraft;
-  String _selectedCluster = 'All Clusters';
+  String? _selectedCluster;
   int _quantity = 25;
-  final String _deadline = '30 Nov 2026';
+
+  /// Chosen by the buyer. Was previously a hardcoded const ('30 Nov 2026')
+  /// that every RFQ card displayed as though the buyer had picked it.
+  DateTime? _deadline;
   RangeValues _budgetRange = const RangeValues(25000, 150000);
   final TextEditingController _notesController = TextEditingController();
   bool _isCreatingRfq = false;
 
-  final List<String> _clusters = [
-    'All Clusters',
+  static const List<String> _clusters = <String>[
     'Chanderi (MP)',
     'Bankura (WB)',
     'Bastar (CG)',
@@ -40,45 +56,73 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedCraft = widget.prefilledCraft ?? 'Handloom Weaving';
+    // Normalised so a craft passed in from a product detail page ('Dhokra
+    // Lost-Wax Metal Casting') still selects a valid dropdown entry.
+    _selectedCraft = CraftTaxonomy.categoryFor(widget.prefilledCraft) ??
+        CraftTaxonomy.categories.first;
+    // Reached from a product or storefront via "request a bulk quote": the
+    // buyer already said what they want, so land on the form rather than on a
+    // list of past requests they then have to find a button in.
+    _isCreatingRfq = widget.prefilledCraft != null;
   }
 
-  int get _estimatedArtisanMatches {
-    if (_selectedCraft == 'Handloom Weaving') return 18;
-    if (_selectedCraft == 'Terracotta Pottery') return 12;
-    if (_selectedCraft == 'Metal Casting') return 8;
-    if (_selectedCraft == 'Folk Art Painting') return 14;
-    return 6;
+  /// RfqModel.deadline is a String on the wire, so the picked date is stored
+  /// as ISO-8601 (yyyy-MM-dd) - sortable, unambiguous, and locale-independent.
+  /// Display goes through [_formatDeadline], which tolerates the free-text
+  /// values ("30 Nov 2026") older documents carry.
+  static String _isoDate(DateTime d) => '${d.year.toString().padLeft(4, '0')}-'
+      '${d.month.toString().padLeft(2, '0')}-'
+      '${d.day.toString().padLeft(2, '0')}';
+
+  String _formatDeadline(String raw, AppLocalizations t) {
+    if (raw.isEmpty) return t.rfqDeadlineNotSet;
+    final DateTime? parsed = DateTime.tryParse(raw);
+    if (parsed == null) return raw; // legacy free text - show it as written
+    return DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag())
+        .format(parsed);
+  }
+
+  Future<void> _pickDeadline() async {
+    final DateTime now = DateTime.now();
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _deadline ?? now.add(const Duration(days: 30)),
+      // Handmade work needs lead time; a deadline in the past is not a request
+      // any artisan can accept.
+      firstDate: now.add(const Duration(days: 1)),
+      lastDate: now.add(const Duration(days: 365 * 2)),
+    );
+    if (picked != null) setState(() => _deadline = picked);
   }
 
   Future<void> _submitRfq() async {
+    final AppLocalizations t = AppLocalizations.of(context);
+
     if (_notesController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: AppColors.vermillionAccent,
-          content: Text('Please describe your requirements/specifications.', style: TextStyle(fontFamily: 'Lora')),
-        ),
-      );
+      _toast(t.rfqNotesRequired, error: true);
+      return;
+    }
+    if (_deadline == null) {
+      _toast(t.rfqChooseDate, error: true);
       return;
     }
 
-    final auth = context.read<AuthController>();
-    final user = auth.currentUser;
+    final user = context.read<AuthController>().currentUser;
     if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please sign in to send a quote request.')),
-      );
+      _toast(t.rfqSignInRequired, error: true);
       return;
     }
 
     final newRfq = RfqModel(
-      rfqId: 'rfq_${DateTime.now().millisecondsSinceEpoch}',
+      // Left empty so Firestore allocates the id; the previous
+      // 'rfq_<millis>' meant a double tap wrote two near-identical requests.
+      rfqId: '',
       buyerUid: user.uid,
       buyerName: user.displayName ?? user.phoneNumber ?? 'Buyer',
       craft: _selectedCraft,
-      cluster: _selectedCluster != 'All Clusters' ? _selectedCluster : null,
+      cluster: _selectedCluster,
       quantity: _quantity,
-      deadline: _deadline,
+      deadline: _isoDate(_deadline!),
       budgetMin: _budgetRange.start.toInt(),
       budgetMax: _budgetRange.end.toInt(),
       // Matching is server-side work that does not exist yet (TRD.md §19.6),
@@ -90,12 +134,33 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
     );
 
     try {
-      await FirestoreService().createRfq(newRfq);
-    } catch (e) {
+      // Firestore's set() future does not complete until the SERVER
+      // acknowledges the write. On a weak connection that means this await
+      // never returns and the button appears to do nothing at all - the write
+      // is queued locally the whole time and will sync on its own. So we wait
+      // only briefly for confirmation and treat a timeout as "queued", which
+      // is what actually happened.
+      await FirestoreService()
+          .createRfq(newRfq)
+          .timeout(const Duration(seconds: 8));
+    } on TimeoutException {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not send the request. $e')),
-      );
+      _toast(t.rfqQueuedOffline);
+      setState(() {
+        _isCreatingRfq = false;
+        _notesController.clear();
+        _deadline = null;
+      });
+      return;
+    } on FirebaseException catch (e) {
+      if (!mounted) return;
+      // The code matters when this fails: 'permission-denied' means the role
+      // is wrong, not that the network is down.
+      _toast('${t.rfqSendFailed} (${e.code})', error: true);
+      return;
+    } catch (_) {
+      if (!mounted) return;
+      _toast(t.rfqSendFailed, error: true);
       return;
     }
     if (!mounted) return;
@@ -103,13 +168,20 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
     setState(() {
       _isCreatingRfq = false;
       _notesController.clear();
+      _deadline = null;
     });
+    // No artisan count here: nothing has matched yet, and the old message
+    // claimed a broadcast to N "master artisans" that never happened.
+    _toast(t.rfqSent);
+  }
 
+  void _toast(String message, {bool error = false}) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: AppColors.ink,
+        backgroundColor: error ? AppColors.vermillionAccent : AppColors.ink,
         content: Text(
-          'RFQ broadcasted to $_estimatedArtisanMatches master artisans! You will receive quotations directly.',
+          message,
           style: const TextStyle(fontFamily: 'Lora', color: AppColors.canvas),
         ),
       ),
@@ -121,15 +193,32 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
     final AppLocalizations t = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.canvas,
-      appBar: AppBar(
+      // Always reachable, whatever has scrolled out of view. The inline
+      // "New RFQ" button sat inside the scroll view under a large banner, so
+      // on a phone it was frequently off-screen.
+      floatingActionButton: _isCreatingRfq
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () => setState(() => _isCreatingRfq = true),
+              backgroundColor: AppColors.action,
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.add_rounded),
+              label: Text(t.buyerNewRfq),
+            ),
+      appBar: widget.embedded
+          ? null
+          : AppBar(
         title: Text(t.buyerBulkAndCustomRfqs),
         actions: [
           IconButton(
             icon: Icon(
-              _isCreatingRfq ? Icons.list_alt_rounded : Icons.add_circle_outline_rounded,
+              _isCreatingRfq
+                  ? Icons.list_alt_rounded
+                  : Icons.add_circle_outline_rounded,
               color: AppColors.ink,
             ),
-            tooltip: _isCreatingRfq ? t.buyerViewActiveRfqs : t.buyerCreateNewRfq,
+            tooltip:
+                _isCreatingRfq ? t.buyerViewActiveRfqs : t.buyerCreateNewRfq,
             onPressed: () {
               setState(() {
                 _isCreatingRfq = !_isCreatingRfq;
@@ -139,7 +228,8 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        // Room for the FAB so it never covers the last card.
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -159,14 +249,15 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.handshake_outlined, size: 36, color: AppColors.canvas),
+                  const Icon(Icons.handshake_outlined,
+                      size: 36, color: AppColors.canvas),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Direct Sourcing from Rural Clusters',
+                        Text(
+                          t.rfqHeroTitle,
                           style: TextStyle(
                             fontFamily: 'Pally',
                             fontWeight: FontWeight.w700,
@@ -176,7 +267,7 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Post custom specifications, bulk orders, or corporate gifting needs with zero intermediary margins.',
+                          t.rfqHeroBody,
                           style: TextStyle(
                             fontFamily: 'Lora',
                             fontSize: 12,
@@ -206,9 +297,12 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
               const SizedBox(height: 14),
 
               // Craft Type Picker
-              const Text(
-                'Select Craft Discipline:',
-                style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.w600, color: AppColors.ink),
+              Text(
+                t.rfqSelectCraft,
+                style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink),
               ),
               const SizedBox(height: 6),
               Container(
@@ -222,9 +316,11 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                   child: DropdownButton<String>(
                     value: _selectedCraft,
                     isExpanded: true,
-                    items: MockBuyerData.craftCategories
-                        .where((c) => c != 'All Crafts')
-                        .map((c) => DropdownMenuItem(value: c, child: Text(c, style: const TextStyle(fontFamily: 'Lora'))))
+                    items: CraftTaxonomy.categories
+                        .map((c) => DropdownMenuItem(
+                            value: c,
+                            child: Text(c,
+                                style: const TextStyle(fontFamily: 'Lora'))))
                         .toList(),
                     onChanged: (val) {
                       if (val != null) setState(() => _selectedCraft = val);
@@ -235,9 +331,12 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
               const SizedBox(height: 14),
 
               // Cluster Preference
-              const Text(
-                'Target Cluster / Region:',
-                style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.w600, color: AppColors.ink),
+              Text(
+                t.rfqTargetCluster,
+                style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink),
               ),
               const SizedBox(height: 6),
               Container(
@@ -248,15 +347,23 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                   border: Border.all(color: AppColors.border),
                 ),
                 child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
+                  child: DropdownButton<String?>(
                     value: _selectedCluster,
                     isExpanded: true,
-                    items: _clusters
-                        .map((c) => DropdownMenuItem(value: c, child: Text(c, style: const TextStyle(fontFamily: 'Lora'))))
-                        .toList(),
-                    onChanged: (val) {
-                      if (val != null) setState(() => _selectedCluster = val);
-                    },
+                    // null is a real choice here - "no cluster preference" -
+                    // so the value is nullable rather than a magic string.
+                    items: <DropdownMenuItem<String?>>[
+                      DropdownMenuItem<String?>(
+                          value: null,
+                          child: Text(t.rfqAllClusters,
+                              style: const TextStyle(fontFamily: 'Lora'))),
+                      for (final String c in _clusters)
+                        DropdownMenuItem<String?>(
+                            value: c,
+                            child: Text(c,
+                                style: const TextStyle(fontFamily: 'Lora'))),
+                    ],
+                    onChanged: (val) => setState(() => _selectedCluster = val),
                   ),
                 ),
               ),
@@ -266,13 +373,20 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Order Quantity (Units):',
-                    style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.w600, color: AppColors.ink),
+                  Text(
+                    t.rfqQuantityLabel,
+                    style: TextStyle(
+                        fontFamily: 'Lora',
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.ink),
                   ),
                   Text(
-                    '$_quantity pieces',
-                    style: const TextStyle(fontFamily: 'Pally', fontWeight: FontWeight.w700, fontSize: 16, color: AppColors.ink),
+                    t.rfqPieces(_quantity),
+                    style: const TextStyle(
+                        fontFamily: 'Pally',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: AppColors.ink),
                   ),
                 ],
               ),
@@ -289,17 +403,72 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
               ),
               const SizedBox(height: 10),
 
+              // Delivery deadline - buyer-chosen. Handmade work is quoted
+              // against a date, so this is required before an RFQ can go out.
+              Text(
+                t.rfqDeadlineLabel,
+                style: const TextStyle(
+                    fontFamily: 'Lora',
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink),
+              ),
+              const SizedBox(height: 6),
+              InkWell(
+                onTap: _pickDeadline,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      const Icon(Icons.event_outlined,
+                          size: 18, color: AppColors.action),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          _deadline == null
+                              ? t.rfqChooseDate
+                              : _formatDeadline(_isoDate(_deadline!), t),
+                          style: TextStyle(
+                            fontFamily: 'Lora',
+                            fontSize: 14,
+                            color: _deadline == null
+                                ? AppColors.textMuted
+                                : AppColors.ink,
+                          ),
+                        ),
+                      ),
+                      const Icon(Icons.keyboard_arrow_down_rounded,
+                          size: 18, color: AppColors.border),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+
               // Budget Range
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     t.buyerBudgetBracket,
-                    style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.w600, color: AppColors.ink),
+                    style: TextStyle(
+                        fontFamily: 'Lora',
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.ink),
                   ),
                   Text(
                     '₹${(_budgetRange.start / 1000).toStringAsFixed(0)}K - ₹${(_budgetRange.end / 1000).toStringAsFixed(0)}K',
-                    style: const TextStyle(fontFamily: 'Pally', fontWeight: FontWeight.w700, fontSize: 16, color: AppColors.ink),
+                    style: const TextStyle(
+                        fontFamily: 'Pally',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: AppColors.ink),
                   ),
                 ],
               ),
@@ -317,18 +486,20 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
               const SizedBox(height: 10),
 
               // Notes & Requirements
-              const Text(
-                'Specifications & Customization Details:',
-                style: TextStyle(fontFamily: 'Lora', fontWeight: FontWeight.w600, color: AppColors.ink),
+              Text(
+                t.rfqSpecsLabel,
+                style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink),
               ),
               const SizedBox(height: 6),
               TextField(
                 controller: _notesController,
                 maxLines: 4,
-                style: const TextStyle(fontFamily: 'Lora', fontSize: 14, color: AppColors.ink),
-                decoration: const InputDecoration(
-                  hintText: 'Describe colors, dimensions, motifs, packaging needs, or attach reference briefs...',
-                ),
+                style: const TextStyle(
+                    fontFamily: 'Lora', fontSize: 14, color: AppColors.ink),
+                decoration: InputDecoration(hintText: t.rfqSpecsHint),
               ),
               const SizedBox(height: 14),
 
@@ -338,15 +509,17 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                 decoration: BoxDecoration(
                   color: AppColors.surface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.heritage.withValues(alpha: 0.5)),
+                  border: Border.all(
+                      color: AppColors.heritage.withValues(alpha: 0.5)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.hub_outlined, color: AppColors.action, size: 20),
+                    const Icon(Icons.hub_outlined,
+                        color: AppColors.action, size: 20),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'Automatically matches $_estimatedArtisanMatches certified rural artisans in selected cluster.',
+                        t.rfqMatchNote,
                         style: const TextStyle(
                           fontFamily: 'Lora',
                           fontSize: 12.5,
@@ -366,8 +539,8 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                 child: ElevatedButton.icon(
                   onPressed: _submitRfq,
                   icon: const Icon(Icons.send_rounded, color: AppColors.ink),
-                  label: const Text(
-                    'Broadcast RFQ to Artisans • कोटेशन मंगाएं',
+                  label: Text(
+                    t.rfqBroadcast,
                     style: TextStyle(
                       fontFamily: 'Pally',
                       fontWeight: FontWeight.w700,
@@ -383,17 +556,19 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                   onPressed: () => setState(() => _isCreatingRfq = false),
                   child: Text(
                     t.buyerCancelViewRfqs,
-                    style: TextStyle(fontFamily: 'Lora', color: AppColors.textMuted),
+                    style: TextStyle(
+                        fontFamily: 'Lora', color: AppColors.textMuted),
                   ),
                 ),
               ),
             ] else ...[
               // ACTIVE RFQs LIST - live from Firestore
               StreamBuilder<List<RfqModel>>(
-                stream: FirestoreService()
-                    .streamBuyerRfqs(context.read<AuthController>().currentUser?.uid ?? '__none__'),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<RfqModel>> snap) {
+                stream: FirestoreService().streamBuyerRfqs(
+                    context.read<AuthController>().currentUser?.uid ??
+                        '__none__'),
+                builder:
+                    (BuildContext context, AsyncSnapshot<List<RfqModel>> snap) {
                   final List<RfqModel> rfqs = snap.data ?? const <RfqModel>[];
                   final bool loading =
                       snap.connectionState == ConnectionState.waiting;
@@ -401,35 +576,22 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              '${t.buyerActiveQuotations} (${rfqs.length})',
-                              style: const TextStyle(
-                                fontFamily: 'Pally',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 20,
-                                color: AppColors.ink,
-                              ),
-                            ),
-                          ),
-                          ElevatedButton.icon(
-                            onPressed: () =>
-                                setState(() => _isCreatingRfq = true),
-                            icon: const Icon(Icons.add,
-                                size: 16, color: AppColors.ink),
-                            label: Text(t.buyerNewRfq),
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 8),
-                            ),
-                          ),
-                        ],
+                      // The create action lives in the FloatingActionButton.
+                      // It used to also sit here as an ElevatedButton inside
+                      // this Row, which inherits the theme's infinite minimum
+                      // width and threw "BoxConstraints forces an infinite
+                      // width" - the whole screen failed to lay out, which is
+                      // why adding an RFQ appeared impossible.
+                      Text(
+                        '${t.buyerActiveQuotations} (${rfqs.length})',
+                        style: const TextStyle(
+                          fontFamily: 'Pally',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                          color: AppColors.ink,
+                        ),
                       ),
                       const SizedBox(height: 14),
-
                       if (loading)
                         const Padding(
                           padding: EdgeInsets.all(32),
@@ -511,11 +673,13 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
             children: [
               Flexible(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppColors.canvas,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.heritage.withValues(alpha: 0.6)),
+                    border: Border.all(
+                        color: AppColors.heritage.withValues(alpha: 0.6)),
                   ),
                   child: Text(
                     rfq.craft,
@@ -534,16 +698,22 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: rfq.status == 'matched' ? AppColors.giTagBg : AppColors.canvas,
+                  color: rfq.status == 'matched'
+                      ? AppColors.giTagBg
+                      : AppColors.canvas,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  rfq.status == 'matched' ? '● Quotations Received' : '● Active Sourcing',
+                  rfq.status == 'matched'
+                      ? '● ${t.rfqStatusMatched}'
+                      : '● ${t.rfqStatusActive}',
                   style: TextStyle(
                     fontFamily: 'Lora',
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
-                    color: rfq.status == 'matched' ? AppColors.giTagGreen : AppColors.action,
+                    color: rfq.status == 'matched'
+                        ? AppColors.giTagGreen
+                        : AppColors.action,
                   ),
                 ),
               ),
@@ -563,11 +733,17 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(child: _buildRfqMeta(t.buyerQuantity, '${rfq.quantity} pcs')),
+              Flexible(
+                  child:
+                      _buildRfqMeta(t.buyerQuantity, t.rfqPcs(rfq.quantity))),
               const SizedBox(width: 8),
-              Flexible(child: _buildRfqMeta(t.buyerDeadline, rfq.deadline)),
+              Flexible(
+                  child: _buildRfqMeta(
+                      t.buyerDeadline, _formatDeadline(rfq.deadline, t))),
               const SizedBox(width: 8),
-              Flexible(child: _buildRfqMeta(t.buyerBudget, '₹${(rfq.budgetMin / 1000).toStringAsFixed(0)}K - ₹${(rfq.budgetMax / 1000).toStringAsFixed(0)}K')),
+              Flexible(
+                  child: _buildRfqMeta(t.buyerBudget,
+                      '₹${(rfq.budgetMin / 1000).toStringAsFixed(0)}K - ₹${(rfq.budgetMax / 1000).toStringAsFixed(0)}K')),
             ],
           ),
         ],
@@ -581,7 +757,8 @@ class _BuyerRfqScreenState extends State<BuyerRfqScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(fontFamily: 'Lora', fontSize: 11, color: AppColors.textMuted),
+          style: const TextStyle(
+              fontFamily: 'Lora', fontSize: 11, color: AppColors.textMuted),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

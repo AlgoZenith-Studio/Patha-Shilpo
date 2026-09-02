@@ -756,4 +756,200 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get reviewBackgroundRemoved => 'পটভূমি সরানো হয়েছে';
+
+  @override
+  String get ttsListen => 'শুনুন';
+
+  @override
+  String get ttsStop => 'থামান';
+
+  @override
+  String get ttsUnavailable => 'এই ফোনে এই ভাষার জন্য কোনও কণ্ঠস্বর নেই।';
+
+  @override
+  String get rfqHeroTitle => 'গ্রামীণ ক্লাস্টার থেকে সরাসরি সংগ্রহ';
+
+  @override
+  String get rfqHeroBody =>
+      'কোনও মধ্যস্বত্বভোগী ছাড়াই কাস্টম নির্দিষ্টকরণ, পাইকারি অর্ডার বা কর্পোরেট উপহারের চাহিদা পাঠান।';
+
+  @override
+  String get rfqSelectCraft => 'শিল্পের ধরন বাছুন';
+
+  @override
+  String get rfqTargetCluster => 'লক্ষ্য ক্লাস্টার / অঞ্চল';
+
+  @override
+  String get rfqAllClusters => 'সব ক্লাস্টার';
+
+  @override
+  String get rfqQuantityLabel => 'অর্ডারের পরিমাণ';
+
+  @override
+  String rfqPieces(int count) {
+    return '$count টি';
+  }
+
+  @override
+  String get rfqDeadlineLabel => 'ডেলিভারির শেষ তারিখ';
+
+  @override
+  String get rfqChooseDate => 'তারিখ বাছুন';
+
+  @override
+  String get rfqDeadlineNotSet => 'নির্ধারিত নয়';
+
+  @override
+  String get rfqSpecsLabel => 'নির্দিষ্টকরণ ও কাস্টমাইজেশনের বিবরণ';
+
+  @override
+  String get rfqSpecsHint => 'রং, মাপ, নকশা বা প্যাকেজিংয়ের প্রয়োজন লিখুন…';
+
+  @override
+  String get rfqMatchNote =>
+      'এই শিল্পে কর্মরত শিল্পীরা আপনার অনুরোধ দেখতে পাবেন ও তৈরি করার প্রস্তাব দিতে পারবেন।';
+
+  @override
+  String get rfqBroadcast => 'শিল্পীদের অনুরোধ পাঠান';
+
+  @override
+  String get rfqNotesRequired => 'পাঠানোর আগে আপনার প্রয়োজন লিখুন।';
+
+  @override
+  String get rfqSignInRequired => 'অনুরোধ পাঠাতে ক্রেতা হিসেবে সাইন ইন করুন।';
+
+  @override
+  String get rfqSent =>
+      'অনুরোধ পাঠানো হয়েছে। এই শিল্পের শিল্পীরা এখন সাড়া দিতে পারবেন।';
+
+  @override
+  String get rfqSendFailed =>
+      'অনুরোধ পাঠানো যায়নি। সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+
+  @override
+  String get rfqStatusActive => 'সক্রিয় সংগ্রহ';
+
+  @override
+  String get rfqStatusMatched => 'উদ্ধৃতি পাওয়া গেছে';
+
+  @override
+  String rfqPcs(int count) {
+    return '$count টি';
+  }
+
+  @override
+  String rfqRespondedCount(int count) {
+    return '$count জন শিল্পী এটি বানাতে পারেন';
+  }
+
+  @override
+  String get languagePickerLabel => 'ভাষা';
+
+  @override
+  String get publishLive => 'প্রকাশিত। ক্রেতারা এখন এই শিল্পটি দেখতে পাবেন।';
+
+  @override
+  String get publishKeptDraft =>
+      'সার্ভারে পৌঁছনো যায়নি। এই ফোনে সংরক্ষিত - প্রকাশ করতে আবার খুলুন।';
+
+  @override
+  String get publishNoProfile =>
+      'শিল্প প্রকাশের আগে আপনার শিল্পী নিবন্ধন সম্পূর্ণ করুন।';
+
+  @override
+  String get publishNotSignedIn => 'প্রকাশ করতে শিল্পী হিসেবে সাইন ইন করুন।';
+
+  @override
+  String get productsEmptyBody =>
+      'আপনার প্রথম শিল্পের ছবি তুলতে + বোতামে চাপুন।';
+
+  @override
+  String get productsLoadFailed => 'আপনার শিল্প লোড করা যায়নি';
+
+  @override
+  String get enquiriesEmptyBody =>
+      'কোনও ক্রেতা আপনার শিল্প সম্পর্কে জিজ্ঞাসা করলে তা এখানে দেখা যাবে।';
+
+  @override
+  String get enquiriesLoadFailed => 'আপনার অনুসন্ধান লোড করা যায়নি';
+
+  @override
+  String enquiryQuantity(int count) {
+    return 'পরিমাণ: $count';
+  }
+
+  @override
+  String enquiryFrom(String name) {
+    return '$name থেকে';
+  }
+
+  @override
+  String get profileVerification => 'যাচাই';
+
+  @override
+  String get profileUnverified => 'অপেক্ষমাণ';
+
+  @override
+  String get rfqQueuedOffline =>
+      'সংরক্ষিত। আপনি অনলাইনে ফিরলেই অনুরোধটি শিল্পীদের কাছে পৌঁছবে।';
+
+  @override
+  String get productChangePrice => 'দাম বদলান';
+
+  @override
+  String get productPriceUpdated => 'দাম বদলে দেওয়া হয়েছে।';
+
+  @override
+  String get productActionFailed =>
+      'এটি সম্পন্ন হয়নি। সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+
+  @override
+  String get productUnlist => 'দোকান থেকে সরান';
+
+  @override
+  String get productRelist => 'দোকানে ফিরিয়ে দিন';
+
+  @override
+  String get productUnlisted =>
+      'দোকান থেকে সরানো হয়েছে। ক্রেতারা আর দেখতে পাবেন না।';
+
+  @override
+  String get productRelisted => 'দোকানে ফিরিয়ে দেওয়া হয়েছে।';
+
+  @override
+  String get productListed => 'ক্রেতারা দেখতে পাচ্ছেন';
+
+  @override
+  String get productNotListed => 'ক্রেতাদের থেকে লুকোনো';
+
+  @override
+  String get productDelete => 'মুছুন';
+
+  @override
+  String get productDeleteTitle => 'এই শিল্পটি মুছবেন?';
+
+  @override
+  String get productDeleteBody =>
+      'তালিকাটি চিরতরে মুছে যাবে। এটি ফেরানো যাবে না।';
+
+  @override
+  String get productMaterialCost => 'উপকরণে আপনার খরচ';
+
+  @override
+  String get productHoursOfWork => 'আপনি যত ঘণ্টা কাজ করেছেন';
+
+  @override
+  String productLabourAtFairWage(int rate) {
+    return '₹$rate/ঘণ্টা হারে আপনার শ্রম';
+  }
+
+  @override
+  String get productDescription => 'বিবরণ';
+
+  @override
+  String get profileSettingUp => 'আপনার ক্রেতা প্রোফাইল তৈরি হচ্ছে…';
+
+  @override
+  String get profileSignInPrompt =>
+      'আপনার প্রোফাইল, সংরক্ষিত শিল্প ও অনুসন্ধান দেখতে ক্রেতা হিসেবে সাইন ইন করুন।';
 }

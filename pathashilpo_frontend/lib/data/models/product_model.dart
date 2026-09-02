@@ -1,3 +1,5 @@
+import 'timestamps.dart';
+
 /// Product Model according to TRD.md and MVP Architecture
 class ProductModel {
   final String productId;
@@ -25,7 +27,8 @@ class ProductModel {
   final int priceFinal;
   final String priceReasoning;
   final String priceReasoningHi;
-  final String state; // CAPTURED | OFFLINE_PROCESSED | SYNCING | AI_UPGRADED | LIVE
+  final String
+      state; // CAPTURED | OFFLINE_PROCESSED | SYNCING | AI_UPGRADED | LIVE
   final String status; // draft | live | flagged | sold
   final List<String> channels;
   final String? giTag;
@@ -134,9 +137,7 @@ class ProductModel {
       channels: List<String>.from(map['channels'] ?? ['storefront']),
       giTag: map['giTag'],
       isVerified: map['isVerified'] ?? true,
-      createdAt: map['createdAt'] != null
-          ? DateTime.tryParse(map['createdAt']) ?? DateTime.now()
-          : DateTime.now(),
+      createdAt: parseTimestamp(map['createdAt']),
     );
   }
 }

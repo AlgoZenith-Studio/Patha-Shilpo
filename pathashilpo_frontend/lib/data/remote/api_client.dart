@@ -32,8 +32,8 @@ class ApiClient {
 
     dio.interceptors.add(
       InterceptorsWrapper(
-        onRequest: (RequestOptions options,
-            RequestInterceptorHandler handler) async {
+        onRequest:
+            (RequestOptions options, RequestInterceptorHandler handler) async {
           try {
             // Firebase refreshes this automatically when it is close to
             // expiring, so fetching per request is the supported pattern.

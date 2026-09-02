@@ -8,6 +8,8 @@ import '../../../core/rbac/role.dart';
 import '../../../core/routing/route_names.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/widgets/brand/app_logo.dart';
+import '../../../core/widgets/language_switcher.dart';
 import '../../../core/widgets/buttons/primary_bilingual_button.dart';
 import '../controllers/auth_controller.dart';
 
@@ -69,32 +71,53 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
             child: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
                 return SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
+                    constraints:
+                        BoxConstraints(minHeight: constraints.maxHeight - 32),
                     child: IntrinsicHeight(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 8),
+                          // The very first screen, so the language choice has
+                          // to live here too - a Bengali speaker should never
+                          // have to read English to find বাংলা.
+                          const LanguageSwitcher(compact: true),
+                          const SizedBox(height: 12),
 
                           // App Branding / Heritage Header
                           Center(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                               decoration: BoxDecoration(
-                                color: AppColors.surface.withValues(alpha: 0.9),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: AppColors.border, width: 0.8),
+                                color:
+                                    AppColors.surface.withValues(alpha: 0.95),
+                                borderRadius: BorderRadius.circular(24),
+                                border: Border.all(
+                                    color: AppColors.border, width: 0.8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color:
+                                        AppColors.ink.withValues(alpha: 0.08),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
-                                  const Icon(Icons.palette_outlined, color: AppColors.action, size: 20),
-                                  const SizedBox(width: 8),
+                                  const AppLogo(size: 26),
+                                  const SizedBox(width: 10),
                                   Text(
                                     'PATHA-SHILPO',
-                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
                                           letterSpacing: 2,
                                           fontWeight: FontWeight.w700,
                                           color: AppColors.ink,
@@ -110,7 +133,10 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                           // Heading
                           Text(
                             t.authPhoneTitle,
-                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium
+                                ?.copyWith(
                                   fontWeight: FontWeight.w700,
                                   color: AppColors.ink,
                                 ),
@@ -118,7 +144,10 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                           const SizedBox(height: 8),
                           Text(
                             'Enter your mobile number to receive a secure OTP code.',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
                                   color: AppColors.textMuted,
                                 ),
                           ),
@@ -133,29 +162,35 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                               child: Container(
                                 padding: const EdgeInsets.all(20),
                                 decoration: BoxDecoration(
-                                  color: AppColors.surface.withValues(alpha: 0.88),
+                                  color:
+                                      AppColors.surface.withValues(alpha: 0.88),
                                   borderRadius: BorderRadius.circular(18),
-                                  border: Border.all(color: AppColors.border, width: 1),
+                                  border: Border.all(
+                                      color: AppColors.border, width: 1),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.ink.withValues(alpha: 0.05),
+                                      color:
+                                          AppColors.ink.withValues(alpha: 0.05),
                                       blurRadius: 16,
                                       offset: const Offset(0, 8),
                                     ),
                                   ],
                                 ),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: <Widget>[
                                     Row(
                                       children: <Widget>[
                                         Container(
                                           height: 56,
-                                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 14),
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
                                             color: AppColors.canvas,
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
                                             border: Border.all(
                                               color: AppColors.border,
                                               width: AppShape.hairline,
@@ -163,7 +198,10 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                           ),
                                           child: Text(
                                             '🇮🇳 +91',
-                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(
                                                   fontWeight: FontWeight.w700,
                                                 ),
                                           ),
@@ -177,11 +215,13 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                             maxLength: 10,
                                             onChanged: (_) => auth.clearError(),
                                             inputFormatters: <TextInputFormatter>[
-                                              FilteringTextInputFormatter.digitsOnly,
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
                                             ],
                                             style: const TextStyle(
                                               fontFamily: AppTheme.bodyFont,
-                                              fontFamilyFallback: AppTheme.scriptFallback,
+                                              fontFamilyFallback:
+                                                  AppTheme.scriptFallback,
                                               fontSize: 20,
                                               letterSpacing: 2,
                                               fontWeight: FontWeight.w600,
@@ -197,15 +237,16 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                         ),
                                       ],
                                     ),
-
                                     if (auth.errorKey != null) ...<Widget>[
                                       const SizedBox(height: 12),
                                       Container(
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
                                           color: Colors.red.shade50,
-                                          borderRadius: BorderRadius.circular(8),
-                                          border: Border.all(color: Colors.red.shade200),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          border: Border.all(
+                                              color: Colors.red.shade200),
                                         ),
                                         child: Text(
                                           auth.errorKey!,
@@ -217,12 +258,11 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                         ),
                                       ),
                                     ],
-
                                     const SizedBox(height: 20),
-
                                     PrimaryBilingualButton(
                                       label: t.authSendCode,
-                                      onPressed: auth.busy ? null : _submitPhone,
+                                      onPressed:
+                                          auth.busy ? null : _submitPhone,
                                     ),
                                   ],
                                 ),
@@ -235,9 +275,11 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                           // Divider with "OR"
                           Row(
                             children: <Widget>[
-                              const Expanded(child: Divider(color: AppColors.border)),
+                              const Expanded(
+                                  child: Divider(color: AppColors.border)),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 14),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 14),
                                 child: Text(
                                   'OR CONTINUE WITH',
                                   style: TextStyle(
@@ -249,7 +291,8 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                   ),
                                 ),
                               ),
-                              const Expanded(child: Divider(color: AppColors.border)),
+                              const Expanded(
+                                  child: Divider(color: AppColors.border)),
                             ],
                           ),
 
@@ -260,7 +303,8 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                             onPressed: auth.busy ? null : _submitGoogle,
                             style: OutlinedButton.styleFrom(
                               backgroundColor: AppColors.surface,
-                              side: const BorderSide(color: AppColors.border, width: 1.2),
+                              side: const BorderSide(
+                                  color: AppColors.border, width: 1.2),
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
@@ -283,7 +327,10 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                 const SizedBox(width: 12),
                                 Text(
                                   'Continue with Google',
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         color: AppColors.ink,
                                       ),
@@ -298,7 +345,8 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 12),
                               child: Center(
-                                child: CircularProgressIndicator(color: AppColors.action),
+                                child: CircularProgressIndicator(
+                                    color: AppColors.action),
                               ),
                             ),
 
@@ -306,7 +354,10 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                           Center(
                             child: Text(
                               'Preserving India\'s Master Crafts · Fair-Wage Verified',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
                                     color: AppColors.textMuted,
                                     fontStyle: FontStyle.italic,
                                   ),
@@ -353,7 +404,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
         navigator.pushNamedAndRemoveUntil(Routes.buyerExplore, (_) => false);
       }
     } else if (auth.stage == AuthStage.needsRole) {
-      navigator.pushNamed(Routes.roleSelect);
+      navigator.pushNamedAndRemoveUntil(Routes.roleSelect, (_) => false);
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../core/constants/craft_taxonomy.dart';
 import '../models/artisan_model.dart';
 import '../models/buyer_model.dart';
 import '../models/enquiry_model.dart';
@@ -73,6 +74,41 @@ class FirestoreService {
     }, SetOptions(merge: true));
   }
 
+  /// Read a buyer profile. Null when the document does not exist yet, so
+  /// callers can tell "not registered" from "read failed".
+  Future<BuyerModel?> getBuyer(String uid) async {
+    final DocumentSnapshot<Map<String, dynamic>> doc =
+        await _buyers.doc(uid).get();
+    if (!doc.exists || doc.data() == null) return null;
+    return BuyerModel.fromMap(doc.data()!);
+  }
+
+  /// Stream a specific Buyer profile - drives the profile screen and the
+  /// saved-crafts list, both of which change as the buyer taps around.
+  Stream<BuyerModel?> streamBuyer(String uid) {
+    return _buyers.doc(uid).snapshots().map((snap) {
+      if (!snap.exists || snap.data() == null) return null;
+      return BuyerModel.fromMap(snap.data()!);
+    });
+  }
+
+  /// Add or remove a product from the buyer's saved list.
+  ///
+  /// Uses arrayUnion/arrayRemove rather than read-modify-write so saving from
+  /// two devices at once cannot drop the other's change, and so tapping the
+  /// same heart twice is idempotent.
+  Future<void> setProductSaved({
+    required String buyerUid,
+    required String productId,
+    required bool saved,
+  }) {
+    return _buyers.doc(buyerUid).set(<String, dynamic>{
+      'savedProducts': saved
+          ? FieldValue.arrayUnion(<String>[productId])
+          : FieldValue.arrayRemove(<String>[productId]),
+    }, SetOptions(merge: true));
+  }
+
   /// Stream a specific Artisan profile
   Stream<ArtisanModel?> streamArtisan(String uid) {
     return _artisans.doc(uid).snapshots().map((snap) {
@@ -93,36 +129,103 @@ class FirestoreService {
     }, SetOptions(merge: true));
   }
 
-  /// Stream all live products for the Buyer Explore view
+  /// Newest-first, the ordering every catalogue view uses.
+  ///
+  /// `createdAt` is written as an ISO-8601 string (ProductModel.toMap), so it
+  /// would also sort correctly server-side - but pairing an `orderBy` with the
+  /// `status` filter demands a composite index. Sorting here instead keeps the
+  /// catalogue working against a project with no deployed indexes (TRD.md
+  /// §4.2), the same trade-off [streamBuyerRfqs] makes.
+  List<ProductModel> _newestFirst(QuerySnapshot<Map<String, dynamic>> snap) {
+    final List<ProductModel> list =
+        snap.docs.map((doc) => ProductModel.fromMap(doc.data())).toList();
+    list.sort(
+        (ProductModel a, ProductModel b) => b.createdAt.compareTo(a.createdAt));
+    return list;
+  }
+
+  /// Every live product, newest first, for the Buyer Explore view.
+  ///
+  /// `craftType` and `onlyGiTagged` are applied client-side for the same
+  /// no-composite-index reason as the sort above. The catalogue is small
+  /// enough that the saving is not worth an index deploy per filter combo.
   Stream<List<ProductModel>> streamLiveProducts({
     String? craftType,
     bool onlyGiTagged = false,
   }) {
-    Query<Map<String, dynamic>> query = _products
+    return _products
         .where('status', isEqualTo: 'live')
-        .orderBy('createdAt', descending: true);
-
-    if (craftType != null && craftType != 'All Crafts') {
-      query = query.where('craftType', isEqualTo: craftType);
-    }
-    if (onlyGiTagged) {
-      query = query.where('isVerified', isEqualTo: true);
-    }
-
-    return query.snapshots().map((snap) {
-      return snap.docs.map((doc) => ProductModel.fromMap(doc.data())).toList();
+        .snapshots()
+        .map((QuerySnapshot<Map<String, dynamic>> snap) {
+      return _newestFirst(snap).where((ProductModel p) {
+        if (craftType != null &&
+            craftType != CraftTaxonomy.all &&
+            CraftTaxonomy.categoryFor(p.craftType) !=
+                CraftTaxonomy.categoryFor(craftType)) {
+          return false;
+        }
+        if (onlyGiTagged && (p.giTag == null || p.giTag!.isEmpty)) return false;
+        return true;
+      }).toList();
     });
   }
 
-  /// Stream products created by a specific artisan
+  /// One-shot read of the live catalogue - for "similar crafts" style panels
+  /// that do not need to stay subscribed.
+  Future<List<ProductModel>> fetchLiveProducts() async {
+    final QuerySnapshot<Map<String, dynamic>> snap =
+        await _products.where('status', isEqualTo: 'live').get();
+    return _newestFirst(snap);
+  }
+
+  /// Live view of one product, for the artisan's own detail page.
+  Stream<ProductModel?> streamProduct(String localId) {
+    return _products.doc(localId).snapshots().map((snap) {
+      if (!snap.exists || snap.data() == null) return null;
+      return ProductModel.fromMap(snap.data()!);
+    });
+  }
+
+  /// The artisan changing what they sell at.
+  ///
+  /// Only `priceFinal` moves. The floor, suggested and max are the output of
+  /// the deterministic pricing formula (TRD.md §7) and must not drift, so the
+  /// caller is responsible for refusing anything below `priceFloor` - selling
+  /// under it loses the artisan money.
+  Future<void> updateProductPrice({
+    required String localId,
+    required int priceFinal,
+  }) {
+    return _products.doc(localId).update(<String, dynamic>{
+      'priceFinal': priceFinal,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Take a product off the storefront, or put it back.
+  ///
+  /// `status` is what firestore.rules gates public reads on, so flipping it to
+  /// anything other than 'live' immediately hides the product from buyers
+  /// without deleting the artisan's work.
+  Future<void> setProductStatus({
+    required String localId,
+    required String status,
+  }) {
+    return _products.doc(localId).update(<String, dynamic>{
+      'status': status,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> deleteProduct(String localId) =>
+      _products.doc(localId).delete();
+
+  /// Stream products created by a specific artisan, newest first.
   Stream<List<ProductModel>> streamArtisanProducts(String artisanId) {
     return _products
         .where('artisanId', isEqualTo: artisanId)
-        .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snap) {
-      return snap.docs.map((doc) => ProductModel.fromMap(doc.data())).toList();
-    });
+        .map(_newestFirst);
   }
 
   // ==========================================
@@ -135,7 +238,11 @@ class FirestoreService {
     await docRef.set({
       ...rfq.toMap(),
       'rfqId': docRef.id,
-      'createdAt': FieldValue.serverTimestamp(),
+      // `createdAt` deliberately comes from toMap() as an ISO-8601 string and
+      // is NOT overwritten with a server timestamp: RfqModel.fromMap reads it
+      // back with DateTime.tryParse, which cannot accept a Timestamp. The
+      // server clock is recorded separately.
+      'serverCreatedAt': FieldValue.serverTimestamp(),
     });
   }
 
@@ -165,9 +272,12 @@ class FirestoreService {
         .map((QuerySnapshot<Map<String, dynamic>> snap) {
       final List<RfqModel> list = snap.docs
           .map((doc) => RfqModel.fromMap(doc.data()))
+          // Matched through CraftTaxonomy, not raw equality. A buyer picks a
+          // category ('Metal Casting') while an artisan's profile may say
+          // 'Dhokra & Metalware' or 'Dhokra Lost-Wax Metal Casting'; comparing
+          // those literally - as this did - meant no RFQ ever reached anyone.
           .where((RfqModel r) =>
-              craft.isEmpty ||
-              r.craft.toLowerCase() == craft.toLowerCase())
+              craft.isEmpty || CraftTaxonomy.matches(r.craft, craft))
           .toList();
       list.sort((RfqModel a, RfqModel b) => b.createdAt.compareTo(a.createdAt));
       return list;
@@ -187,14 +297,17 @@ class FirestoreService {
     });
   }
 
-  /// Stream active RFQs
+  /// Stream active RFQs, newest first (sorted client-side - see
+  /// [streamBuyerRfqs] for why).
   Stream<List<RfqModel>> streamActiveRfqs() {
     return _rfqs
         .where('status', isEqualTo: 'active')
-        .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snap) {
-      return snap.docs.map((doc) => RfqModel.fromMap(doc.data())).toList();
+        .map((QuerySnapshot<Map<String, dynamic>> snap) {
+      final List<RfqModel> list =
+          snap.docs.map((doc) => RfqModel.fromMap(doc.data())).toList();
+      list.sort((RfqModel a, RfqModel b) => b.createdAt.compareTo(a.createdAt));
+      return list;
     });
   }
 
@@ -204,33 +317,42 @@ class FirestoreService {
 
   /// Submit a direct craft enquiry
   Future<void> sendEnquiry(EnquiryModel enquiry) async {
-    final docRef = _enquiries.doc(enquiry.enquiryId.isEmpty ? null : enquiry.enquiryId);
+    final docRef =
+        _enquiries.doc(enquiry.enquiryId.isEmpty ? null : enquiry.enquiryId);
     await docRef.set({
       ...enquiry.toMap(),
       'enquiryId': docRef.id,
-      'createdAt': FieldValue.serverTimestamp(),
+      // As in [createRfq]: `createdAt` stays the ISO-8601 string from toMap(),
+      // because EnquiryModel.fromMap parses it with DateTime.tryParse and a
+      // Timestamp would throw on read.
+      'serverCreatedAt': FieldValue.serverTimestamp(),
     });
   }
 
-  /// Stream enquiries received by an artisan
+  /// Newest-first, sorted client-side so no composite index is needed for the
+  /// `where` + order pairing (TRD.md §4.2).
+  List<EnquiryModel> _enquiriesNewestFirst(
+      QuerySnapshot<Map<String, dynamic>> snap) {
+    final List<EnquiryModel> list =
+        snap.docs.map((doc) => EnquiryModel.fromMap(doc.data())).toList();
+    list.sort(
+        (EnquiryModel a, EnquiryModel b) => b.createdAt.compareTo(a.createdAt));
+    return list;
+  }
+
+  /// Stream enquiries received by an artisan, newest first.
   Stream<List<EnquiryModel>> streamArtisanEnquiries(String artisanId) {
     return _enquiries
         .where('artisanId', isEqualTo: artisanId)
-        .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snap) {
-      return snap.docs.map((doc) => EnquiryModel.fromMap(doc.data())).toList();
-    });
+        .map(_enquiriesNewestFirst);
   }
 
-  /// Stream enquiries sent by a buyer
+  /// Stream enquiries sent by a buyer, newest first.
   Stream<List<EnquiryModel>> streamBuyerEnquiries(String buyerUid) {
     return _enquiries
         .where('buyerUid', isEqualTo: buyerUid)
-        .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snap) {
-      return snap.docs.map((doc) => EnquiryModel.fromMap(doc.data())).toList();
-    });
+        .map(_enquiriesNewestFirst);
   }
 }

@@ -38,11 +38,19 @@ class CraftCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppShape.cardRadius),
         child: Container(
           decoration: BoxDecoration(
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(AppShape.cardRadius),
             border: Border.all(
-              color: AppColors.border,
+              color: AppColors.border.withValues(alpha: 0.8),
               width: AppShape.hairline,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.ink.withValues(alpha: 0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
           clipBehavior: Clip.antiAlias,
           child: Column(

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../core/rbac/role.dart';
+import '../../../data/local/session_box.dart';
 import '../../../data/models/artisan_model.dart';
 import '../../../data/models/buyer_model.dart';
 import '../../../data/remote/auth_service.dart';
@@ -164,20 +165,84 @@ class AuthController extends ChangeNotifier {
     }
 
     try {
+      // 1. Check local session cache first for fast offline response
+      final cachedRole = const SessionBox().role;
+      if (cachedRole != null) {
+        _role = cachedRole == 'buyer' ? UserRole.buyer : UserRole.artisan;
+        _stage = AuthStage.ready;
+      }
+
+      // 2. Fetch authoritative user document from Firestore
       final doc = await _firestoreService.getUser(user.uid);
       if (doc.exists && doc.data() != null && doc.data()!['role'] != null) {
         final String r = doc.data()!['role'];
-        _role = r == 'buyer' ? UserRole.buyer : UserRole.artisan;
+        final resolvedRole = r == 'buyer' ? UserRole.buyer : UserRole.artisan;
+
+        if (resolvedRole == UserRole.artisan) {
+          final artisanProfile = await _firestoreService.getArtisan(user.uid);
+          if (artisanProfile != null) {
+            // Completed artisan registration
+            _role = UserRole.artisan;
+            _stage = AuthStage.ready;
+            await const SessionBox().setRole('artisan');
+          } else {
+            // Role selected but artisan registration steps incomplete
+            _role = UserRole.artisan;
+            _stage = AuthStage.needsRole;
+          }
+        } else {
+          // Buyer profile
+          _role = UserRole.buyer;
+          _stage = AuthStage.ready;
+          await const SessionBox().setRole('buyer');
+          await ensureBuyerProfile();
+        }
+      } else {
+        // New user (new Gmail or new phone) without registration
+        _stage = AuthStage.needsRole;
+      }
+    } catch (_) {
+      if (_role != null) {
         _stage = AuthStage.ready;
       } else {
         _stage = AuthStage.needsRole;
       }
-    } catch (_) {
-      _stage = AuthStage.needsRole;
     }
 
     _busy = false;
     notifyListeners();
+  }
+
+  /// Creates `buyers/{uid}` if the signed-in buyer has no profile document.
+  ///
+  /// [chooseRole] writes `users/{uid}` and `buyers/{uid}` as two separate
+  /// calls and swallows failures for offline resilience, so a buyer could end
+  /// up with a role but no profile. Every buyer screen reads the profile, and
+  /// a missing one made the app tell an already-signed-in buyer to "sign in as
+  /// a buyer". This repairs that on the next successful launch.
+  ///
+  /// Safe to call repeatedly: it reads first and only writes when absent, so
+  /// it never overwrites a profile the buyer has since filled in.
+  Future<void> ensureBuyerProfile() async {
+    final user = _authService.currentUser;
+    if (user == null) return;
+    try {
+      if (await _firestoreService.getBuyer(user.uid) != null) return;
+      await _firestoreService.saveBuyerProfile(
+        BuyerModel(
+          uid: user.uid,
+          name: user.displayName?.trim().isNotEmpty == true
+              ? user.displayName!
+              : 'Buyer ${user.phoneNumber != null && user.phoneNumber!.length >= 4 ? user.phoneNumber!.substring(user.phoneNumber!.length - 4) : ""}'
+                  .trim(),
+          phone: user.phoneNumber ?? '',
+          email: user.email,
+          createdAt: DateTime.now(),
+        ),
+      );
+    } catch (_) {
+      // Still offline. The next launch tries again; nothing is lost.
+    }
   }
 
   /// TRD.md §5.1 step 4. Writes role to Firestore
@@ -188,9 +253,6 @@ class AuthController extends ChangeNotifier {
 
     final user = _authService.currentUser;
     if (user == null) {
-      // Without a signed-in user there is no uid to write against, and
-      // letting the stage advance would put an unauthenticated user inside
-      // the app. Refuse rather than degrade.
       _errorKey = 'errorNotSignedIn';
       _stage = AuthStage.signedOut;
       notifyListeners();
@@ -205,7 +267,6 @@ class AuthController extends ChangeNotifier {
       if (role == UserRole.artisan) {
         // Initialize base artisan document
         await _firestoreService.saveArtisanProfile(
-          // Stub template that artisan can edit in Profile
           ArtisanModel(
             uid: user.uid,
             name:
@@ -222,6 +283,7 @@ class AuthController extends ChangeNotifier {
             createdAt: DateTime.now(),
           ),
         );
+        await const SessionBox().setRole('artisan');
       } else {
         // Initialize base buyer document
         await _firestoreService.saveBuyerProfile(
@@ -233,10 +295,14 @@ class AuthController extends ChangeNotifier {
             createdAt: DateTime.now(),
           ),
         );
+        await const SessionBox().setRole('buyer');
       }
     } catch (_) {
-      // Offline resilience: the profile write can be retried later;
-      // the role itself is already known locally.
+      // Offline resilience: the role is cached locally and the profile write
+      // is retried by [ensureBuyerProfile] on the next launch. Without that
+      // retry a buyer ended up with users/{uid}.role == 'buyer' but no
+      // buyers/{uid} document, and every buyer screen then told a signed-in
+      // buyer to "sign in as a buyer".
     }
 
     _stage = AuthStage.ready;
@@ -253,6 +319,7 @@ class AuthController extends ChangeNotifier {
       await _firestoreService.saveArtisanProfile(artisan);
       _role = UserRole.artisan;
       _stage = AuthStage.ready;
+      await const SessionBox().setRole('artisan');
     } catch (e) {
       _errorKey = e.toString();
     }
@@ -263,6 +330,7 @@ class AuthController extends ChangeNotifier {
 
   Future<void> signOut() async {
     await _authService.signOut();
+    await const SessionBox().clearRole();
     _stage = AuthStage.signedOut;
     _phone = null;
     _verificationId = null;
