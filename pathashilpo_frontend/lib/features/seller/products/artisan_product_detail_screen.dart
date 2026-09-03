@@ -418,7 +418,7 @@ class _ArtisanProductDetailScreenState
                         IconButton(
                           icon: const Icon(Icons.volume_up_rounded,
                               size: 20, color: AppColors.action),
-                          tooltip: 'Listen to pricing breakdown',
+                          tooltip: t.productListenPricing,
                           onPressed: () => _speakPricingDetails(product),
                         ),
                       ],
@@ -439,6 +439,11 @@ class _ArtisanProductDetailScreenState
                           icon: const Icon(Icons.tune_rounded, size: 16),
                           label: Text(t.productChangePrice),
                           style: ElevatedButton.styleFrom(
+                            // Content-sized: this sits in a Row, where the
+                            // theme's Size.fromHeight(56) resolves to an
+                            // infinite width and throws during layout. See
+                            // AppButtons in app_theme.dart.
+                            minimumSize: const Size(0, 40),
                             backgroundColor: AppColors.action,
                             foregroundColor: Colors.white,
                             elevation: 0,

@@ -37,6 +37,53 @@ void main() {
     );
   });
 
+  testWidgets('OutlinedButton has the SAME trap — this is the one that was missed',
+      (WidgetTester tester) async {
+    // outlinedButtonTheme carries the identical Size.fromHeight(minTapTarget).
+    // The first version of this file only covered ElevatedButton, so the
+    // artisan registration "Back" button — an OutlinedButton in a Row, wrapped
+    // in a SizedBox that bounds HEIGHT only — went unnoticed and blanked out
+    // the whole bottom bar from step 2 onward.
+    await tester.pumpWidget(host(
+      const SizedBox(
+        height: 54,
+        child: OutlinedButton(onPressed: null, child: Text('Back')),
+      ),
+    ));
+    expect(tester.takeException(), isNotNull);
+  });
+
+  testWidgets('SizedBox(height:) does NOT bound width in a Row',
+      (WidgetTester tester) async {
+    // The specific misconception behind the registration bug.
+    await tester.pumpWidget(host(
+      const SizedBox(
+        height: 54,
+        child: ElevatedButton(onPressed: null, child: Text('x')),
+      ),
+    ));
+    expect(tester.takeException(), isNotNull,
+        reason: 'Bounding height alone leaves width unbounded; only '
+            'SizedBox(width:), Expanded/Flexible or minimumSize fix it.');
+  });
+
+  testWidgets('an explicit minimumSize defuses it without AppButtons',
+      (WidgetTester tester) async {
+    // How both real fixes were written, inline in existing styleFrom calls.
+    await tester.pumpWidget(host(
+      SizedBox(
+        height: 54,
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(minimumSize: const Size(0, 54)),
+          onPressed: () {},
+          child: const Text('Back'),
+        ),
+      ),
+    ));
+    expect(tester.takeException(), isNull);
+    expect(find.text('Back'), findsOneWidget);
+  });
+
   testWidgets('AppButtons.inRow lays out cleanly inside a Row',
       (WidgetTester tester) async {
     await tester.pumpWidget(host(

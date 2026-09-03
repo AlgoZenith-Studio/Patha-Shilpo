@@ -958,4 +958,108 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profileSignInPrompt =>
       'Sign in as a buyer to see your profile, saved crafts and enquiries.';
+
+  @override
+  String get regListenInstructions => 'Listen to instructions';
+
+  @override
+  String get regListenInstructionsBody => 'Tap to hear this step read aloud';
+
+  @override
+  String get regListenGuidance => 'Listen to step guidance';
+
+  @override
+  String get commonContinue => 'Continue';
+
+  @override
+  String get regSubmit => 'Submit registration';
+
+  @override
+  String get regStepLocation => 'Location & cluster';
+
+  @override
+  String get regStepCraft => 'Craft specialisation';
+
+  @override
+  String get regStepStory => 'Heritage story';
+
+  @override
+  String get regSelectIdDoc => 'SELECT IDENTITY DOCUMENT';
+
+  @override
+  String get regAuthenticatedId => 'AUTHENTICATED IDENTIFIER';
+
+  @override
+  String get regPrivacyGuarantee =>
+      'Privacy guarantee: we verify your identity against government registries and save only your verified status. Your Aadhaar or PAN number is never made public or sold.';
+
+  @override
+  String get regBadgeAadhaarTitle => 'Aadhaar verified artisan';
+
+  @override
+  String get regBadgeAadhaarSub => 'Unique Identification Authority of India';
+
+  @override
+  String get regBadgePanTitle => 'PAN verified';
+
+  @override
+  String get regBadgePanSub => 'Income Tax Department, Government of India';
+
+  @override
+  String get regBadgeGstinTitle => 'Active GSTIN taxpayer verified';
+
+  @override
+  String get regBadgeGstinSub => 'Goods and Services Tax Network';
+
+  @override
+  String get regSpeakDocNumber => 'Speak document number';
+
+  @override
+  String get regRescanVlm => 'Scan again';
+
+  @override
+  String get commonGallery => 'Gallery';
+
+  @override
+  String get regCameraFailed => 'Could not open the camera or gallery.';
+
+  @override
+  String get regStoryTitle => 'Craft heritage story';
+
+  @override
+  String get regDictateStory => 'Dictate story by voice';
+
+  @override
+  String get regProvenanceNote =>
+      'Your profile will be checked for cluster provenance. Once verified, an official GI or verified-artisan badge appears on your crafts.';
+
+  @override
+  String get commonSpeakInput => 'Speak input';
+
+  @override
+  String get voiceTapMic => 'Tap the mic to dictate';
+
+  @override
+  String get voiceSpeakClearly => 'Speak clearly in your own dialect…';
+
+  @override
+  String get commonVoiceReadout => 'Voice readout';
+
+  @override
+  String get artisanAddCraft => 'Add craft';
+
+  @override
+  String get artisanVoiceSearch => 'Voice search';
+
+  @override
+  String get commonClose => 'Close';
+
+  @override
+  String get commonClear => 'Clear';
+
+  @override
+  String get productListenPricing => 'Listen to the pricing breakdown';
+
+  @override
+  String get profileListenVerification => 'Listen to verification';
 }

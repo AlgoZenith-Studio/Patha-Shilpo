@@ -1821,6 +1821,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in as a buyer to see your profile, saved crafts and enquiries.'**
   String get profileSignInPrompt;
+
+  /// No description provided for @regListenInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen to instructions'**
+  String get regListenInstructions;
+
+  /// No description provided for @regListenInstructionsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to hear this step read aloud'**
+  String get regListenInstructionsBody;
+
+  /// No description provided for @regListenGuidance.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen to step guidance'**
+  String get regListenGuidance;
+
+  /// No description provided for @commonContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get commonContinue;
+
+  /// No description provided for @regSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit registration'**
+  String get regSubmit;
+
+  /// No description provided for @regStepLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location & cluster'**
+  String get regStepLocation;
+
+  /// No description provided for @regStepCraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Craft specialisation'**
+  String get regStepCraft;
+
+  /// No description provided for @regStepStory.
+  ///
+  /// In en, this message translates to:
+  /// **'Heritage story'**
+  String get regStepStory;
+
+  /// No description provided for @regSelectIdDoc.
+  ///
+  /// In en, this message translates to:
+  /// **'SELECT IDENTITY DOCUMENT'**
+  String get regSelectIdDoc;
+
+  /// No description provided for @regAuthenticatedId.
+  ///
+  /// In en, this message translates to:
+  /// **'AUTHENTICATED IDENTIFIER'**
+  String get regAuthenticatedId;
+
+  /// No description provided for @regPrivacyGuarantee.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy guarantee: we verify your identity against government registries and save only your verified status. Your Aadhaar or PAN number is never made public or sold.'**
+  String get regPrivacyGuarantee;
+
+  /// No description provided for @regBadgeAadhaarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Aadhaar verified artisan'**
+  String get regBadgeAadhaarTitle;
+
+  /// No description provided for @regBadgeAadhaarSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Unique Identification Authority of India'**
+  String get regBadgeAadhaarSub;
+
+  /// No description provided for @regBadgePanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PAN verified'**
+  String get regBadgePanTitle;
+
+  /// No description provided for @regBadgePanSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Income Tax Department, Government of India'**
+  String get regBadgePanSub;
+
+  /// No description provided for @regBadgeGstinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Active GSTIN taxpayer verified'**
+  String get regBadgeGstinTitle;
+
+  /// No description provided for @regBadgeGstinSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Goods and Services Tax Network'**
+  String get regBadgeGstinSub;
+
+  /// No description provided for @regSpeakDocNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Speak document number'**
+  String get regSpeakDocNumber;
+
+  /// No description provided for @regRescanVlm.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan again'**
+  String get regRescanVlm;
+
+  /// No description provided for @commonGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get commonGallery;
+
+  /// No description provided for @regCameraFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the camera or gallery.'**
+  String get regCameraFailed;
+
+  /// No description provided for @regStoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Craft heritage story'**
+  String get regStoryTitle;
+
+  /// No description provided for @regDictateStory.
+  ///
+  /// In en, this message translates to:
+  /// **'Dictate story by voice'**
+  String get regDictateStory;
+
+  /// No description provided for @regProvenanceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile will be checked for cluster provenance. Once verified, an official GI or verified-artisan badge appears on your crafts.'**
+  String get regProvenanceNote;
+
+  /// No description provided for @commonSpeakInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Speak input'**
+  String get commonSpeakInput;
+
+  /// No description provided for @voiceTapMic.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the mic to dictate'**
+  String get voiceTapMic;
+
+  /// No description provided for @voiceSpeakClearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Speak clearly in your own dialect…'**
+  String get voiceSpeakClearly;
+
+  /// No description provided for @commonVoiceReadout.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice readout'**
+  String get commonVoiceReadout;
+
+  /// No description provided for @artisanAddCraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Add craft'**
+  String get artisanAddCraft;
+
+  /// No description provided for @artisanVoiceSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice search'**
+  String get artisanVoiceSearch;
+
+  /// No description provided for @commonClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get commonClose;
+
+  /// No description provided for @commonClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get commonClear;
+
+  /// No description provided for @productListenPricing.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen to the pricing breakdown'**
+  String get productListenPricing;
+
+  /// No description provided for @profileListenVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen to verification'**
+  String get profileListenVerification;
 }
 
 class _AppLocalizationsDelegate

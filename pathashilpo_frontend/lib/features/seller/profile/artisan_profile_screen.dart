@@ -10,7 +10,6 @@ import '../../../core/routing/route_names.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/widgets/badges/provenance_tag.dart';
 import '../../../core/widgets/badges/sync_indicator.dart';
-import '../../../data/mock/mock_buyer_data.dart';
 import '../../../data/models/artisan_model.dart';
 import '../../../data/models/product_model.dart';
 import '../../../data/remote/firestore_service.dart';
@@ -25,32 +24,70 @@ class ArtisanProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations t = AppLocalizations.of(context);
     final AuthController auth = context.watch<AuthController>();
     final String? uid = auth.currentUser?.uid;
 
-    final ArtisanModel fallbackArtisan = MockBuyerData.artisans.first;
-
     if (uid == null) {
-      // Fallback gracefully so the profile is ALWAYS visible and never empty
-      return _ProfileBody(
-        artisan: fallbackArtisan,
-        phone: auth.phone ?? '+91 98765 43210',
-      );
+      return _ProfileNotice(icon: Icons.person_off_outlined, text: t.profileNotSignedIn);
     }
 
     return StreamBuilder<ArtisanModel?>(
       stream: FirestoreService().streamArtisan(uid),
       builder: (BuildContext context, AsyncSnapshot<ArtisanModel?> snap) {
-        if (snap.connectionState == ConnectionState.waiting) {
+        // Spin only while genuinely waiting for the FIRST snapshot. A Firestore
+        // document stream sits in `waiting` indefinitely when the device cannot
+        // reach the server and has no cached copy of the document - which is
+        // how this screen ended up as a spinner that never resolved.
+        if (snap.connectionState == ConnectionState.waiting && !snap.hasData) {
           return const Center(
               child: CircularProgressIndicator(color: AppColors.action));
         }
 
-        // Use real registered artisan if available, or fallback to master artisan
-        final ArtisanModel artisan = snap.data ?? fallbackArtisan;
-        return _ProfileBody(
-            artisan: artisan, phone: auth.phone ?? '+91 98765 43210');
+        if (snap.hasError) {
+          return _ProfileNotice(
+              icon: Icons.cloud_off_rounded, text: t.profileLoadFailed);
+        }
+
+        final ArtisanModel? artisan = snap.data;
+        if (artisan == null) {
+          // Deliberately NOT falling back to MockBuyerData.artisans.first.
+          // That showed a signed-in artisan somebody else's name, village and
+          // craft — the same bug as the old `orElse: () => artisans.first` in
+          // the buyer product page. An unfinished profile must say so.
+          return _ProfileNotice(
+              icon: Icons.badge_outlined, text: t.profileIncomplete);
+        }
+
+        return _ProfileBody(artisan: artisan, phone: auth.phone);
       },
+    );
+  }
+}
+
+/// Full-bleed message for the states where there is no profile to show.
+class _ProfileNotice extends StatelessWidget {
+  const _ProfileNotice({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Icon(icon, size: 48, color: AppColors.border),
+            const SizedBox(height: 12),
+            Text(text,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -66,6 +103,11 @@ class _ProfileBody extends StatefulWidget {
 }
 
 class _ProfileBodyState extends State<_ProfileBody> {
+  /// Localised strings for this screen. A getter rather than a local in
+  /// every helper: the whole class renders in one language, and that
+  /// language is whichever Localizations resolves right now.
+  AppLocalizations get t => AppLocalizations.of(context);
+
   final TtsRouter _tts = TtsRouter();
   bool _isPlayingStory = false;
   bool _isPlayingProductStory = false;
@@ -258,7 +300,7 @@ class _ProfileBodyState extends State<_ProfileBody> {
                     _speakVerificationBadge();
                   },
                   icon: const Icon(Icons.volume_up_rounded, size: 18),
-                  label: const Text('Listen to Voice Verification'),
+                  label: Text(t.profileListenVerification),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.action,
                     foregroundColor: Colors.white,
@@ -474,7 +516,7 @@ class _ProfileBodyState extends State<_ProfileBody> {
                       border: Border.all(
                           color: AppColors.border.withValues(alpha: 0.8)),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
@@ -703,7 +745,7 @@ class _ProfileBodyState extends State<_ProfileBody> {
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(color: AppColors.border),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.timer_outlined,
@@ -730,7 +772,7 @@ class _ProfileBodyState extends State<_ProfileBody> {
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(color: AppColors.border),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.eco_outlined,
@@ -861,13 +903,12 @@ class _ProfileBodyState extends State<_ProfileBody> {
     return StreamBuilder<List<ProductModel>>(
       stream: FirestoreService().streamArtisanProducts(artisan.uid),
       builder: (context, snapshot) {
-        final live = snapshot.data ?? [];
-        final products = live.isNotEmpty
-            ? live
-            : MockBuyerData.products
-                .where((p) =>
-                    p.artisanId == artisan.uid || p.artisanId == 'artisan_001')
-                .toList();
+        // The artisan's OWN products, and nothing else. This used to fall back
+        // to MockBuyerData filtered on `artisanId == 'artisan_001'`, so an
+        // artisan with no listings saw the mock Chanderi saree sitting in their
+        // profile as though they had made it. There is a real empty state
+        // below; showing someone else's craft is worse than showing none.
+        final List<ProductModel> products = snapshot.data ?? const <ProductModel>[];
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -899,7 +940,7 @@ class _ProfileBodyState extends State<_ProfileBody> {
                   onPressed: () =>
                       Navigator.pushNamed(context, Routes.artisanAddProduct),
                   icon: const Icon(Icons.add_circle_outline_rounded, size: 16),
-                  label: const Text('Add Craft'),
+                  label: Text(t.artisanAddCraft),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.action,
                     textStyle: const TextStyle(
@@ -1176,7 +1217,7 @@ class _ProfileBodyState extends State<_ProfileBody> {
               OutlinedButton.icon(
                 onPressed: _speakVerificationBadge,
                 icon: const Icon(Icons.volume_up_rounded, size: 16),
-                label: const Text('Voice Readout'),
+                label: Text(t.commonVoiceReadout),
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(0, 38),
                   side: const BorderSide(color: AppColors.border),

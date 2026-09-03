@@ -26,6 +26,11 @@ class ArtisanProductsScreen extends StatefulWidget {
 }
 
 class _ArtisanProductsScreenState extends State<ArtisanProductsScreen> {
+  /// Localised strings for this screen. A getter rather than a local in
+  /// every helper: the whole class renders in one language, and that
+  /// language is whichever Localizations resolves right now.
+  AppLocalizations get t => AppLocalizations.of(context);
+
   final TextEditingController _searchController = TextEditingController();
   final TtsRouter _tts = TtsRouter();
 
@@ -289,7 +294,7 @@ class _ArtisanProductsScreenState extends State<ArtisanProductsScreen> {
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text('Close'),
+                      child: Text(t.commonClose),
                     ),
                   ),
                 ],
@@ -314,8 +319,8 @@ class _ArtisanProductsScreenState extends State<ArtisanProductsScreen> {
         backgroundColor: AppColors.action,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add_rounded),
-        label: const Text(
-          'Add Craft',
+        label: Text(
+          t.artisanAddCraft,
           style: TextStyle(fontFamily: 'Pally', fontWeight: FontWeight.w700),
         ),
       ),
@@ -427,7 +432,7 @@ class _ArtisanProductsScreenState extends State<ArtisanProductsScreen> {
                       IconButton(
                         icon: const Icon(Icons.cancel_rounded,
                             size: 18, color: AppColors.border),
-                        tooltip: 'Clear',
+                        tooltip: t.commonClear,
                         onPressed: () {
                           _searchController.clear();
                           setState(() {
@@ -438,7 +443,7 @@ class _ArtisanProductsScreenState extends State<ArtisanProductsScreen> {
                     IconButton(
                       icon: const Icon(Icons.mic_rounded,
                           size: 20, color: AppColors.action),
-                      tooltip: 'Voice Search (On-Device Fallback)',
+                      tooltip: t.artisanVoiceSearch,
                       onPressed: () async {
                         final lang =
                             Localizations.localeOf(context).languageCode;

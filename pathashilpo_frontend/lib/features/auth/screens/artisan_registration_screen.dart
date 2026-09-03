@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/i18n/generated/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +30,11 @@ class ArtisanRegistrationScreen extends StatefulWidget {
 }
 
 class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
+  /// Localised strings for this screen. A getter rather than a local in
+  /// every helper: the whole class renders in one language, and that
+  /// language is whichever Localizations resolves right now.
+  AppLocalizations get t => AppLocalizations.of(context);
+
   int _currentStep = 0;
 
   // Voice Services
@@ -231,7 +238,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not access camera/gallery.')),
+          SnackBar(content: Text(t.regCameraFailed)),
         );
       }
     } finally {
@@ -285,7 +292,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
     return Scaffold(
       backgroundColor: AppColors.canvas,
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           children: [
             AppLogo(size: 28, showBackground: true),
             SizedBox(width: 10),
@@ -311,7 +318,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                   : Icons.volume_down_outlined,
               color: _isSpeaking ? AppColors.action : AppColors.ink,
             ),
-            tooltip: 'Listen to Step Guidance',
+            tooltip: t.regListenGuidance,
             onPressed: _toggleStepVoiceGuidance,
           ),
           const SizedBox(width: 8),
@@ -353,7 +360,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                           Text(
                             _isSpeaking
                                 ? 'बोल रहा है... / Speaking guidance...'
-                                : 'आवाज़ से निर्देश सुनें / Listen to Instructions',
+                                : t.regListenInstructions,
                             style: const TextStyle(
                               fontFamily: 'Pally',
                               fontWeight: FontWeight.w700,
@@ -457,13 +464,21 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                             ? null
                             : () => setState(() => _currentStep--),
                         style: OutlinedButton.styleFrom(
+                          // SizedBox above bounds HEIGHT only; a Row hands its
+                          // children unbounded WIDTH. Without this the theme's
+                          // Size.fromHeight(56) - i.e. Size(infinity, 56) -
+                          // applies and layout throws "BoxConstraints forces an
+                          // infinite width", killing the whole bottom bar. That
+                          // is why Back/Continue vanished from step 2 onward:
+                          // this button only renders when _currentStep > 0.
+                          minimumSize: const Size(0, 54),
                           side: const BorderSide(color: AppColors.border),
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('Back'),
+                        child: Text(t.commonBack),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -471,8 +486,8 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                   Expanded(
                     child: PrimaryBilingualButton(
                       label: _currentStep == 2
-                          ? 'Submit Registration'
-                          : 'Continue',
+                          ? t.regSubmit
+                          : t.commonContinue,
                       onPressed: auth.busy ? null : _onContinue,
                     ),
                   ),
@@ -487,9 +502,9 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
 
   String _stepTitle(int step) {
     return switch (step) {
-      0 => 'Location & Cluster',
-      1 => 'Craft Specialization',
-      2 => 'Heritage Story',
+      0 => t.regStepLocation,
+      1 => t.regStepCraft,
+      2 => t.regStepStory,
       _ => '',
     };
   }
@@ -611,8 +626,8 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
               const SizedBox(height: 16),
 
               // Document Category Tabs
-              const Text(
-                'SELECT IDENTITY DOCUMENT',
+              Text(
+                t.regSelectIdDoc,
                 style: TextStyle(
                   fontFamily: 'Pally',
                   fontSize: 11.5,
@@ -661,7 +676,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.border, width: 0.8),
                 ),
-                child: const Row(
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(Icons.lock_outline_rounded,
@@ -669,7 +684,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                     SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'Privacy Guarantee: We verify your identity directly against Govt registries and save only your verified status — your raw Aadhaar/PAN number is never made public or sold.',
+                        t.regPrivacyGuarantee,
                         style: TextStyle(
                           fontFamily: 'Lora',
                           fontSize: 12,
@@ -694,7 +709,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSectionHeader(
-                'Craft Heritage Story',
+                t.regStoryTitle,
                 'Sharing your authentic craft journey helps conscious buyers appreciate handmade heritage over industrial factory goods.',
               ),
               const SizedBox(height: 16),
@@ -734,7 +749,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                             ? Colors.redAccent
                             : AppColors.action,
                       ),
-                      tooltip: 'Dictate Story via Voice',
+                      tooltip: t.regDictateStory,
                       onPressed: () =>
                           _toggleFieldSpeechInput(_storyController, 'story'),
                     ),
@@ -749,14 +764,14 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.heritage),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
                     Icon(Icons.verified_user_outlined,
                         color: AppColors.ink, size: 22),
                     SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Your profile will undergo cluster provenance verification. Once verified, an official GI / Verified Artisan badge will appear on your crafts.',
+                        t.regProvenanceNote,
                         style: TextStyle(
                             fontFamily: 'Lora',
                             fontSize: 12.5,
@@ -948,7 +963,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                           ? Colors.redAccent
                           : AppColors.action,
                 ),
-                tooltip: 'Speak Document Number',
+                tooltip: t.regSpeakDocNumber,
                 onPressed: () =>
                     _toggleFieldSpeechInput(controller, _selectedDocType),
               ),
@@ -1029,7 +1044,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                   color: AppColors.action.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.auto_awesome, size: 12, color: AppColors.action),
@@ -1076,7 +1091,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                 border:
                     Border.all(color: AppColors.action.withValues(alpha: 0.3)),
               ),
-              child: const Row(
+              child: Row(
                 children: [
                   SizedBox(
                     width: 18,
@@ -1126,7 +1141,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                       ? null
                       : () => _pickDocument(ImageSource.gallery),
                   icon: const Icon(Icons.photo_library_outlined, size: 18),
-                  label: const Text('Gallery'),
+                  label: Text(t.commonGallery),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: AppColors.border),
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -1145,7 +1160,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
               child: ElevatedButton.icon(
                 onPressed: _isScanningVlm ? null : _scanDocumentWithVlm,
                 icon: const Icon(Icons.auto_awesome, size: 16),
-                label: const Text('Re-scan with Vision AI (VLM)'),
+                label: Text(t.regRescanVlm),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.heritage,
                   foregroundColor: AppColors.ink,
@@ -1170,16 +1185,16 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
 
     switch (_selectedDocType) {
       case 'aadhaar':
-        title = 'UIDAI Aadhaar Verified Artisan';
-        subtitle = 'Government of India · भारतीय विशिष्ट पहचान प्राधिकरण';
+        title = t.regBadgeAadhaarTitle;
+        subtitle = t.regBadgeAadhaarSub;
         final raw = _aadhaarController.text.replaceAll(' ', '');
         final last4 = raw.length >= 4 ? raw.substring(raw.length - 4) : '6721';
         maskedId = '•••• •••• $last4';
         badgeColor = const Color(0xFF1B5E20);
         break;
       case 'pan':
-        title = 'Income Tax PAN Verified';
-        subtitle = 'Income Tax Department · भारत सरकार';
+        title = t.regBadgePanTitle;
+        subtitle = t.regBadgePanSub;
         final raw = _panController.text.trim();
         final last4 = raw.length >= 4 ? raw.substring(raw.length - 4) : '7821';
         maskedId = '••••••$last4';
@@ -1187,8 +1202,8 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
         break;
       case 'gstin':
       default:
-        title = 'Active GSTIN Taxpayer Verified';
-        subtitle = 'GST Portal · Goods and Services Tax Network';
+        title = t.regBadgeGstinTitle;
+        subtitle = t.regBadgeGstinSub;
         final raw = _gstinController.text.trim();
         final last4 = raw.length >= 4 ? raw.substring(raw.length - 4) : '1Z5';
         maskedId = '••••••••••••$last4';
@@ -1224,6 +1239,8 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                   children: [
                     Text(
                       title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontFamily: 'Pally',
                         fontWeight: FontWeight.w700,
@@ -1233,8 +1250,11 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                     ),
                     Text(
                       subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontFamily: 'Lora',
+                        fontFamilyFallback: AppTheme.scriptFallback,
                         fontSize: 11,
                         color: AppColors.ink,
                       ),
@@ -1250,37 +1270,47 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'AUTHENTICATED IDENTIFIER',
-                    style: TextStyle(
-                      fontFamily: 'Pally',
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.1,
-                      color: AppColors.textMuted,
+              // Flexible so a long identifier wraps or ellipsises instead of
+              // overflowing past the button beside it.
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      t.regAuthenticatedId,
+                      style: TextStyle(
+                        fontFamily: 'Pally',
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.1,
+                        color: AppColors.textMuted,
+                      ),
                     ),
-                  ),
-                  Text(
-                    maskedId,
-                    style: const TextStyle(
-                      fontFamily: AppTheme.bodyFont,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15,
-                      letterSpacing: 1.2,
-                      color: AppColors.ink,
+                    Text(
+                      maskedId,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontFamily: AppTheme.bodyFont,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        letterSpacing: 1.2,
+                        color: AppColors.ink,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               // Interactive Voice Badge Readout Button
               ElevatedButton.icon(
                 onPressed: _speakVerificationBadge,
                 icon: const Icon(Icons.volume_up_rounded, size: 16),
-                label: const Text('Voice Readout'),
+                label: Text(t.commonVoiceReadout),
                 style: ElevatedButton.styleFrom(
+                  // In a Row: without this the theme's Size.fromHeight(56) -
+                  // Size(infinity, 56) - throws during layout and the whole
+                  // verified badge fails to render.
+                  minimumSize: const Size(0, 40),
                   backgroundColor: AppColors.surface,
                   foregroundColor: AppColors.ink,
                   elevation: 0,
@@ -1454,7 +1484,7 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
                 isListeningThis ? Icons.mic_rounded : Icons.mic_none_rounded,
                 color: isListeningThis ? Colors.redAccent : AppColors.action,
               ),
-              tooltip: 'Speak input',
+              tooltip: t.commonSpeakInput,
               onPressed: () => _toggleFieldSpeechInput(controller, fieldKey),
             ),
           ),

@@ -952,4 +952,108 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get profileSignInPrompt =>
       'আপনার প্রোফাইল, সংরক্ষিত শিল্প ও অনুসন্ধান দেখতে ক্রেতা হিসেবে সাইন ইন করুন।';
+
+  @override
+  String get regListenInstructions => 'নির্দেশ শুনুন';
+
+  @override
+  String get regListenInstructionsBody => 'এই ধাপটি শুনতে চাপুন';
+
+  @override
+  String get regListenGuidance => 'ধাপের নির্দেশনা শুনুন';
+
+  @override
+  String get commonContinue => 'এগিয়ে যান';
+
+  @override
+  String get regSubmit => 'নিবন্ধন জমা দিন';
+
+  @override
+  String get regStepLocation => 'অবস্থান ও ক্লাস্টার';
+
+  @override
+  String get regStepCraft => 'শিল্পের বিশেষত্ব';
+
+  @override
+  String get regStepStory => 'ঐতিহ্যের গল্প';
+
+  @override
+  String get regSelectIdDoc => 'পরিচয়পত্র বাছুন';
+
+  @override
+  String get regAuthenticatedId => 'যাচাইকৃত পরিচয় নম্বর';
+
+  @override
+  String get regPrivacyGuarantee =>
+      'গোপনীয়তার নিশ্চয়তা: আমরা সরকারি নথির সঙ্গে আপনার পরিচয় মিলিয়ে দেখি এবং কেবল যাচাইয়ের অবস্থাটুকু সংরক্ষণ করি। আপনার আধার বা প্যান নম্বর কখনও প্রকাশ বা বিক্রি করা হয় না।';
+
+  @override
+  String get regBadgeAadhaarTitle => 'আধার যাচাইকৃত শিল্পী';
+
+  @override
+  String get regBadgeAadhaarSub => 'ভারতীয় বিশিষ্ট পরিচয় কর্তৃপক্ষ';
+
+  @override
+  String get regBadgePanTitle => 'প্যান যাচাইকৃত';
+
+  @override
+  String get regBadgePanSub => 'আয়কর বিভাগ, ভারত সরকার';
+
+  @override
+  String get regBadgeGstinTitle => 'সক্রিয় জিএসটিআইএন করদাতা যাচাইকৃত';
+
+  @override
+  String get regBadgeGstinSub => 'পণ্য ও পরিষেবা কর নেটওয়ার্ক';
+
+  @override
+  String get regSpeakDocNumber => 'নথির নম্বর বলুন';
+
+  @override
+  String get regRescanVlm => 'আবার স্ক্যান করুন';
+
+  @override
+  String get commonGallery => 'গ্যালারি';
+
+  @override
+  String get regCameraFailed => 'ক্যামেরা বা গ্যালারি খোলা যায়নি।';
+
+  @override
+  String get regStoryTitle => 'শিল্প ঐতিহ্যের গল্প';
+
+  @override
+  String get regDictateStory => 'কণ্ঠে গল্প বলুন';
+
+  @override
+  String get regProvenanceNote =>
+      'আপনার প্রোফাইলের ক্লাস্টার উৎস যাচাই করা হবে। যাচাইয়ের পর আপনার শিল্পে সরকারি জিআই বা যাচাইকৃত শিল্পী ব্যাজ দেখা যাবে।';
+
+  @override
+  String get commonSpeakInput => 'বলে লিখুন';
+
+  @override
+  String get voiceTapMic => 'বলতে মাইকে চাপুন';
+
+  @override
+  String get voiceSpeakClearly => 'নিজের ভাষায় স্পষ্ট করে বলুন…';
+
+  @override
+  String get commonVoiceReadout => 'কণ্ঠে শুনুন';
+
+  @override
+  String get artisanAddCraft => 'শিল্প যোগ করুন';
+
+  @override
+  String get artisanVoiceSearch => 'কণ্ঠে খুঁজুন';
+
+  @override
+  String get commonClose => 'বন্ধ করুন';
+
+  @override
+  String get commonClear => 'মুছুন';
+
+  @override
+  String get productListenPricing => 'দামের হিসাব শুনুন';
+
+  @override
+  String get profileListenVerification => 'যাচাই শুনুন';
 }

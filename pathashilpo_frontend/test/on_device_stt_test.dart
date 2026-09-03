@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pathashilpa/ai/voice/controllers/on_device_stt_controller.dart';
+import 'package:pathashilpa/core/i18n/generated/app_localizations.dart';
+import 'package:pathashilpa/core/i18n/locale_provider.dart';
 import 'package:pathashilpa/ai/voice/models/stt_state.dart';
 import 'package:pathashilpa/ai/voice/views/guided_fallback_form.dart';
 import 'package:pathashilpa/ai/voice/views/voice_recorder_widget.dart';
@@ -53,8 +56,18 @@ void main() {
 
   group('On-Device STT Widgets Tests', () {
     testWidgets('VoiceRecorderWidget builds and renders microphone button', (tester) async {
+      // The recorder renders localised copy now, so it needs the delegates.
+      // Pumping it bare made AppLocalizations.of(context) return null.
       await tester.pumpWidget(
         MaterialApp(
+          locale: const Locale('en'),
+          supportedLocales: kSupportedLocales,
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
           home: Scaffold(
             body: VoiceRecorderWidget(
               onTranscriptChanged: (_) {},
@@ -62,10 +75,17 @@ void main() {
           ),
         ),
       );
+      // pump(), not pumpAndSettle(): the mic runs a repeating pulse
+      // animation, so the tree never reaches a settled state.
+      await tester.pump();
 
       expect(find.byType(VoiceRecorderWidget), findsOneWidget);
       expect(find.byIcon(Icons.mic_none_rounded), findsOneWidget);
-      expect(find.text('Tap mic to dictate story'), findsOneWidget);
+      // Asserted through the localisation table, not a literal, so the test
+      // does not have to be edited every time the copy is reworded.
+      final AppLocalizations t = AppLocalizations.of(
+          tester.element(find.byType(VoiceRecorderWidget)));
+      expect(find.text(t.voiceTapMic), findsOneWidget);
     });
 
     testWidgets('GuidedFallbackForm renders text field with given hint and label', (tester) async {

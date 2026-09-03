@@ -955,4 +955,108 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get profileSignInPrompt =>
       'अपनी प्रोफ़ाइल, सहेजे गए शिल्प और पूछताछ देखने हेतु खरीदार के रूप में साइन इन करें।';
+
+  @override
+  String get regListenInstructions => 'निर्देश सुनें';
+
+  @override
+  String get regListenInstructionsBody => 'यह चरण सुनने के लिए दबाएँ';
+
+  @override
+  String get regListenGuidance => 'चरण का मार्गदर्शन सुनें';
+
+  @override
+  String get commonContinue => 'आगे बढ़ें';
+
+  @override
+  String get regSubmit => 'पंजीकरण जमा करें';
+
+  @override
+  String get regStepLocation => 'स्थान और क्लस्टर';
+
+  @override
+  String get regStepCraft => 'शिल्प विशेषज्ञता';
+
+  @override
+  String get regStepStory => 'विरासत की कहानी';
+
+  @override
+  String get regSelectIdDoc => 'पहचान दस्तावेज़ चुनें';
+
+  @override
+  String get regAuthenticatedId => 'सत्यापित पहचान संख्या';
+
+  @override
+  String get regPrivacyGuarantee =>
+      'गोपनीयता की गारंटी: हम आपकी पहचान सरकारी अभिलेखों से जाँचते हैं और केवल सत्यापन की स्थिति सहेजते हैं। आपका आधार या पैन नंबर कभी सार्वजनिक नहीं किया जाता, न बेचा जाता है।';
+
+  @override
+  String get regBadgeAadhaarTitle => 'आधार सत्यापित कारीगर';
+
+  @override
+  String get regBadgeAadhaarSub => 'भारतीय विशिष्ट पहचान प्राधिकरण';
+
+  @override
+  String get regBadgePanTitle => 'पैन सत्यापित';
+
+  @override
+  String get regBadgePanSub => 'आयकर विभाग, भारत सरकार';
+
+  @override
+  String get regBadgeGstinTitle => 'सक्रिय जीएसटीआईएन करदाता सत्यापित';
+
+  @override
+  String get regBadgeGstinSub => 'वस्तु एवं सेवा कर नेटवर्क';
+
+  @override
+  String get regSpeakDocNumber => 'दस्तावेज़ संख्या बोलें';
+
+  @override
+  String get regRescanVlm => 'फिर से स्कैन करें';
+
+  @override
+  String get commonGallery => 'गैलरी';
+
+  @override
+  String get regCameraFailed => 'कैमरा या गैलरी नहीं खुल सकी।';
+
+  @override
+  String get regStoryTitle => 'शिल्प विरासत की कहानी';
+
+  @override
+  String get regDictateStory => 'आवाज़ से कहानी बोलें';
+
+  @override
+  String get regProvenanceNote =>
+      'आपकी प्रोफ़ाइल की क्लस्टर उत्पत्ति जाँची जाएगी। सत्यापन के बाद आपके शिल्प पर आधिकारिक जीआई या सत्यापित कारीगर बैज दिखेगा।';
+
+  @override
+  String get commonSpeakInput => 'बोलकर भरें';
+
+  @override
+  String get voiceTapMic => 'बोलने के लिए माइक दबाएँ';
+
+  @override
+  String get voiceSpeakClearly => 'अपनी बोली में स्पष्ट बोलें…';
+
+  @override
+  String get commonVoiceReadout => 'आवाज़ में सुनें';
+
+  @override
+  String get artisanAddCraft => 'शिल्प जोड़ें';
+
+  @override
+  String get artisanVoiceSearch => 'आवाज़ से खोजें';
+
+  @override
+  String get commonClose => 'बंद करें';
+
+  @override
+  String get commonClear => 'साफ़ करें';
+
+  @override
+  String get productListenPricing => 'मूल्य का विवरण सुनें';
+
+  @override
+  String get profileListenVerification => 'सत्यापन सुनें';
 }

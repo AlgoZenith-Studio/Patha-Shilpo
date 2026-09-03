@@ -159,7 +159,13 @@ class OnDeviceSttController extends ChangeNotifier {
       return _listenOnDevice(
         targetLocaleId: targetLocaleId,
         onResult: onResult,
-        onSoundLevelChange: onSoundLevelChange,
+        // Normalised on the way through: the plugin reports a dB-ish
+        // value (about -2..10 on Android), and forwarding it raw made
+        // the mic button scale by 4x. Callers get 0..1, always.
+        onSoundLevelChange: onSoundLevelChange == null
+            ? null
+            : (double level) =>
+                onSoundLevelChange((level / 10.0).clamp(0.0, 1.0)),
       );
     }
 
@@ -198,7 +204,13 @@ class OnDeviceSttController extends ChangeNotifier {
       return _listenOnDevice(
         targetLocaleId: targetLocaleId,
         onResult: onResult,
-        onSoundLevelChange: onSoundLevelChange,
+        // Normalised on the way through: the plugin reports a dB-ish
+        // value (about -2..10 on Android), and forwarding it raw made
+        // the mic button scale by 4x. Callers get 0..1, always.
+        onSoundLevelChange: onSoundLevelChange == null
+            ? null
+            : (double level) =>
+                onSoundLevelChange((level / 10.0).clamp(0.0, 1.0)),
       );
     }
   }

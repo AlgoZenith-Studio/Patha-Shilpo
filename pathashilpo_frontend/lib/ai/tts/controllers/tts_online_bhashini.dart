@@ -23,7 +23,11 @@ class TtsOnline {
 
   /// TRD.md §8.5 budgets 8s with zero retries: past that the artisan is
   /// better served by the device voice than by waiting.
-  static const Duration _timeout = Duration(seconds: 8);
+  /// Deliberately short. This is the first thing between a tap and audio, and
+  /// [TtsRouter] has a device-voice fallback right behind it - waiting 8s for a
+  /// nicer voice is a worse outcome than speaking now. Synthesis that has not
+  /// answered in this long is not going to feel instant anyway.
+  static const Duration _timeout = Duration(seconds: 3);
 
   /// Throws on any failure so the router can fall through. Returns which
   /// provider actually synthesised the audio.
