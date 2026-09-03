@@ -72,10 +72,14 @@ class CraftCard extends StatelessWidget {
                 Positioned(
                   top: 8,
                   left: 8,
-                  child: ProvenanceTag(
-                    giTag: product.giTag,
-                    cluster: product.artisanCluster,
-                    compact: true,
+                  right: 50,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: ProvenanceTag(
+                      giTag: product.giTag,
+                      cluster: product.artisanCluster,
+                      compact: true,
+                    ),
                   ),
                 ),
                 Positioned(

@@ -35,8 +35,11 @@ class ProvenanceTag extends StatelessWidget {
               color: AppColors.giTagGreen,
             ),
             const SizedBox(width: 4),
-            Text(
+          Flexible(
+            child: Text(
               giTag!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontFamily: 'Lora',
                 fontWeight: FontWeight.w600,
@@ -44,32 +47,36 @@ class ProvenanceTag extends StatelessWidget {
                 color: AppColors.giTagGreen,
               ),
             ),
-          ],
-        ),
-      );
-    }
-
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: compact ? 7 : 10,
-        vertical: compact ? 3 : 5,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.canvasParchment,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.surfaceBorder, width: 0.8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.place_outlined,
-            size: compact ? 12 : 14,
-            color: AppColors.textMuted,
           ),
-          const SizedBox(width: 4),
-          Text(
+        ],
+      ),
+    );
+  }
+
+  return Container(
+    padding: EdgeInsets.symmetric(
+      horizontal: compact ? 7 : 10,
+      vertical: compact ? 3 : 5,
+    ),
+    decoration: BoxDecoration(
+      color: AppColors.canvasParchment,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: AppColors.surfaceBorder, width: 0.8),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.place_outlined,
+          size: compact ? 12 : 14,
+          color: AppColors.textMuted,
+        ),
+        const SizedBox(width: 4),
+        Flexible(
+          child: Text(
             cluster,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontFamily: 'Lora',
               fontWeight: FontWeight.w500,
@@ -77,8 +84,9 @@ class ProvenanceTag extends StatelessWidget {
               color: AppColors.deepUmber,
             ),
           ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ),
+  );
   }
 }
