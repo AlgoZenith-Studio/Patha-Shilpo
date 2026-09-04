@@ -65,22 +65,54 @@ async def _post(path: str, payload: dict, timeout: float) -> dict:
         raise SarvamError(f"Sarvam {path} failed: {type(exc).__name__}") from exc
 
 
+_LANG_MAP = {
+    "hi": "hi-IN",
+    "bn": "bn-IN",
+    "en": "en-IN",
+    "gu": "gu-IN",
+    "mr": "mr-IN",
+    "ta": "ta-IN",
+    "te": "te-IN",
+    "kn": "kn-IN",
+    "ml": "ml-IN",
+    "pa": "pa-IN",
+    "od": "od-IN",
+}
+
+
+def normalize_language(code: str) -> str:
+    cleaned = code.strip().lower()
+    return _LANG_MAP.get(cleaned, code if "-" in code else f"{cleaned}-IN")
+
+
 async def transcribe(audio_bytes: bytes, language_code: str) -> dict:
     """Speech-to-text. Returns {transcript, language_code, confidence}."""
-    data = await _post(
-        "/speech-to-text",
-        {
-            "audio": base64.b64encode(audio_bytes).decode("ascii"),
-            "language_code": language_code,
-        },
-        ASR_TIMEOUT,
-    )
-
-    return {
-        "transcript": data.get("transcript", ""),
-        "language_code": data.get("language_code", language_code),
-        "confidence": float(data.get("confidence", 0.0)),
-    }
+    lang = normalize_language(language_code)
+    try:
+        async with httpx.AsyncClient(timeout=ASR_TIMEOUT) as client:
+            files = {"file": ("audio.wav", audio_bytes, "audio/wav")}
+            data = {"model": "saaras:v3", "language_code": lang}
+            response = await client.post(
+                f"{BASE_URL}/speech-to-text",
+                headers=_headers(),
+                files=files,
+                data=data,
+            )
+            response.raise_for_status()
+            res = response.json()
+            return {
+                "transcript": res.get("transcript", ""),
+                "language_code": res.get("language_code", language_code),
+                "confidence": float(res.get("confidence", 0.0) or 0.0),
+            }
+    except SarvamError:
+        raise
+    except (httpx.HTTPError, ValueError) as exc:
+        logger.warning(
+            "Sarvam /speech-to-text failed (%s); falling through to the next tier",
+            type(exc).__name__,
+        )
+        raise SarvamError(f"Sarvam /speech-to-text failed: {type(exc).__name__}") from exc
 
 
 async def synthesize(
@@ -92,18 +124,24 @@ async def synthesize(
     if not text.strip():
         raise SarvamError("Cannot synthesize empty text")
 
-    payload: dict = {"text": text, "language_code": language_code}
+    lang = normalize_language(language_code)
+    payload: dict = {
+        "text": text,
+        "language_code": lang,
+        "model": "bulbul:v3",
+    }
     if speaker:
         payload["speaker"] = speaker
 
     data = await _post("/text-to-speech", payload, TTS_TIMEOUT)
 
-    # Sarvam has returned both shapes across API versions; accept either
-    # rather than breaking on a provider-side change.
-    audio_b64 = data.get("audio")
-    if not audio_b64:
-        audios = data.get("audios") or []
-        audio_b64 = audios[0] if audios else None
+    # Sarvam returns {'audios': ['<base64>']} or {'audio': '<base64>'}
+    audio_b64 = None
+    audios = data.get("audios") or []
+    if audios:
+        audio_b64 = audios[0]
+    elif data.get("audio"):
+        audio_b64 = data.get("audio")
 
     if not audio_b64:
         raise SarvamError("Sarvam TTS response missing audio")
@@ -123,10 +161,12 @@ async def translate(text: str, source_language: str, target_language: str) -> st
         "/translate",
         {
             "input": text,
-            "source_language": source_language,
-            "target_language": target_language,
+            "source_language_code": normalize_language(source_language),
+            "target_language_code": normalize_language(target_language),
+            "model": "mayura:v1",
         },
         TRANSLATE_TIMEOUT,
     )
 
     return data.get("translated_text", "")
+

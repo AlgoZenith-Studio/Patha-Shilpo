@@ -38,5 +38,13 @@ class TtsOffline {
     }
   }
 
+  Future<void> prewarm(String languageCode) async {
+    final String locale = _locales[languageCode] ?? 'en-IN';
+    try {
+      await _tts.isLanguageAvailable(locale);
+      await _tts.setLanguage(locale);
+    } catch (_) {}
+  }
+
   Future<void> stop() => _tts.stop();
 }

@@ -110,23 +110,38 @@ class OnDeviceSttController extends ChangeNotifier {
   String resolveLocaleId(String? preferredLangCode) {
     if (_locales.isEmpty) return 'en_IN';
 
-    final lang = (preferredLangCode ?? 'hi').toLowerCase();
-    
-    // Exact match search
+    final String raw =
+        (preferredLangCode ?? 'en').toLowerCase().replaceAll('-', '_');
+    final String prefix = raw.split('_').first; // 'en', 'hi', 'bn'
+
+    // 1. Priority: Exact match (e.g. 'en_in' == 'en_in')
     for (final loc in _locales) {
-      final id = loc.localeId.toLowerCase();
-      if (lang == 'hi' && (id == 'hi_in' || id.startsWith('hi'))) return loc.localeId;
-      if (lang == 'bn' && (id == 'bn_in' || id.startsWith('bn'))) return loc.localeId;
-      if (lang == 'en' && (id == 'en_in' || id.startsWith('en'))) return loc.localeId;
-      if (id.startsWith(lang)) return loc.localeId;
+      final String id = loc.localeId.toLowerCase().replaceAll('-', '_');
+      if (id == raw) return loc.localeId;
     }
 
-    // Default to Indian English or Hindi if present
+    // 2. Priority: Match the same language with Indian region (e.g. en_in, hi_in, bn_in)
+    final String inLocale = '${prefix}_in';
     for (final loc in _locales) {
-      if (loc.localeId.contains('IN')) return loc.localeId;
+      final String id = loc.localeId.toLowerCase().replaceAll('-', '_');
+      if (id == inLocale) return loc.localeId;
     }
 
-    return _systemLocale?.localeId ?? 'en_IN';
+    // 3. Priority: Any locale starting with the language prefix (e.g. en_us, en_gb for 'en')
+    for (final loc in _locales) {
+      final String id = loc.localeId.toLowerCase().replaceAll('-', '_');
+      if (id.startsWith(prefix)) return loc.localeId;
+    }
+
+    // 4. System locale if it matches language prefix
+    if (_systemLocale != null) {
+      final String sysId =
+          _systemLocale!.localeId.toLowerCase().replaceAll('-', '_');
+      if (sysId.startsWith(prefix)) return _systemLocale!.localeId;
+    }
+
+    // 5. Safe fallback
+    return _systemLocale?.localeId ?? _locales.first.localeId;
   }
 
   /// Start speech recognition with automatic offline on-device fallback.

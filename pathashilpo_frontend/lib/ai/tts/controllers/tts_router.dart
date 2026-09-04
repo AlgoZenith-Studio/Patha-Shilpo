@@ -77,6 +77,23 @@ class TtsRouter {
     );
   }
 
+  /// Preloads speech synthesis into memory cache and warms the device TTS.
+  /// Call this when a screen loads so voice instructions start immediately when tapped.
+  Future<void> preload(TtsInput input) async {
+    if (_onlineAvailable) {
+      // Fire-and-forget background preload
+      _online.preload(input);
+    }
+    _offline.prewarm(input.languageCode);
+  }
+
+  /// Preloads a list of voice guidance prompts in parallel.
+  Future<void> preloadBatch(List<TtsInput> inputs) async {
+    for (final input in inputs) {
+      preload(input);
+    }
+  }
+
   Future<void> stop() async {
     await _online.stop();
     await _offline.stop();

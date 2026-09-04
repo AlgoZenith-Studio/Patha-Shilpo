@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +38,32 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen>
   bool _checked = false;
   String _partial = '';
   double _soundLevel = 0.0;
+  String _activeLang = 'en';
+  bool _hasSetInitialLang = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_hasSetInitialLang) {
+      final code = Localizations.localeOf(context).languageCode;
+      if (code == 'hi' || code == 'bn' || code == 'en') {
+        _activeLang = code;
+      }
+      _hasSetInitialLang = true;
+    }
+  }
+
+  Future<void> _switchLanguage(String newLang) async {
+    if (_activeLang == newLang) return;
+    setState(() {
+      _activeLang = newLang;
+      _partial = '';
+    });
+    if (_listening) {
+      await _stop();
+      await _start();
+    }
+  }
 
   @override
   void initState() {
@@ -171,68 +199,104 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen>
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
 
-          // Animated mic button
+          // ---- 3-LANGUAGE SELECTOR PILL: English | हिन्दी | বাংলা ----
+          Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: AppColors.canvas,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildLanguageTab('en', 'English'),
+                _buildLanguageTab('hi', 'हिन्दी'),
+                _buildLanguageTab('bn', 'বাংলা'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 18),
+
+          // Stabilized mic button (fixed bounding container prevents layout dancing)
           GestureDetector(
             onTap: _listening ? _stop : _start,
             child: AnimatedBuilder(
               animation: _waveAnim,
               builder: (context, child) {
-                final pulse = _listening
-                    ? (1.0 + (_soundLevel * 0.4) + (_waveAnim.value * 0.15))
-                    : 1.0;
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    if (_listening) ...[
-                      Container(
-                        width: 90 * pulse,
-                        height: 90 * pulse,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.action.withValues(alpha: 0.15),
-                        ),
-                      ),
-                      Container(
-                        width: 76 * pulse,
-                        height: 76 * pulse,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.action.withValues(alpha: 0.25),
-                        ),
-                      ),
-                    ],
-                    Container(
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        color: _listening ? AppColors.action : AppColors.heritage,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: (_listening ? AppColors.action : AppColors.heritage)
-                                .withValues(alpha: 0.35),
-                            blurRadius: 14,
-                            offset: const Offset(0, 4),
+                return SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Center(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        if (_listening) ...[
+                          Container(
+                            width: 72 + (6 * _soundLevel),
+                            height: 72 + (6 * _soundLevel),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.action.withValues(alpha: 0.2),
+                            ),
                           ),
                         ],
-                      ),
-                      child: Icon(
-                        _listening ? Icons.mic : Icons.mic_none_rounded,
-                        color: Colors.white,
-                        size: 30,
-                      ),
+                        Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            color: _listening
+                                ? AppColors.action
+                                : AppColors.heritage,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: (_listening
+                                        ? AppColors.action
+                                        : AppColors.heritage)
+                                    .withValues(alpha: 0.35),
+                                blurRadius: 14,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            _listening ? Icons.mic : Icons.mic_none_rounded,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 );
               },
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
+
+          // Dedicated Sound Wave Equalizer Voice Bars
+          _VoiceEqualizerBars(
+            isListening: _listening,
+            soundLevel: _soundLevel,
+            animValue: _waveAnim.value,
+          ),
+          const SizedBox(height: 12),
 
           Text(
-            _listening ? t.voiceListening : t.voiceTapToSpeak,
+            _listening
+                ? switch (_activeLang) {
+                    'hi' => 'सुन रहे हैं... (हिन्दी में बोलें)',
+                    'bn' => 'শুনছি... (বাংলায় বলুন)',
+                    _ => 'Listening in English... Speak clearly',
+                  }
+                : switch (_activeLang) {
+                    'hi' => 'बोलने के लिए माइक पर टैप करें (हिन्दी)',
+                    'bn' => 'কথা বলতে মাইকে চাপ দিন (বাংলা)',
+                    _ => 'Tap microphone to speak (English)',
+                  },
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'Pally',
@@ -309,14 +373,45 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen>
     );
   }
 
+  Widget _buildLanguageTab(String langCode, String label) {
+    final bool isSelected = _activeLang == langCode;
+    return GestureDetector(
+      onTap: () => _switchLanguage(langCode),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.action : Colors.transparent,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'Pally',
+            fontSize: 12,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            color: isSelected ? Colors.white : AppColors.textMuted,
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _start() async {
     setState(() {
       _listening = true;
       _partial = '';
     });
 
+    final String targetLocale = switch (_activeLang) {
+      'hi' => 'hi_IN',
+      'bn' => 'bn_IN',
+      'en' => 'en_IN',
+      _ => 'en_IN',
+    };
+
     final success = await _stt.startListening(
-      preferredLocale: 'hi_IN',
+      preferredLocale: targetLocale,
       onResult: (SttResult r) {
         if (!mounted) return;
         setState(() {
@@ -328,7 +423,10 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen>
       },
       onSoundLevelChange: (level) {
         if (!mounted) return;
-        setState(() => _soundLevel = level);
+        final double normalized = ((level + 2.0) / 10.0).clamp(0.0, 1.0);
+        setState(() {
+          _soundLevel = (_soundLevel * 0.3) + (normalized * 0.7);
+        });
       },
     );
 
@@ -353,6 +451,73 @@ class _VoiceRecordScreenState extends State<VoiceRecordScreen>
       tier: spoken.isNotEmpty ? 2 : 3,
     );
     widget.onNext();
+  }
+}
+
+/// Dedicated, smooth voice equalizer waveform bars that react gracefully to speech sound levels.
+class _VoiceEqualizerBars extends StatelessWidget {
+  final bool isListening;
+  final double soundLevel;
+  final double animValue;
+
+  const _VoiceEqualizerBars({
+    required this.isListening,
+    required this.soundLevel,
+    required this.animValue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const int barCount = 9;
+    const double maxHeight = 28.0;
+    const double minHeight = 4.0;
+
+    return SizedBox(
+      height: maxHeight,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: List.generate(barCount, (index) {
+          double height;
+          if (!isListening) {
+            height = minHeight;
+          } else {
+            final double normPos =
+                (index - (barCount - 1) / 2).abs() / ((barCount - 1) / 2);
+            final double centerBias = 1.0 - (normPos * 0.35);
+            final double sineWave =
+                (math.sin((animValue * 2 * math.pi) + (index * 0.75)) + 1.0) /
+                    2.0;
+            final double energy =
+                (soundLevel * 0.65 + sineWave * 0.35) * centerBias;
+            height = (minHeight + (maxHeight - minHeight) * energy)
+                .clamp(minHeight, maxHeight);
+          }
+
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 3),
+            width: 4,
+            height: height,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3),
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: isListening
+                    ? [
+                        AppColors.action,
+                        AppColors.heritage,
+                      ]
+                    : [
+                        AppColors.border,
+                        AppColors.border.withValues(alpha: 0.5),
+                      ],
+              ),
+            ),
+          );
+        }),
+      ),
+    );
   }
 }
 

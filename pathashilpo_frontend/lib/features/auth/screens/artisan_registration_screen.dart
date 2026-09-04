@@ -87,6 +87,20 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
     _clusterController.text = 'Chanderi Handloom Cluster';
     _storyController.text =
         'I have practiced handloom weaving since childhood, preserving our family craft heritage.';
+    _preloadGuidanceVoices();
+  }
+
+  static const List<String> _stepGuidanceTexts = [
+    'कारीगर पंजीकरण में आपका स्वागत है। कृपया अपना नाम, गाँव, ज़िला और शिल्प समूह दर्ज करें। Welcome to Artisan Registration. Please enter your name, village, and craft cluster.',
+    'कृपया अपना शिल्प चुनें और बारह अंकों का आधार, दस अंकों का पैन, या पंद्रह अंकों का जीएसटी नंबर दर्ज करें। आप दस्तावेज़ की फोटो खींचकर AI स्कैनर से भी भर सकते हैं। Please choose your craft and verify your 12-digit Aadhaar, 10-character PAN, or 15-character GST number.',
+    'कृपया अपने पारंपरिक शिल्प और पारिवारिक विरासत की कहानी साझा करें। Please share your traditional craft story.',
+  ];
+
+  void _preloadGuidanceVoices() {
+    _tts.preloadBatch([
+      for (final text in _stepGuidanceTexts)
+        TtsInput(text: text, languageCode: 'hi'),
+    ]);
   }
 
   @override
@@ -118,22 +132,9 @@ class _ArtisanRegistrationScreenState extends State<ArtisanRegistrationScreen> {
     }
 
     setState(() => _isSpeaking = true);
-    String guidanceText;
-    switch (_currentStep) {
-      case 0:
-        guidanceText =
-            'कारीगर पंजीकरण में आपका स्वागत है। कृपया अपना नाम, गाँव, ज़िला और शिल्प समूह दर्ज करें। Welcome to Artisan Registration. Please enter your name, village, and craft cluster.';
-        break;
-      case 1:
-        guidanceText =
-            'कृपया अपना शिल्प चुनें और बारह अंकों का आधार, दस अंकों का पैन, या पंद्रह अंकों का जीएसटी नंबर दर्ज करें। आप दस्तावेज़ की फोटो खींचकर AI स्कैनर से भी भर सकते हैं। Please choose your craft and verify your 12-digit Aadhaar, 10-character PAN, or 15-character GST number.';
-        break;
-      case 2:
-      default:
-        guidanceText =
-            'कृपया अपने पारंपरिक शिल्प और पारिवारिक विरासत की कहानी साझा करें। Please share your traditional craft story.';
-        break;
-    }
+    final String guidanceText = (_currentStep >= 0 && _currentStep < _stepGuidanceTexts.length)
+        ? _stepGuidanceTexts[_currentStep]
+        : _stepGuidanceTexts.last;
 
     try {
       await _tts.speak(TtsInput(text: guidanceText, languageCode: 'hi'));

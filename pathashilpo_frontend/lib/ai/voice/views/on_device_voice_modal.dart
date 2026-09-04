@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/colors.dart';
@@ -108,7 +110,10 @@ class _OnDeviceVoiceModalContentState extends State<_OnDeviceVoiceModalContent>
       },
       onSoundLevelChange: (level) {
         if (!mounted) return;
-        setState(() => _soundLevel = level);
+        final double normalized = ((level + 2.0) / 10.0).clamp(0.0, 1.0);
+        setState(() {
+          _soundLevel = (_soundLevel * 0.3) + (normalized * 0.7);
+        });
       },
     );
 
@@ -342,73 +347,84 @@ class _OnDeviceVoiceModalContentState extends State<_OnDeviceVoiceModalContent>
           ),
           const SizedBox(height: 22),
 
-          // Pulsing Sound Wave Visualizer
+          // Stabilized Voice Visualizer with Voice Waveform Equalizer Bars
           GestureDetector(
             onTap: _toggleListen,
             child: AnimatedBuilder(
               animation: _pulseController,
               builder: (context, child) {
-                final double pulse = _isListening
-                    ? (1.0 +
-                        (_soundLevel * 0.4) +
-                        (_pulseController.value * 0.15))
-                    : 1.0;
-
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Outer Ripple
-                    if (_isListening) ...[
-                      Container(
-                        width: 96 * pulse,
-                        height: 96 * pulse,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.action.withValues(alpha: 0.12),
+                return SizedBox(
+                  height: 124,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Fixed-dimension Microphone Button (never resizes dialog)
+                      SizedBox(
+                        width: 76,
+                        height: 76,
+                        child: Center(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // Subtle aura ring that NEVER expands outside bounds
+                              if (_isListening)
+                                Container(
+                                  width: 68 + (8 * _soundLevel),
+                                  height: 68 + (8 * _soundLevel),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.action
+                                        .withValues(alpha: 0.22),
+                                  ),
+                                ),
+                              // Core Mic Button
+                              Container(
+                                width: 62,
+                                height: 62,
+                                decoration: BoxDecoration(
+                                  color: _isListening
+                                      ? AppColors.action
+                                      : AppColors.heritage,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: (_isListening
+                                              ? AppColors.action
+                                              : AppColors.heritage)
+                                          .withValues(alpha: 0.35),
+                                      blurRadius: 14,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Icon(
+                                  _isListening
+                                      ? Icons.mic_rounded
+                                      : Icons.mic_none_rounded,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      Container(
-                        width: 80 * pulse,
-                        height: 80 * pulse,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.action.withValues(alpha: 0.2),
-                        ),
+                      const SizedBox(height: 12),
+
+                      // Dedicated Sound Wave Equalizer Voice Bars
+                      _VoiceEqualizerBars(
+                        isListening: _isListening,
+                        soundLevel: _soundLevel,
+                        animValue: _pulseController.value,
                       ),
                     ],
-                    // Core Button
-                    Container(
-                      width: 68,
-                      height: 68,
-                      decoration: BoxDecoration(
-                        color:
-                            _isListening ? AppColors.action : AppColors.heritage,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: (_isListening
-                                    ? AppColors.action
-                                    : AppColors.heritage)
-                                .withValues(alpha: 0.35),
-                            blurRadius: 16,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        _isListening
-                            ? Icons.mic_rounded
-                            : Icons.mic_none_rounded,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                    ),
-                  ],
+                  ),
                 );
               },
             ),
           ),
-          const SizedBox(height: 22),
+          const SizedBox(height: 18),
 
           // Transcribed Text Bubble Container
           Container(
@@ -532,6 +548,74 @@ class _OnDeviceVoiceModalContentState extends State<_OnDeviceVoiceModalContent>
             color: isSelected ? Colors.white : AppColors.textMuted,
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Dedicated, smooth voice equalizer waveform bars that react gracefully to speech sound levels.
+class _VoiceEqualizerBars extends StatelessWidget {
+  final bool isListening;
+  final double soundLevel;
+  final double animValue;
+
+  const _VoiceEqualizerBars({
+    required this.isListening,
+    required this.soundLevel,
+    required this.animValue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const int barCount = 9;
+    const double maxHeight = 30.0;
+    const double minHeight = 4.0;
+
+    return SizedBox(
+      height: maxHeight,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: List.generate(barCount, (index) {
+          double height;
+          if (!isListening) {
+            height = minHeight;
+          } else {
+            // Harmonic wave offset across bars for a fluid, natural waveform
+            final double normPos =
+                (index - (barCount - 1) / 2).abs() / ((barCount - 1) / 2);
+            final double centerBias = 1.0 - (normPos * 0.35); // Center bars are taller
+            final double sineWave =
+                (math.sin((animValue * 2 * math.pi) + (index * 0.75)) + 1.0) /
+                    2.0;
+            final double energy =
+                (soundLevel * 0.65 + sineWave * 0.35) * centerBias;
+            height = (minHeight + (maxHeight - minHeight) * energy)
+                .clamp(minHeight, maxHeight);
+          }
+
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 3),
+            width: 4,
+            height: height,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3),
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: isListening
+                    ? [
+                        AppColors.action,
+                        AppColors.heritage,
+                      ]
+                    : [
+                        AppColors.border,
+                        AppColors.border.withValues(alpha: 0.5),
+                      ],
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
